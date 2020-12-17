@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1287554244589989476}
   - component: {fileID: 1287554244589989477}
+  - component: {fileID: 8580973001474584148}
   - component: {fileID: 1287554244589989478}
   m_Layer: 0
   m_Name: LeftHand
@@ -84,6 +85,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &8580973001474584148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287554244589989475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b15580c2f9c00d4e9426ebf07b07ca5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bluePlayer: {fileID: 6674901089263098905}
+  isBlocking: 0
+  handCollider: {fileID: 1287554244589989478}
+  playerScript: {fileID: 6674901089263098905}
+  grabPosition: {fileID: 6443667442540385917}
+  redPlayer: {fileID: 0}
+  didThrow: 0
+  lastRedPlayer: {fileID: 0}
+  downTicker: 0
+  hitonefive: 0
+  hitHand: 0
+  isBlockingOnlyWithRight: 0
 --- !u!58 &1287554244589989478
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -94,7 +119,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -223,6 +248,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1287554245359615231}
   - component: {fileID: 1287554245359615216}
+  - component: {fileID: 7254855790545329134}
   - component: {fileID: 1287554245359615217}
   m_Layer: 0
   m_Name: PlayerBody
@@ -296,6 +322,24 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7254855790545329134
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287554245359615230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0bc829e4bafff7488550a2cbab0aa29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bluePlayer: {fileID: 1287554245677188614}
+  bluePlayerScript: {fileID: 6674901089263098905}
+  rb: {fileID: 1287554245677188615}
+  currentPercentage: 0
+  damageText: {fileID: 0}
+  knockbackValue: 0
 --- !u!58 &1287554245359615217
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -322,6 +366,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1287554245446853300}
   - component: {fileID: 1287554245446853301}
+  - component: {fileID: 1381921268685090182}
   - component: {fileID: 1287554245446853302}
   m_Layer: 0
   m_Name: RightHand
@@ -396,6 +441,30 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1381921268685090182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1287554245446853299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79a3be917de60db48977e834c241db98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bluePlayer: {fileID: 6674901089263098905}
+  isBlocking: 0
+  handCollider: {fileID: 1287554245446853302}
+  playerScript: {fileID: 6674901089263098905}
+  grabPosition: {fileID: 6443667442540385917}
+  redPlayer: {fileID: 0}
+  didThrow: 0
+  lastRedPlayer: {fileID: 0}
+  downTicker: 0
+  hitonefive: 0
+  hitHand: 0
+  isBlockingOnlyWithLeft: 0
 --- !u!58 &1287554245446853302
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -406,7 +475,7 @@ CircleCollider2D:
   m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
@@ -426,7 +495,7 @@ GameObject:
   - component: {fileID: 1473660390859026928}
   m_Layer: 0
   m_Name: PlayerController
-  m_TagString: Player
+  m_TagString: BluePlayer
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -445,6 +514,7 @@ Transform:
   - {fileID: 1287554246274973931}
   - {fileID: 1287554244676913109}
   - {fileID: 1287554245359615231}
+  - {fileID: 6443667442540385917}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 180}
@@ -464,10 +534,10 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 0
-  m_Material: {fileID: 6200000, guid: d0c078c24d2006f47a5b041c7ece5bc7, type: 2}
+  m_Material: {fileID: 6200000, guid: 52855702ea6e0364eacf76264101e99d, type: 2}
   m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &6674901089263098905
 MonoBehaviour:
@@ -490,6 +560,11 @@ MonoBehaviour:
   punchedLeft: 0
   returningRight: 0
   returningLeft: 0
+  isBlocking: 0
+  grabbedPosition: {fileID: 0}
+  oppositeForce: {x: 0, y: 0}
+  brakeSpeed: 20
+  punchRange: 1.4
 --- !u!114 &1473660390859026928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -633,3 +708,33 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &5101265027379073567
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6443667442540385917}
+  m_Layer: 0
+  m_Name: GrabPosition
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6443667442540385917
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5101265027379073567}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1.7, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1287554245677188601}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

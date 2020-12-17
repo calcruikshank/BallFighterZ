@@ -23,13 +23,23 @@ public class PlayerInputMouse : MonoBehaviour
     public bool returningLeft = false;
     public float moveSpeed = 8f;
 
+    public Transform grabbedPosition;
+
+    public Vector2 oppositeForce;
+
+    public float brakeSpeed = 20f;
+
+    public bool isBlocking;
+    public float timer;
+
     private State state;
     private enum State
     {
         WithoutBall,
         WithBall,
         Knockback,
-        Diving
+        Diving,
+        Grabbed
     }
 
     void Awake()
@@ -52,9 +62,16 @@ public class PlayerInputMouse : MonoBehaviour
             case State.WithoutBall:
                 HandleMovement();
                 HandleThrowHands();
+                HandleBlock();
                 break;
             case State.Diving:
                 //HandleDiving();
+                break;
+            case State.Knockback:
+                HandleKnockback();
+                break;
+            case State.Grabbed:
+                HandleGrabbed();
                 break;
         }
     }
@@ -65,7 +82,10 @@ public class PlayerInputMouse : MonoBehaviour
             case State.WithoutBall:
                 FixedHandleMovement();
                 break;
-            
+            case State.Knockback:
+                FixedHandleKnockback();
+                break;
+
         }
     }
 
@@ -110,7 +130,7 @@ public class PlayerInputMouse : MonoBehaviour
         {
             ThrowRightHand();
         }
-        if (rightHand.localPosition.x >= 1.4f)
+        if (rightHand.localPosition.x >= 1.4f && punchedRight == false)
         {
             returningRight = true;
         }
@@ -126,7 +146,7 @@ public class PlayerInputMouse : MonoBehaviour
             ThrowLeftHand();
         }
 
-        if (leftHand.localPosition.x >= 1.4f)
+        if (leftHand.localPosition.x >= 1.4f && punchedLeft == false)
         {
             returningLeft = true;
         }
@@ -156,6 +176,67 @@ public class PlayerInputMouse : MonoBehaviour
     }
 
 
+    private void OnReleasePunchRight()
+    {
+        punchedRight = false;
+    }
+    private void OnReleasePunchLeft()
+    {
+        punchedLeft = false;
+    }
+
+
+    public void HandleKnockback()
+    {
+        if (rb.velocity.magnitude <= 5f)
+        {
+            Debug.Log(state);
+            rb.velocity = new Vector2(0, 0);
+            state = State.WithoutBall;
+            
+        }
+        if (rb.velocity.magnitude > 0)
+        {
+            oppositeForce = -rb.velocity;
+            brakeSpeed = brakeSpeed + (150f * Time.deltaTime);
+            rb.AddForce(oppositeForce * Time.deltaTime * brakeSpeed);
+        }
+        
+
+    }
+    public void FixedHandleKnockback()
+    {
+        
+    }
+
+    public void HandleBlock()
+    {
+        if (punchedLeft || punchedRight)
+        {
+            timer += Time.deltaTime;
+
+            if (timer > .2f)
+            {
+                moveSpeed = 3.5f;
+                isBlocking = true;
+            }
+        }
+
+        if (punchedRight == false && punchedLeft == false)
+        {
+            isBlocking = false;
+            timer = 0;
+            moveSpeed = 8f;
+        }
+
+    }
+
+    public void HandleGrabbed()
+    {
+        rb.transform.position = grabbedPosition.position;
+
+    }
+
     private void OnPunchRight()
     {
         if (state != State.WithoutBall)
@@ -178,4 +259,22 @@ public class PlayerInputMouse : MonoBehaviour
         punchedLeft = true;
         returningLeft = false;
     }
+
+    public void ChangeStateToKnockback()
+    {
+        brakeSpeed = 30f; //chnage this to damage * current percentage later
+        state = State.Knockback;
+    }
+
+    public void ChangeStateToGrabbed(Transform handThatGrabbed)
+    {
+
+        state = State.Grabbed;
+        grabbedPosition = handThatGrabbed;
+        leftHand.GetComponent<Collider2D>().isTrigger = true;
+        rightHand.GetComponent<Collider2D>().isTrigger = true;
+    }
+
+
+
 }

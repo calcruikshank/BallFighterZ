@@ -44,6 +44,54 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press"
+                },
+                {
+                    "name": "BlockRight",
+                    "type": "Button",
+                    "id": "4dce5fa3-c4df-4ee8-84dd-7eb9680350b2",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "BlockLeft",
+                    "type": "Button",
+                    "id": "0b6c2786-83d2-4164-8ec8-9a6c7725512b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "ReleaseBlockLeft",
+                    "type": "Button",
+                    "id": "fefad566-6aed-40ef-93e3-dcd75a32d585",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
+                },
+                {
+                    "name": "ReleaseBlockRight",
+                    "type": "Button",
+                    "id": "2fabdbd5-de9e-4176-8710-10e4b6ca01d5",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
+                },
+                {
+                    "name": "ReleasePunchLeft",
+                    "type": "Button",
+                    "id": "f29e75c5-dbde-49cb-bb2f-56dd22dc696f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
+                },
+                {
+                    "name": "ReleasePunchRight",
+                    "type": "Button",
+                    "id": "9d4d5582-2aa5-4aab-b641-047973bae3fa",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
                 }
             ],
             "bindings": [
@@ -99,6 +147,72 @@
                     "processors": "",
                     "groups": "",
                     "action": "Dive",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "979041dd-872f-4643-b5d3-ecb1d611c3bd",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BlockRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ca259bae-b34a-45e9-8039-b00584870de8",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "BlockLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a79f5a33-42a5-4527-b96f-490e71afab66",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReleaseBlockLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a5bca6f4-5703-4a6f-823c-420084402e20",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReleaseBlockRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "32b05a1f-ee7b-4245-b85a-c66f422f1844",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReleasePunchLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b9335c3b-7c1d-496d-bf5e-a2ca7962892d",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReleasePunchRight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

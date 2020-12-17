@@ -24,14 +24,24 @@ public class PlayerInputController : MonoBehaviour
     public bool returningRight = false;
     public bool returningLeft = false;
 
+    public bool isBlocking = false;
 
+    private float timer = 0.0f;
     private State state;
+
+
+    public Transform grabbedPosition;
+    public Vector2 oppositeForce;
+
+    public float brakeSpeed = 20f;
+    public float punchRange = 1.4f;
     private enum State
     {
         WithoutBall,
         WithBall,
         Knockback,
-        Diving
+        Diving,
+        Grabbed
     }
 
     void Awake()
@@ -53,9 +63,18 @@ public class PlayerInputController : MonoBehaviour
             case State.WithoutBall:
                 HandleMovement();
                 HandleThrowHands();
+                HandleBlock();
                 break;
             case State.Diving:
                 HandleDiving();
+                HandleThrowHands();
+                break;
+            case State.Knockback:
+                HandleKnockback();
+                break;
+            case State.Grabbed:
+                HandleGrabbed();
+                //HandleThrowHands();
                 break;
         }
     }
@@ -99,7 +118,7 @@ public class PlayerInputController : MonoBehaviour
         {
             ThrowRightHand();
         }
-        if (rightHand.localPosition.x >= 1.4f)
+        if (rightHand.localPosition.x >= punchRange && punchedRight == false)
         {
             returningRight = true;
         }
@@ -115,7 +134,7 @@ public class PlayerInputController : MonoBehaviour
             ThrowLeftHand();
         }
 
-        if (leftHand.localPosition.x >= 1.4f)
+        if (leftHand.localPosition.x >= punchRange && punchedLeft == false)
         {
             returningLeft = true;
         }
@@ -129,7 +148,7 @@ public class PlayerInputController : MonoBehaviour
 
     public void ThrowRightHand()
     {
-        rightHand.localPosition = Vector3.MoveTowards(rightHand.localPosition, new Vector2(1.4f, .4f), punchSpeed * Time.deltaTime);
+        rightHand.localPosition = Vector3.MoveTowards(rightHand.localPosition, new Vector2(punchRange, .4f), punchSpeed * Time.deltaTime);
     }
     public void ReturnRightHand()
     {
@@ -137,12 +156,49 @@ public class PlayerInputController : MonoBehaviour
     }
     public void ThrowLeftHand()
     {
-        leftHand.localPosition = Vector3.MoveTowards(leftHand.localPosition, new Vector2(1.4f, -.4f), punchSpeed * Time.deltaTime);
+        leftHand.localPosition = Vector3.MoveTowards(leftHand.localPosition, new Vector2(punchRange, -.4f), punchSpeed * Time.deltaTime);
     }
     public void ReturnLeftHand()
     {
         leftHand.localPosition = Vector3.MoveTowards(leftHand.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
     }
+
+
+    public void HandleBlock()
+    {
+        /*if (punchedLeft|| punchedRight)
+        {
+
+            
+            timer += Time.deltaTime;
+
+            if (timer > .1f)
+            {
+                moveSpeed = 3.5f;
+                isBlocking = true;
+            }
+        }*/
+
+        if (punchedRight == false && punchedLeft == false)
+        {
+            isBlocking = false;
+            timer = 0;
+            moveSpeed = 8f;
+        }
+
+        if (leftHand.localPosition.x >= punchRange && leftHand.localScale.x <= 1)
+        {
+            moveSpeed = 3.5f;
+            isBlocking = true;
+        }
+        if (rightHand.localPosition.x >= punchRange && rightHand.localScale.x <= 1)
+        {
+            moveSpeed = 3.5f;
+            isBlocking = true;
+        }
+
+    }
+
 
     public void HandleDiving()
     {
@@ -152,6 +208,7 @@ public class PlayerInputController : MonoBehaviour
         transform.right = lastMoveDir;
         if (diveSpeed < diveSpeedMinimum)
         {
+            lastLookedPosition = diveDir;
             state = State.WithoutBall;
             //later check if you have ball
         }
@@ -179,12 +236,21 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnPunchRight()
     {
-        if (state != State.WithoutBall)
+        if (state != State.WithoutBall && state != State.Diving && state != State.Grabbed)
         {
             return;
         }
         punchedRight = true;
         returningRight = false;
+    }
+
+    private void OnReleasePunchRight()
+    {
+        punchedRight = false;
+    }
+    private void OnReleasePunchLeft()
+    {
+        punchedLeft = false;
     }
     private void OnDive()
     {
@@ -201,7 +267,7 @@ public class PlayerInputController : MonoBehaviour
 
     private void OnPunchLeft()
     {
-        if (state != State.WithoutBall)
+        if (state != State.WithoutBall && state != State.Diving && state != State.Grabbed)
         {
             return;
         }
@@ -220,6 +286,79 @@ public class PlayerInputController : MonoBehaviour
         //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
         transform.right = lastLookedPosition;
     }
+    
 
+
+    public void ChangeStateToKnockback()
+    {
+        brakeSpeed = 20f; //chnage this to damage * current percentage later
+        state = State.Knockback;
+    }
+
+    public void HandleKnockback()
+    {
+        if (rb.velocity.magnitude <= 5f)
+        {
+            Debug.Log(state);
+            rb.velocity = new Vector2(0, 0);
+            state = State.WithoutBall;
+
+        }
+        if (rb.velocity.magnitude > 0)
+        {
+            oppositeForce = -rb.velocity;
+            brakeSpeed = brakeSpeed + (200f * Time.deltaTime);
+            rb.AddForce(oppositeForce * Time.deltaTime * brakeSpeed);
+        }
+
+
+    }
+
+
+    public void HandleGrabbed()
+    {
+        leftHand.GetComponent<Collider2D>().isTrigger = true;
+        rightHand.GetComponent<Collider2D>().isTrigger = true;
+        if (grabbedPosition != null)
+        {
+            rb.transform.position = grabbedPosition.position;
+        }
+        else
+        {
+            state = State.WithoutBall;
+        }
+        
+
+
+    }
+
+    public void ChangeStateToGrabbed(Transform handThatGrabbed)
+    {
+
+        state = State.Grabbed;
+        grabbedPosition = handThatGrabbed;
+        leftHand.GetComponent<Collider2D>().isTrigger = true;
+        rightHand.GetComponent<Collider2D>().isTrigger = true;
+    }
+
+
+    public void ChangeStateToWithoutBall()
+    {
+        state = State.WithoutBall;
+    }
+
+    public bool CheckIfGrabbed()
+    {
+        if (state == State.Grabbed)
+        {
+            return true;
+        }
+
+        else
+        {
+            return false;
+        }
+    }
+    
 
 }
