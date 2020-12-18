@@ -1,118 +1,82 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using Photon.Pun;
 
 public class PlayerController : MonoBehaviour
 {
-    public Rigidbody2D rb;
-    public float moveSpeed = 5f;
-    private Vector2 movement;
-    private Vector3 diveDir;
-    private Vector3 lastMoveDir;
-    public float diveSpeed;
-    public float punchSpeed = 60f;
-    public float returnSpeed = 50f;
-    public Transform leftHand;
-    public Transform rightHand;
+    Rigidbody2D rb;
+    Vector2 mousePosition, movement, inputMovement, lastMoveDir;
+    
+    
+    [SerializeField] float moveSpeed;
 
-    private float timer = 0.0f;
+    PhotonView PV;
 
-    public bool punchedLeft = false;
-    public bool punchedRight = false;
-    public bool returningLeft = false;
-    public bool returningRight = false;
     private State state;
     private enum State
     {
-        WithoutBall,
-        WithBall,
+        Normal,
         Knockback,
-        Diving
+        Diving,
+        Grabbed
     }
 
-
-    private void Awake()
+    void Awake()
     {
-        state = State.WithoutBall;
+        rb = GetComponent<Rigidbody2D>();
+        state = State.Normal;
+        PV = GetComponent<PhotonView>();
     }
 
-
-    // Start is called before the first frame update
     void Start()
     {
-
+        if (!PV.IsMine) //if the player is not owned by the user
+        {
+            Destroy(rb); //destroys rigidbody of enemy so we dont calculate physics twice
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
-
+        if (!PV.IsMine) //if the player is not owned by the user
+        {
+            return;
+        }
+        
         switch (state)
         {
-            case State.WithoutBall:
+            case State.Normal:
                 HandleMovement();
-                HandleThrowingHands();
-                //HandleDivingWithoutBall
-                break;
-            case State.WithBall:
-                HandleMovement();
-                //HandleThrowingBall
-                //HandleDivingWithBall
-                break;
-            case State.Knockback:
-                HandleMovement();
-                break;
-            case State.Diving:
-                HandleDiving();
                 break;
         }
-
     }
-
     void FixedUpdate()
     {
+        if (!PV.IsMine) //if the player is not owned by the user
+        {
+            return;
+            
+        }
         switch (state)
         {
-            case State.WithoutBall:
+            case State.Normal:
                 FixedHandleMovement();
-                //FixedHandleThrowingHands();
-                //FixedHandleDivingWithoutBall
-                break;
-            case State.WithBall:
-                FixedHandleMovement();
-                //HandleThrowingBall
-                //FixedHandleDivingWithBall
-                break;
-            case State.Knockback:
-                FixedHandleMovement();
-                break;
-            case State.Diving:
-                FixedHandleDiving();
                 break;
         }
-
-
     }
-
 
     public void HandleMovement()
     {
-        faceMouse();
-        movement.x = Input.GetAxisRaw("Horizontal");
-        movement.y = Input.GetAxisRaw("Vertical");
-        movement = movement.normalized;
+        movement.x = inputMovement.x;
+        movement.y = inputMovement.y;
+        movement = movement;
         if (movement.x != 0 || movement.y != 0)
         {
             lastMoveDir = movement;
         }
-
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            diveDir = lastMoveDir;
-            diveSpeed = 25f;
-            state = State.Diving;
-        }
-
+        
     }
     public void FixedHandleMovement()
     {
@@ -121,116 +85,37 @@ public class PlayerController : MonoBehaviour
 
 
 
-    public void HandleDiving()
+
+
+
+
+
+
+    private void OnKeyboardMove(InputValue value)
     {
-        float diveSpeedMultiplier = 5f;
-        diveSpeed -= diveSpeed * diveSpeedMultiplier * Time.deltaTime;
-        float diveSpeedMinimum = 1f;
-        transform.right = lastMoveDir;
-        if (diveSpeed < diveSpeedMinimum)
+        if (!PV.IsMine)
         {
-            state = State.WithoutBall;
-            //later check if you have ball
+            return;
         }
+        inputMovement = value.Get<Vector2>();
     }
-    public void FixedHandleDiving()
+    public void OnMouseLook(InputValue value)
     {
-        rb.velocity = diveDir * diveSpeed;
-
+        if (!PV.IsMine)
+        {
+            return;
+        }
+        mousePosition = value.Get<Vector2>();
+        FaceMouse();
     }
-
-
-    public void HandleThrowingHands()
+    void FaceMouse()
     {
-
-        if (Input.GetButtonDown("Fire1") && punchedLeft == false)
+        if (!PV.IsMine)
         {
-            punchedLeft = true;
-            returningLeft = false;
+            return;
         }
-        if (punchedLeft == true && returningLeft == false)
-        {
-            ThrowLeftHand();
-
-        }
-
-        if (leftHand.localPosition.x >= 1.4f)
-        {
-            returningLeft = true;
-        }
-        if (returningLeft)
-        {
-            ReturnLeftHand();
-            punchedLeft = false;
-
-        }
-
-        if (Input.GetButtonDown("Fire2") && punchedRight == false)
-        {
-            punchedRight = true;
-            returningRight = false;
-        }
-        if (punchedRight == true && returningRight == false)
-        {
-            ThrowRightHand();
-        }
-        if (rightHand.localPosition.x >= 1.4f)
-        {
-            returningRight = true;
-        }
-        if (returningRight)
-        {
-            ReturnRightHand();
-            punchedRight = false;
-
-        }
-
-        if (Input.GetButton("Fire2") || Input.GetButton("Fire1"))
-        {
-            timer += Time.deltaTime;
-
-            if (timer > .2f)
-            {
-                moveSpeed = 3.5f;
-            }
-            Debug.Log(moveSpeed);
-        }
-        if (Input.GetButton("Fire2") == false && Input.GetButton("Fire1") == false)
-        {
-            moveSpeed = 7f;
-            timer = 0;
-        }
-
-
-    }
-    public void ThrowLeftHand()
-    {
-        leftHand.localPosition = Vector3.MoveTowards(leftHand.localPosition, new Vector2(1.4f, -.4f), punchSpeed * Time.deltaTime);
-    }
-    public void ReturnLeftHand()
-    {
-        leftHand.localPosition = Vector3.MoveTowards(leftHand.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
-    }
-
-    public void ThrowRightHand()
-    {
-        rightHand.localPosition = Vector3.MoveTowards(rightHand.localPosition, new Vector2(1.4f, .4f), punchSpeed * Time.deltaTime);
-    }
-    public void ReturnRightHand()
-    {
-        rightHand.localPosition = Vector3.MoveTowards(rightHand.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
-    }
-
-
-    void faceMouse()
-    {
-        Vector3 mousePosition = Input.mousePosition;
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
-
         Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
         transform.right = direction;
-        //Debug.Log(mousePosition);
     }
-
-
 }
