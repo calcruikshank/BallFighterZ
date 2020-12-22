@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class CameraHolder : MonoBehaviour
 {
+    public Transform cameraFollow;
     // Start is called before the first frame update
     void Start()
     {

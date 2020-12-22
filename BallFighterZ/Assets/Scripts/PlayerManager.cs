@@ -6,11 +6,14 @@ using System.IO;
 
 public class PlayerManager : MonoBehaviour
 {
+    public static PlayerManager PM;
     PhotonView PV;
+    
 
     void Awake()
     {
         PV = GetComponent<PhotonView>();
+        
     }
     // Start is called before the first frame update
     void Start()

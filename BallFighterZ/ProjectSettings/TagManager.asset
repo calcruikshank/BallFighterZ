@@ -7,6 +7,7 @@ TagManager:
   - BluePlayerText
   - RedPlayer
   - BluePlayer
+  - Canvas
   layers:
   - Default
   - TransparentFX

@@ -8,7 +8,7 @@ using System.IO;
 public class RoomManager : MonoBehaviourPunCallbacks
 {
     public static RoomManager Instance;
-
+    public int teamID;
     void Awake()
     {
         if (Instance)
@@ -18,6 +18,19 @@ public class RoomManager : MonoBehaviourPunCallbacks
         }
         DontDestroyOnLoad(gameObject);
         Instance = this;
+    }
+
+    void Start()
+    {
+        if (PlayerPrefs.HasKey("MyTeam"))
+        {
+            teamID = PlayerPrefs.GetInt("MyTeam");
+        }
+        else
+        {
+            teamID = 0;
+            PlayerPrefs.SetInt("MyTeam", teamID);
+        }
     }
 
     public override void OnEnable()
@@ -36,6 +49,7 @@ public class RoomManager : MonoBehaviourPunCallbacks
         if (scene.buildIndex == 1)
         {
             PhotonNetwork.Instantiate(Path.Combine("PhotonPrefabs", "PlayerManager"), Vector3.zero, Quaternion.identity);
+            
         }
     }
     
