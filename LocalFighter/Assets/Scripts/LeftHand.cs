@@ -9,6 +9,9 @@ public class LeftHand : MonoBehaviour
     public float downTicker = 1.5f;
     bool startDownTicker = false;
     bool opponentTookDamage = false;
+    public GameObject explosionPrefab;
+
+
     void OnTriggerEnter2D(Collider2D other)
     {
         
@@ -37,7 +40,7 @@ public class LeftHand : MonoBehaviour
                 }
 
             }
-            if (downTicker > 1 && player.punchedRight || downTicker > 1 && player.rightHandTransform.localPosition.x >= .5f)
+            if (downTicker > 1 && player.punchedRight)
             {
                 player.Grab(opponent);
                 opponent.Grabbed(player.grabPosition);
@@ -45,6 +48,18 @@ public class LeftHand : MonoBehaviour
             }
             if (opponent.isBlockingLeft || opponent.isBlockingRight)
             {
+                Instantiate(explosionPrefab, transform.position, transform.rotation);
+                //check if perfect shield
+                if (opponent.isPowerShielding)
+                {
+                    opponent.totalShieldRemaining += 20f / 255f;
+                    opponent.PowerShield();
+                    player.PowerShieldStun();
+                    opponentTookDamage = true;
+                    Debug.Log("Opponent is power shielding");
+                    return;
+                }
+                opponentTookDamage = true;
                 opponent.totalShieldRemaining -= 10f / 255f;
                 return;
             }
@@ -55,10 +70,11 @@ public class LeftHand : MonoBehaviour
                 player.readyToPummelLeft = false;
             }
 
-            if (player.returningLeft && transform.localPosition.x >= 1 || player.punchedLeft)
+            if (player.returningLeft && transform.localPosition.x >= 1.25F || player.punchedLeft)
             {
                 if (opponentTookDamage == false)
                 {
+                    Instantiate(explosionPrefab, transform.position, transform.rotation);
                     Debug.Log("Didnt grab");
                     float damage = 6;
                     if (player.dashedTimer > 0f)

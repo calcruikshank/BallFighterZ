@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 926449328659449653}
   - component: {fileID: 1371377126290189743}
   - component: {fileID: 926449328659449652}
+  - component: {fileID: 6560265386496119759}
   m_Layer: 0
   m_Name: PlayerController
   m_TagString: BluePlayer
@@ -74,14 +75,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
+  mousePosition: {x: 0, y: 0}
+  movement: {x: 0, y: 0}
+  inputMovement: {x: 0, y: 0}
+  lastMoveDir: {x: 0, y: 0}
+  oppositeForce: {x: 0, y: 0}
+  dashPosition: {x: 0, y: 0}
+  joystickLook: {x: 0, y: 0}
   moveSpeed: 10
-  punchRange: 1.5
+  punchRange: 2
   punchSpeed: 35
-  returnSpeed: 4
+  returnSpeed: 10
   currentPercentage: 0
   brakeSpeed: 0
   stunnedTimer: 0
-  dashedTimer: 0
+  shieldSpeed: 0
+  grabTimer: 0
+  powerStunnedTimer: 0
+  punchedRightTimer: 0
+  punchedLeftTimer: 0
+  inputBuffer: 0.15
+  shieldLeftTimer: 0
+  shieldRightTimer: 0
   punchedRight: 0
   punchedLeft: 0
   returningRight: 0
@@ -89,6 +104,7 @@ MonoBehaviour:
   pummeledLeft: 0
   pummeledRight: 0
   isGrabbing: 0
+  isGrabbed: 0
   shieldingRight: 0
   shieldingLeft: 0
   isBlockingRight: 0
@@ -96,6 +112,10 @@ MonoBehaviour:
   readyToPummelRight: 0
   readyToPummelLeft: 0
   canDash: 0
+  gameIsOver: 0
+  isPowerShielding: 0
+  startedPunchRight: 0
+  startedPunchLeft: 0
   rightHandTransform: {fileID: 926449330623663813}
   leftHandTransform: {fileID: 926449329438952366}
   grabPosition: {fileID: 926449329175581504}
@@ -104,16 +124,22 @@ MonoBehaviour:
   leftHandCollider: {fileID: 0}
   opponent: {fileID: 0}
   team: 0
+  punchesToRelease: 0
   gameManager: {fileID: 0}
   percentageText: {fileID: 0}
   stocksLeft: 3
+  stocksLeftText: {fileID: 0}
   playerBody: {fileID: 926449330050574784}
   shield: {fileID: 5381451697479884506}
   halfShieldRemaining: 0
   totalShieldRemaining: 0
   actualShield: 0.78431374
+  dashedTimer: 0
+  perfectShieldTimer: 0
+  perfectShieldFrameData: 0.12
   cameraShake: {fileID: 0}
   teleportAnimation: {fileID: 6190551132794790254, guid: b117350768a6c524ba323f423b62f3e3, type: 3}
+  state: 0
 --- !u!114 &926449328659449652
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139,11 +165,24 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_ActionEvents: []
-  m_NeverAutoSwitchControlSchemes: 0
+  m_NeverAutoSwitchControlSchemes: 1
   m_DefaultControlScheme: 
   m_DefaultActionMap: MouseInputs
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &6560265386496119759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 926449328659449648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e048f4d7a27b9a14bb10a8d631826fa8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  index: 0
 --- !u!1 &926449329175581567
 GameObject:
   m_ObjectHideFlags: 0
@@ -168,7 +207,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 926449329175581567}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.5, y: 0, z: 0}
+  m_LocalPosition: {x: 1.8, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 926449328659449654}
@@ -321,6 +360,7 @@ MonoBehaviour:
   player: {fileID: 1371377126290189743}
   opponent: {fileID: 0}
   downTicker: 1.5
+  explosionPrefab: {fileID: 1889934606081272, guid: 0fa683b2d5255964e903cea0feab8c9c, type: 3}
 --- !u!1 &926449329486882131
 GameObject:
   m_ObjectHideFlags: 0
@@ -731,6 +771,7 @@ MonoBehaviour:
   player: {fileID: 1371377126290189743}
   opponent: {fileID: 0}
   downTicker: 1.5
+  explosionPrefab: {fileID: 1889934606081272, guid: 0fa683b2d5255964e903cea0feab8c9c, type: 3}
 --- !u!1 &5381451697479884506
 GameObject:
   m_ObjectHideFlags: 0

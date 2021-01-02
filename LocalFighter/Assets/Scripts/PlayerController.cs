@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
     public Rigidbody2D rb;
-    Vector2 mousePosition, movement, inputMovement, lastMoveDir, oppositeForce;
+    public Vector2 mousePosition, movement, inputMovement, lastMoveDir, oppositeForce, dashPosition, joystickLook;
 
 
-    [SerializeField] float moveSpeed, punchRange, punchSpeed, returnSpeed, currentPercentage, brakeSpeed, stunnedTimer, shieldSpeed, grabTimer;
+    public float moveSpeed, punchRange, punchSpeed, returnSpeed, currentPercentage, brakeSpeed, stunnedTimer, shieldSpeed, grabTimer, powerStunnedTimer, punchedRightTimer, punchedLeftTimer, inputBuffer, shieldLeftTimer, shieldRightTimer;
 
-    public bool punchedRight, punchedLeft, returningRight, returningLeft, pummeledLeft, pummeledRight, isGrabbing, isGrabbed, shieldingRight, shieldingLeft, isBlockingRight, isBlockingLeft, readyToPummelRight, readyToPummelLeft, canDash = false;
+    public bool punchedRight, punchedLeft, returningRight, returningLeft, pummeledLeft, pummeledRight, isGrabbing, isGrabbed, shieldingRight, shieldingLeft, isBlockingRight, isBlockingLeft, readyToPummelRight, readyToPummelLeft, canDash, gameIsOver, isPowerShielding,startedPunchRight, startedPunchLeft = false;
 
     public Transform rightHandTransform, leftHandTransform, grabPosition, grabbedPosition;
     public CircleCollider2D rightHandCollider, leftHandCollider;
@@ -20,16 +21,17 @@ public class PlayerController : MonoBehaviour
     public int team, punchesToRelease;
     public GameManager gameManager;
     public TMP_Text percentageText;
-    public int stocksLeft = 3;
+    public int stocksLeft = 4;
+    public TMP_Text stocksLeftText;
     public SpriteRenderer playerBody;
     public GameObject shield;
     public float halfShieldRemaining, totalShieldRemaining, actualShield = 225f / 255f;
-    public float dashedTimer;
+    public float dashedTimer, perfectShieldTimer, perfectShieldFrameData;
     public ScreenShake cameraShake;
     public GameObject teleportAnimation;
 
-    private State state;
-    private enum State
+    public State state;
+    public enum State
     {
         Normal,
         Knockback,
@@ -37,7 +39,8 @@ public class PlayerController : MonoBehaviour
         Grabbed,
         Grabbing,
         Stunned,
-        Dashing
+        Dashing,
+        PowerShieldStunned
     }
 
     void Awake()
@@ -50,7 +53,7 @@ public class PlayerController : MonoBehaviour
         state = State.Normal;
     }
 
-    void Start()
+    public virtual void Start()
     {
         totalShieldRemaining = 225f / 255f;
         gameManager.SetTeam(this);
@@ -69,6 +72,8 @@ public class PlayerController : MonoBehaviour
         rightHandCollider = rightHandTransform.GetComponent<CircleCollider2D>();
         leftHandCollider = leftHandTransform.GetComponent<CircleCollider2D>();
         canDash = true;
+        stocksLeft = 4;
+        stocksLeftText.text = (stocksLeft.ToString());
     }
 
 
@@ -102,12 +107,16 @@ public class PlayerController : MonoBehaviour
                 HandleThrowingHands();
                 HandleShielding();
                 break;
+            case State.PowerShieldStunned:
+                HandlePowerShieldStunned();
+                break;
         }
     }
 
 
     void FixedUpdate()
     {
+
         switch (state)
         {
             case State.Normal:
@@ -121,7 +130,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    public void HandleMovement()
+    public virtual void HandleMovement()
     {
         movement.x = inputMovement.x;
         movement.y = inputMovement.y;
@@ -137,7 +146,7 @@ public class PlayerController : MonoBehaviour
         canDash = true;
     }
 
-    public void FixedHandleMovement()
+    public virtual void FixedHandleMovement()
     {
         rb.velocity = movement * moveSpeed;
     }
@@ -163,7 +172,6 @@ public class PlayerController : MonoBehaviour
 
     public void HandleKnockback()
     {
-
         movement.x = inputMovement.x;
         movement.y = inputMovement.y;
         movement = movement;
@@ -185,10 +193,15 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void HandleThrowingHands()
+    public virtual void HandleThrowingHands()
     {
+        punchedRightTimer -= Time.deltaTime;
+        punchedLeftTimer -= Time.deltaTime;
+        if (punchedLeftTimer > 0) punchedLeft = true;
+        if (punchedRightTimer > 0) punchedRight = true;
         if (punchedRight && returningRight == false)
         {
+            punchedRightTimer = 0;
             rightHandCollider.enabled = true;
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(punchRange, .4f), punchSpeed * Time.deltaTime);
             if (rightHandTransform.localPosition.x >= punchRange)
@@ -215,6 +228,7 @@ public class PlayerController : MonoBehaviour
         }
         if (punchedLeft && returningLeft == false)
         {
+            punchedLeftTimer = 0;
             leftHandCollider.enabled = true;
             leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(punchRange, -.4f), punchSpeed * Time.deltaTime);
             if (leftHandTransform.localPosition.x >= punchRange)
@@ -240,6 +254,7 @@ public class PlayerController : MonoBehaviour
 
     public void HandlePummel()
     {
+        returnSpeed = 25f;
         grabTimer += Time.deltaTime;
         if (grabTimer > (opponent.currentPercentage / 50f) + .2f)
         {
@@ -330,7 +345,7 @@ public class PlayerController : MonoBehaviour
     public void Throw(Vector2 direction)
     {
         grabTimer = 0;
-        moveSpeed = 10f;
+        moveSpeed = 12f;
         brakeSpeed = 20f;
         float knockbackValue = 20f;
         rb.AddForce(direction * knockbackValue, ForceMode2D.Impulse);
@@ -338,8 +353,19 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(currentPercentage + "current percentage");
         state = State.Knockback;
     }
-    public void HandleShielding()
+    public virtual void HandleShielding()
     {
+        shieldLeftTimer -= Time.deltaTime;
+        if (shieldLeftTimer > 0 && returningLeft == false && punchedLeft == false)
+        {
+            shieldingLeft = true;
+        }
+        shieldRightTimer -= Time.deltaTime;
+        if (shieldRightTimer > 0 && returningRight == false && punchedRight == false)
+        {
+            shieldingRight = true;
+        }
+        stunnedTimer = 0;
         if (actualShield <= 25f / 255f)
         {
             state = State.Stunned;
@@ -388,6 +414,7 @@ public class PlayerController : MonoBehaviour
         if (rightHandTransform.localPosition.x == 0 && rightHandTransform.localPosition.y == .4f)
         {
             isBlockingRight = true;
+            
         }
         if (rightHandTransform.localPosition.y != .4f)
         {
@@ -400,9 +427,19 @@ public class PlayerController : MonoBehaviour
         if (leftHandTransform.localPosition.x == 0 && leftHandTransform.localPosition.y == -.4f)
         {
             isBlockingLeft = true;
+            
         }
         if (isBlockingRight && !isBlockingLeft)
         {
+            perfectShieldTimer += Time.deltaTime;
+            if (perfectShieldTimer < perfectShieldFrameData)
+            {
+                isPowerShielding = true;
+            }
+            else
+            {
+                isPowerShielding = false;
+            }
             totalShieldRemaining -= (50f / 255f) * Time.deltaTime;
             //Debug.Log(halfShieldRemaining);
             //Debug.Log(totalShieldRemaining);
@@ -420,6 +457,15 @@ public class PlayerController : MonoBehaviour
         }
         if (isBlockingLeft && !isBlockingRight)
         {
+            perfectShieldTimer += Time.deltaTime;
+            if (perfectShieldTimer < perfectShieldFrameData)
+            {
+                isPowerShielding = true;
+            }
+            else
+            {
+                isPowerShielding = false;
+            }
             totalShieldRemaining -= (20f / 255f) * Time.deltaTime;
             //Debug.Log(halfShieldRemaining);
             //Debug.Log(totalShieldRemaining);
@@ -446,16 +492,27 @@ public class PlayerController : MonoBehaviour
             tmp.a = actualShield;
             shield.GetComponent<SpriteRenderer>().color = tmp;
             moveSpeed = 0f;
+            perfectShieldTimer += Time.deltaTime;
+            if (perfectShieldTimer < perfectShieldFrameData)
+            {
+                isPowerShielding = true;
+            }
+            else
+            {
+                isPowerShielding = false;
+            }
 
         }
         if (!isBlockingRight && !isBlockingLeft)
         {
+            perfectShieldTimer = 0f;
+            isPowerShielding = false;
             shield.SetActive(false);
             if (totalShieldRemaining < 225f / 255f)
             {
                 totalShieldRemaining += 5f / 255f * Time.deltaTime;
             }
-            moveSpeed = 10f;
+            moveSpeed = 12f;
         }
 
 
@@ -487,13 +544,15 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector3.zero;
         transform.position = new Vector2(0, 0);
         percentageText.text = (currentPercentage + "%");
+        stocksLeftText.text = (stocksLeft.ToString());
         totalShieldRemaining = 225f / 255f;
     }
 
     public void HandleStunned()
     {
-        EndPunchLeft();
-        EndPunchRight();
+
+        //Debug.Log(stunnedTimer);
+
         shield.SetActive(false);
         leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
         rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
@@ -517,7 +576,7 @@ public class PlayerController : MonoBehaviour
         percentageText.text = (currentPercentage + "%");
     }
 
-    public void HandleDash()
+    public virtual void HandleDash()
     {
         returnSpeed = 1.25f;
         rb.velocity = Vector3.zero;
@@ -535,11 +594,11 @@ public class PlayerController : MonoBehaviour
         }
         //state = State.Normal;
     }
-    public void Dash(Vector3 direction)
+    public virtual void Dash(Vector3 direction)
     {
         if (canDash)
         {
-            Debug.Log(direction);
+            //Debug.Log(direction);
             Instantiate(teleportAnimation, transform.position, Quaternion.identity);
             direction = direction.normalized;
             float dashDistance = 5f;
@@ -571,42 +630,84 @@ public class PlayerController : MonoBehaviour
         state = State.Normal;
     }
 
+    public void PowerShieldStun()
+    {
+        powerStunnedTimer = 0f;
+        state = State.PowerShieldStunned;
+    }
 
+    public void HandlePowerShieldStunned()
+    {
+        rb.velocity = Vector3.zero;
+        leftHandTransform.localScale = new Vector2(1f, 1f);
+        rightHandTransform.localScale = new Vector2(1f, 1f);
+        rightHandCollider.enabled = false;
+        leftHandCollider.enabled = false;
+        punchedLeft = false;
+        punchedRight = false;
+        powerStunnedTimer += Time.deltaTime;
+        if (powerStunnedTimer >= .5f)
+        {
+            state = State.Normal;
+        }
+    }
+    public void PowerShield()
+    {
+        Instantiate(teleportAnimation, transform.position, Quaternion.identity);
+    }
 
 
     #region InputRegion
     void OnKeyboardMove(InputValue value)
     {
         inputMovement = value.Get<Vector2>();
-        FaceJoystick();
     }
-    void OnMouseLook(InputValue value)
+    void OnRightStickDash(InputValue value) //this actually dashes based on right stick input
     {
         if (state != State.Normal) return;
         if (value != null)
         {
-            mousePosition = value.Get<Vector2>();
+            dashPosition = value.Get<Vector2>();
         }
-        if (mousePosition.magnitude >= .9f)
+        if (dashPosition.magnitude >= .9f)
         {
 
-            Dash(mousePosition.normalized);
-            Debug.Log(canDash);
+            Dash(dashPosition.normalized);
+            
 
         }
         //if(usingMouse) FaceMouse();
 
     }
-    void FaceMouse()
-    {
 
+    void OnMouseMove(InputValue value)
+    {
+        
+        mousePosition = value.Get<Vector2>();
+        FaceMouse();
+    }
+    void OnKeyboardMove1(InputValue value)
+    {
+        //Debug.Log(joystickLook);
+        joystickLook = value.Get<Vector2>();
+        FaceJoystick();
+    }
+    public virtual void FaceMouse()
+    {
+        if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft || rightHandTransform.localPosition.x > .1f && returningRight) return;
+        if (state == State.Dashing) return;
+        if (state == State.PowerShieldStunned) return;
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
         Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
         transform.right = direction;
     }
-    void FaceJoystick()
+
+    public virtual void FaceJoystick()
     {
-        Vector2 joystickPosition = inputMovement.normalized;
+        if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft|| rightHandTransform.localPosition.x > .1f && returningRight) return;
+        if (state == State.Dashing) return;
+        if (state == State.PowerShieldStunned) return;
+        Vector2 joystickPosition = joystickLook.normalized;
         if (joystickPosition.x != 0 || joystickPosition.y != 0)
         {
             Vector2 lastLookedPosition = joystickPosition;
@@ -616,36 +717,96 @@ public class PlayerController : MonoBehaviour
 
 
     }
-    void OnPunchRight()
+    public virtual void OnPunchRight()
     {
         pummeledRight = true;
         if (state == State.Grabbing) return;
+        if (state == State.Stunned) return;
         if (state == State.Dashing) return;
         if (state == State.Knockback) return;
+
+        punchedRightTimer = inputBuffer;
         if (returningRight) return;
-        punchedRight = true;
+        //punchedRight = true;
         shieldingRight = false;
     }
-    void OnPunchLeft()
+    public virtual void OnPunchLeft()
     {
         pummeledLeft = true;
         if (state == State.Grabbing) return;
+        if (state == State.Stunned) return;
         if (state == State.Dashing) return;
         if (state == State.Knockback) return;
+
+        punchedLeftTimer = inputBuffer;
         if (returningLeft) return;
-        punchedLeft = true;
+        //punchedLeft = true;
         shieldingLeft = false;
     }
-    void OnReleasePunchRight()
+    public virtual void OnReleasePunchRight()
     {
         pummeledRight = false;
     }
-    void OnReleasePunchLeft()
+    public virtual void OnReleasePunchLeft()
     {
         pummeledLeft = false;
     }
 
     void OnShieldRight()
+    {
+        if (state == State.Grabbed) return;
+        if (state == State.Dashing) return;
+
+        shieldRightTimer = inputBuffer;
+        if (punchedRight || returningRight)
+        {
+            return;
+        }
+        //shieldingRight = true;
+    }
+
+    void OnShieldLeft()
+    {
+        if (state == State.Grabbed) return;
+        if (state == State.Dashing) return;
+
+        shieldLeftTimer = inputBuffer;
+        
+        //shieldingLeft = true;
+    }
+
+    void OnReleaseShieldRight()
+    {
+        shieldRightTimer = 0;
+        shieldingRight = false;
+    }
+    void OnReleaseShieldLeft()
+    {
+
+        shieldLeftTimer = 0;
+        shieldingLeft = false;
+    }
+
+    void OnRestart()
+    {
+        if (gameManager.gameIsOver)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+    }
+
+    void OnMouseDash()
+    {
+        if (state != State.Normal) return;
+       
+        Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+        //Vector2 direction = inputMovement.normalized;
+        Dash(direction.normalized);
+
+
+    }
+
+    void OnShieldBoth()
     {
         if (state == State.Grabbed) return;
         if (state == State.Dashing) return;
@@ -655,26 +816,15 @@ public class PlayerController : MonoBehaviour
         }
 
         shieldingRight = true;
-    }
-
-    void OnShieldLeft()
-    {
-        if (state == State.Grabbed) return;
-        if (state == State.Dashing) return;
-        if (punchedLeft || returningLeft)
-        {
-            return;
-        }
         shieldingLeft = true;
     }
 
-    void OnReleaseShieldRight()
+    void OnReleaseShieldBoth()
     {
-        shieldingRight = false;
-    }
-    void OnReleaseShieldLeft()
-    {
+        shieldLeftTimer = 0;
+        shieldRightTimer = 0;
         shieldingLeft = false;
+        shieldingRight = false;
     }
     #endregion
 

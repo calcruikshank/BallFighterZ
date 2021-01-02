@@ -9,6 +9,7 @@ public class RightHand : MonoBehaviour
     public float downTicker = 1.5f;
     bool startDownTicker;
     bool opponentTookDamage;
+    public GameObject explosionPrefab;
     void OnTriggerEnter2D(Collider2D other)
     {
         
@@ -37,7 +38,7 @@ public class RightHand : MonoBehaviour
                     return;
                 }
             }
-            if (downTicker > 1 && player.punchedLeft || downTicker > 1 && player.leftHandTransform.localPosition.x >= .5f)
+            if (downTicker > 1 && player.punchedLeft)
             {
                 player.Grab(opponent);
                 opponent.Grabbed(player.grabPosition);
@@ -45,6 +46,16 @@ public class RightHand : MonoBehaviour
             }
             if (opponent.isBlockingLeft || opponent.isBlockingRight)
             {
+                Instantiate(explosionPrefab, transform.position, transform.rotation);
+                //check if perfect shield
+                if (opponent.isPowerShielding)
+                {
+                    opponent.totalShieldRemaining += 20f / 255f;
+                    opponent.PowerShield();
+                    player.PowerShieldStun();
+                    Debug.Log("Opponent is power shielding");
+                    return;
+                }
                 opponent.totalShieldRemaining -= 10f / 255f;
                 return;
             }
@@ -55,10 +66,11 @@ public class RightHand : MonoBehaviour
                 player.readyToPummelRight = false;
             }
             
-            if (player.returningRight && transform.localPosition.x >= 1 || player.punchedRight)
+            if (player.returningRight && transform.localPosition.x >= 1.25F || player.punchedRight)
             {
                 if (opponentTookDamage == false)
                 {
+                    Instantiate(explosionPrefab, transform.position, transform.rotation);
                     Debug.Log("Didnt grab");
                     float damage = 6;
                     if (player.dashedTimer > 0f)
