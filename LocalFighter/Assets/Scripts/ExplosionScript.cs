@@ -9,12 +9,18 @@ public class ExplosionScript : MonoBehaviour
     public CircleCollider2D explosionCollider;
     public float damage;
     public float colliderTimer;
+    public bool isLarge = false;
    
     // Start is called before the first frame update
     void Start()
     {
         explosionCollider = this.gameObject.GetComponent<CircleCollider2D>();
         colliderTimer = 0f;
+        this.transform.localScale = new Vector2(1, 1);
+        if (isLarge)
+        {
+            this.transform.localScale = new Vector2(3, 3);
+        }
     }
 
     // Update is called once per frame

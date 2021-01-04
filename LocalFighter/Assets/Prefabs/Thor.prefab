@@ -469,6 +469,7 @@ MonoBehaviour:
   oppositeForce: {x: 0, y: 0}
   dashPosition: {x: 0, y: 0}
   joystickLook: {x: 0, y: 0}
+  powerDashTowards: {x: 0, y: 0}
   moveSpeed: 8
   punchRange: 2
   punchSpeed: 35
@@ -484,6 +485,8 @@ MonoBehaviour:
   inputBuffer: 0.15
   shieldLeftTimer: 0
   shieldRightTimer: 0
+  powerDashSpeed: 0
+  powerShieldTimer: 0
   punchedRight: 0
   punchedLeft: 0
   returningRight: 0
@@ -518,6 +521,7 @@ MonoBehaviour:
   stocksLeftText: {fileID: 0}
   playerBody: {fileID: 3999547213512531673}
   shield: {fileID: 8211353013314873795}
+  arrowPointer: {fileID: 7974093981532498847, guid: 4edff92417311964b8c52b9108a8f160, type: 3}
   halfShieldRemaining: 0
   totalShieldRemaining: 0
   actualShield: 0.88235295

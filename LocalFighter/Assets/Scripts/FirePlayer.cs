@@ -65,7 +65,7 @@ public class FirePlayer : PlayerController
         {
             
             punchedRightTimer = 0;
-            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(punchRange, .6f), punchSpeed * Time.deltaTime);
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(punchRange, .7f), punchSpeed * Time.deltaTime);
             if (rightHandTransform.localPosition.x == punchRange && threwRight == false)
             {
                 thrownRightFireball = Instantiate(thrownFireballPrefab, rightHandTransform.position, transform.rotation);
@@ -97,7 +97,7 @@ public class FirePlayer : PlayerController
         {
             
             punchedLeftTimer = 0;
-            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(punchRange, -.6f), punchSpeed * Time.deltaTime);
+            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(punchRange, -.7f), punchSpeed * Time.deltaTime);
             if (leftHandTransform.localPosition.x == punchRange && threwLeft == false)
             {
                 thrownLeftFireball = Instantiate(thrownFireballPrefab, leftHandTransform.position, transform.rotation);

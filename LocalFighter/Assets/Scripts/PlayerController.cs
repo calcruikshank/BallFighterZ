@@ -8,12 +8,12 @@ using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     public Rigidbody2D rb;
-    public Vector2 mousePosition, movement, inputMovement, lastMoveDir, oppositeForce, dashPosition, joystickLook;
+    public Vector2 mousePosition, movement, inputMovement, lastMoveDir, oppositeForce, dashPosition, joystickLook, powerDashTowards;
 
 
-    public float moveSpeed, punchRange, punchSpeed, returnSpeed, currentPercentage, brakeSpeed, stunnedTimer, shieldSpeed, grabTimer, powerStunnedTimer, punchedRightTimer, punchedLeftTimer, inputBuffer, shieldLeftTimer, shieldRightTimer;
+    public float moveSpeed, punchRange, punchSpeed, returnSpeed, currentPercentage, brakeSpeed, stunnedTimer, shieldSpeed, grabTimer, powerStunnedTimer, punchedRightTimer, punchedLeftTimer, inputBuffer, shieldLeftTimer, shieldRightTimer, powerDashSpeed, powerShieldTimer;
 
-    public bool punchedRight, punchedLeft, returningRight, returningLeft, pummeledLeft, pummeledRight, isGrabbing, isGrabbed, shieldingRight, shieldingLeft, isBlockingRight, isBlockingLeft, readyToPummelRight, readyToPummelLeft, canDash, gameIsOver, isPowerShielding,startedPunchRight, startedPunchLeft = false;
+    public bool punchedRight, punchedLeft, returningRight, returningLeft, pummeledLeft, pummeledRight, isGrabbing, isGrabbed, shieldingRight, shieldingLeft, isBlockingRight, isBlockingLeft, readyToPummelRight, readyToPummelLeft, canDash, gameIsOver, isPowerShielding,startedPunchRight, startedPunchLeft, instantiatedArrow = false;
 
     public Transform rightHandTransform, leftHandTransform, grabPosition, grabbedPosition;
     public CircleCollider2D rightHandCollider, leftHandCollider;
@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour
     public int stocksLeft = 4;
     public TMP_Text stocksLeftText;
     public SpriteRenderer playerBody;
-    public GameObject shield;
+    public GameObject shield, arrowPointer, arrowPointerInstantiated;
     public float halfShieldRemaining, totalShieldRemaining, actualShield = 225f / 255f;
     public float dashedTimer, perfectShieldTimer, perfectShieldFrameData;
     public ScreenShake cameraShake;
@@ -40,7 +40,9 @@ public class PlayerController : MonoBehaviour
         Grabbing,
         Stunned,
         Dashing,
-        PowerShieldStunned
+        PowerShieldStunned,
+        PowerShielding,
+        PowerDashing
     }
 
     void Awake()
@@ -85,6 +87,7 @@ public class PlayerController : MonoBehaviour
                 HandleMovement();
                 HandleThrowingHands();
                 HandleShielding();
+                HandleUniversal();
                 break;
             case State.Knockback:
                 HandleKnockback();
@@ -110,6 +113,14 @@ public class PlayerController : MonoBehaviour
             case State.PowerShieldStunned:
                 HandlePowerShieldStunned();
                 break;
+            case State.PowerShielding:
+                HandlePowerShielding();
+                break;
+            case State.PowerDashing:
+                HandlePowerDashing();
+                HandleThrowingHands();
+                HandleShielding();
+                break;
         }
     }
 
@@ -125,7 +136,9 @@ public class PlayerController : MonoBehaviour
             case State.Grabbing:
                 FixedHandleMovement();
                 break;
-
+            case State.PowerDashing:
+                FixedHandlePowerDashing();
+                break;
         }
     }
 
@@ -144,11 +157,15 @@ public class PlayerController : MonoBehaviour
         isGrabbed = false;
         dashedTimer = 0f;
         canDash = true;
+        Time.timeScale = 1;
+
     }
 
     public virtual void FixedHandleMovement()
     {
         rb.velocity = movement * moveSpeed;
+
+        Time.timeScale = 1;
     }
 
 
@@ -653,8 +670,102 @@ public class PlayerController : MonoBehaviour
     }
     public void PowerShield()
     {
+        instantiatedArrow = false;
+        StartCoroutine(cameraShake.Shake(.03f, .3f));
         Instantiate(teleportAnimation, transform.position, Quaternion.identity);
+        powerShieldTimer = 0;
+        state = State.PowerShielding;
     }
+    public void HandlePowerShielding()
+    {
+        Time.timeScale = .2f;
+        powerShieldTimer += Time.deltaTime;
+        if (inputMovement.magnitude > .8f && instantiatedArrow == false)
+        {
+            arrowPointerInstantiated = Instantiate(arrowPointer, transform.position, transform.rotation);
+            instantiatedArrow = true;
+        }
+        if (arrowPointerInstantiated != null)
+        {
+            if (inputMovement.magnitude <= .8f)
+            {
+                instantiatedArrow = false;
+                Destroy(arrowPointerInstantiated);
+            }
+            arrowPointerInstantiated.transform.position = transform.position;
+            arrowPointerInstantiated.transform.rotation = transform.rotation;
+        }
+        if (powerShieldTimer > .2f && inputMovement.magnitude > .8f)
+        {
+            shieldLeftTimer = 0;
+            shieldRightTimer = 0;
+            shieldingLeft = false;
+            shieldingRight = false;
+            isBlockingLeft = false;
+            isBlockingRight = false;
+            PowerDash(inputMovement);
+            Destroy(arrowPointerInstantiated);
+            return;
+        }
+        if (powerShieldTimer > .2f && inputMovement.magnitude <= .8f)
+        {
+            state = State.Normal;
+        }
+        if (inputMovement.magnitude > .8f && !shieldingLeft && !shieldingRight)
+        {
+            PowerDash(inputMovement);
+            Destroy(arrowPointerInstantiated);
+            return;
+        }
+        if (!shieldingLeft && !shieldingRight)
+        {
+
+            Destroy(arrowPointerInstantiated);
+            state = State.Normal;
+        }
+        if (punchedRightTimer > 0 || punchedLeftTimer > 0)
+        {
+
+            Destroy(arrowPointerInstantiated);
+            state = State.Normal;
+        }
+        
+        
+    }
+    public void PowerDash(Vector2 powerDashDirection)
+    {
+        powerDashSpeed = 50f;
+        powerDashTowards = powerDashDirection.normalized;
+        state = State.PowerDashing;
+    }
+
+    public void HandlePowerDashing()
+    {
+        Time.timeScale = 1;
+        float powerDashSpeedMulti = 5f;
+        powerDashSpeed -= powerDashSpeed * powerDashSpeedMulti * Time.deltaTime;
+
+        float powerDashMinSpeed = 10f;
+        if (powerDashSpeed < powerDashMinSpeed)
+        {
+            state = State.Normal;
+        }
+    }
+
+    public void FixedHandlePowerDashing()
+    {
+        rb.velocity = powerDashTowards * powerDashSpeed;
+    }
+    public void HandleUniversal()
+    {
+        if (arrowPointerInstantiated != null)
+        {
+            Destroy(arrowPointerInstantiated);
+        }
+    }
+
+
+
 
 
     #region InputRegion
