@@ -42,7 +42,8 @@ public class PlayerController : MonoBehaviour
         Dashing,
         PowerShieldStunned,
         PowerShielding,
-        PowerDashing
+        PowerDashing,
+        ShockGrabbed
     }
 
     void Awake()
@@ -120,6 +121,9 @@ public class PlayerController : MonoBehaviour
                 HandlePowerDashing();
                 HandleThrowingHands();
                 HandleShielding();
+                break;
+            case State.ShockGrabbed:
+                HandleShockGrabbed();
                 break;
         }
     }
@@ -351,6 +355,10 @@ public class PlayerController : MonoBehaviour
         state = State.Grabbed;
     }
 
+    public void ShockGrabbed()
+    {
+        state = State.ShockGrabbed;
+    }
     public void HandleGrabbed()
     {
         isGrabbed = true;
@@ -361,6 +369,7 @@ public class PlayerController : MonoBehaviour
     }
     public void Throw(Vector2 direction)
     {
+        isGrabbed = false;
         grabTimer = 0;
         moveSpeed = 12f;
         brakeSpeed = 20f;
@@ -370,6 +379,8 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(currentPercentage + "current percentage");
         state = State.Knockback;
     }
+
+
     public virtual void HandleShielding()
     {
         shieldLeftTimer -= Time.deltaTime;
@@ -763,7 +774,10 @@ public class PlayerController : MonoBehaviour
             Destroy(arrowPointerInstantiated);
         }
     }
-
+    public void HandleShockGrabbed()
+    {
+        rb.velocity = Vector3.zero;
+    }
 
 
 

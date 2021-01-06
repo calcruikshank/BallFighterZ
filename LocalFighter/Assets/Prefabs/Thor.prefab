@@ -506,6 +506,7 @@ MonoBehaviour:
   isPowerShielding: 0
   startedPunchRight: 0
   startedPunchLeft: 0
+  instantiatedArrow: 0
   rightHandTransform: {fileID: 3999547214018492892}
   leftHandTransform: {fileID: 3999547215199272119}
   grabPosition: {fileID: 3999547214390731865}
@@ -522,6 +523,7 @@ MonoBehaviour:
   playerBody: {fileID: 3999547213512531673}
   shield: {fileID: 8211353013314873795}
   arrowPointer: {fileID: 7974093981532498847, guid: 4edff92417311964b8c52b9108a8f160, type: 3}
+  arrowPointerInstantiated: {fileID: 0}
   halfShieldRemaining: 0
   totalShieldRemaining: 0
   actualShield: 0.88235295
@@ -548,6 +550,10 @@ MonoBehaviour:
   oppositeRightHammerForce: {x: 0, y: 0}
   oppositeLeftHammerForce: {x: 0, y: 0}
   dashTimer: 0
+  lightningPrefab: {fileID: 1408709466797606, guid: 59fc6b24149682044aa5bf0c752c46be, type: 3}
+  lightningBallPrefab: {fileID: 5986024955032442920, guid: 4f4de305bd887d548bc6debc19b6d155, type: 3}
+  instantiatedLightning: {fileID: 0}
+  instantiatedLightningBall: {fileID: 0}
 --- !u!114 &3999547214906273837
 MonoBehaviour:
   m_ObjectHideFlags: 0

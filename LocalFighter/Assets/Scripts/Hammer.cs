@@ -15,6 +15,8 @@ public class Hammer : PlayerController
     public float hammerSpeed, returnHammerRightSpeed, returnLeftHammerSpeed = 50f;
     public Vector2 oppositeRightHammerForce, oppositeLeftHammerForce;
     public float dashTimer;
+    public GameObject lightningPrefab, lightningBallPrefab, instantiatedLightning, instantiatedLightningBall;
+    public Rigidbody2D instantiatedLightningBallRB;
     public override void Start()
     {
         totalShieldRemaining = 225f / 255f;
@@ -105,11 +107,31 @@ public class Hammer : PlayerController
         {
             returningRight = false;
         }
-        if (leftHandTransform.localPosition.x <= 0 && !returnHammerLeft)
-        {
-            returningLeft = false;
-        }
+        
 
+
+        if (punchedLeft && returningLeft == false && instantiatedLightningBall == null)
+        {
+            punchedLeftTimer = 0;
+            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(punchRange, -.7f), punchSpeed * Time.deltaTime);
+            if (leftHandTransform.localPosition.x >= punchRange && returningLeft == false)
+            {
+                instantiatedLightningBall = Instantiate(lightningBallPrefab, leftHandTransform.position, transform.rotation);
+                instantiatedLightningBall.GetComponent<LightningBall>().SetPlayer(this);
+                instantiatedLightningBallRB = instantiatedLightningBall.GetComponent<Rigidbody2D>();
+                instantiatedLightningBallRB.AddForce(transform.right * 10, ForceMode2D.Impulse);
+                returningLeft = true;
+            }
+        }
+        if (returningLeft)
+        {
+            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
+            punchedLeft = false;
+            if (leftHandTransform.localPosition.x <= 0f)
+            {
+                returningLeft = false;
+            }
+        }
 
         /*if (punchedLeft && returningLeft == false && returnHammerLeft == false)
         {
@@ -522,20 +544,7 @@ public class Hammer : PlayerController
     }
     public override void OnReleasePunchLeft()
     {
-        punchedLeftTimer = 0;
-        if (threwLeft && returnHammerLeft == false)
-        {
-            Debug.Log("release");
-            oppositeLeftHammerForce = -thrownLeftHammerRB.velocity;
-            returnLeftHammerSpeed = 0f;
-            returnHammerLeft = true;
-        }
-        if (punchedLeft)
-        {
-            returningLeft = true;
-            threwLeft = false;
-            punchedLeft = false;
-        }
+        
     }
 
     public override void OnPunchRight()
@@ -556,7 +565,6 @@ public class Hammer : PlayerController
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
         if (state == State.Knockback) return;
-        if (returnHammerLeft) return;
         punchedLeftTimer = inputBuffer;
         if (returningLeft) return;
         //punchedLeft = true;
