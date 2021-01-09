@@ -65,13 +65,14 @@ public class PlayerConfigurationManager : MonoBehaviour
 public class PlayerConfiguration
 {
     public PlayerInput pcInput;
+    public InputDevice deviceId;
     public PlayerConfiguration(PlayerInput pi)
     {
         pcInput = pi;
         PlayerIndex = pi.playerIndex;
         Input = pi;
         currentControlScheme = pi.currentControlScheme;
-        
+        deviceId = pi.devices[0];
 
     }
     public PlayerInput Input

@@ -72,7 +72,7 @@ public class RightHand : MonoBehaviour
                 {
                     Instantiate(explosionPrefab, transform.position, transform.rotation);
                     Debug.Log("Didnt grab");
-                    float damage = 6;
+                    float damage = 4 * transform.localScale.x;
                     if (player.dashedTimer > 0f)
                     {
                         damage = 20;
@@ -85,6 +85,7 @@ public class RightHand : MonoBehaviour
                     //opponent.Knockback(damage, handLocation);
                     Debug.Log(damage + " damage beforeSending");
                     opponentTookDamage = true;
+                    
                 }
                 
             }
@@ -96,10 +97,10 @@ public class RightHand : MonoBehaviour
 
     void Update()
     {
-        if (player.punchedRight)
+        /*if (player.punchedRight)
         {
             startDownTicker = false;
-            downTicker = 1.5f;
+            downTicker = 2f;
             transform.localScale = new Vector2(downTicker, downTicker);
             
         }
@@ -110,13 +111,15 @@ public class RightHand : MonoBehaviour
 
         if (startDownTicker)
         {
-            downTicker -= (3 * Time.deltaTime);
+            downTicker -= (3f * Time.deltaTime);
             transform.localScale = new Vector2(downTicker, downTicker);
             if (downTicker <= 1)
             {
                 startDownTicker = false;
             }
-        }
+        }*/
+        transform.localScale = new Vector2((transform.localPosition.x / 2) + 1, (transform.localPosition.x / 2) + 1);
+
 
         if (player.returningRight == false && player.punchedRight == false)
         {

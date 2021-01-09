@@ -76,7 +76,7 @@ public class LeftHand : MonoBehaviour
                 {
                     Instantiate(explosionPrefab, transform.position, transform.rotation);
                     Debug.Log("Didnt grab");
-                    float damage = 6;
+                    float damage = 4 * transform.localScale.x;
                     if (player.dashedTimer > 0f)
                     {
                         damage = 20;
@@ -98,10 +98,10 @@ public class LeftHand : MonoBehaviour
 
     void Update()
     {
-        if (player.punchedLeft)
+        /*if (player.punchedLeft)
         {
             startDownTicker = false;
-            downTicker = 1.5f;
+            downTicker = 2f;
             transform.localScale = new Vector2(downTicker, downTicker);
         }
         if (player.returningLeft && transform.localScale.x > 1 || player.isGrabbing && transform.localScale.x > 1)
@@ -112,13 +112,18 @@ public class LeftHand : MonoBehaviour
 
         if (startDownTicker)
         {
-            downTicker -= (3 * Time.deltaTime);
+            Debug.Log(downTicker);
+            downTicker -= (3f * Time.deltaTime);
             transform.localScale = new Vector2(downTicker, downTicker);
             if (downTicker <= 1)
             {
                 startDownTicker = false;
             }
-        }
+        }*/
+
+        transform.localScale = new Vector2((transform.localPosition.x / 2) + 1, (transform.localPosition.x / 2) + 1); //sets the local scale equal to the local position + 1. the further punched the larger the scale. if local position is 0 then scale is one
+
+
         if (player.returningLeft == false && player.punchedLeft == false)
         {
             opponentTookDamage = false;

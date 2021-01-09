@@ -553,7 +553,6 @@ public class Hammer : PlayerController
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
         if (state == State.Knockback) return;
-        if (returnHammerRight) return;
         punchedRightTimer = inputBuffer;
         if (returningRight) return;
         //punchedRight = true;

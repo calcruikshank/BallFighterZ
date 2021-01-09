@@ -59,24 +59,28 @@ public class PlayerController : MonoBehaviour
     public virtual void Start()
     {
         totalShieldRemaining = 225f / 255f;
-        gameManager.SetTeam(this);
-        if (team == 0)
+        if (gameManager != null)
         {
-            Color redColor = new Color(255f / 255f, 97f / 255f, 96f / 255f);
-            playerBody.material.SetColor("_Color", redColor);
-            shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", redColor);
+            gameManager.SetTeam(this);
+            if (team == 0)
+            {
+                Color redColor = new Color(255f / 255f, 97f / 255f, 96f / 255f);
+                playerBody.material.SetColor("_Color", redColor);
+                shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", redColor);
+            }
+            if (team == 1)
+            {
+                Color blueColor = new Color(124f / 255f, 224f / 255f, 224f / 255f);
+                playerBody.material.SetColor("_Color", blueColor);
+                shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", blueColor);
+            }
+            rightHandCollider = rightHandTransform.GetComponent<CircleCollider2D>();
+            leftHandCollider = leftHandTransform.GetComponent<CircleCollider2D>();
+            canDash = true;
+            stocksLeft = 4;
+            stocksLeftText.text = (stocksLeft.ToString());
         }
-        if (team == 1)
-        {
-            Color blueColor = new Color(124f / 255f, 224f / 255f, 224f / 255f);
-            playerBody.material.SetColor("_Color", blueColor);
-            shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", blueColor);
-        }
-        rightHandCollider = rightHandTransform.GetComponent<CircleCollider2D>();
-        leftHandCollider = leftHandTransform.GetComponent<CircleCollider2D>();
-        canDash = true;
-        stocksLeft = 4;
-        stocksLeftText.text = (stocksLeft.ToString());
+        
     }
 
 
@@ -175,7 +179,7 @@ public class PlayerController : MonoBehaviour
 
     public void Knockback(float damage, Vector2 direction)
     {
-        StartCoroutine(cameraShake.Shake(.03f, .3f));
+        StartCoroutine(cameraShake.Shake(.04f, .4f));
 
         currentPercentage += damage;
         percentageText.text = (currentPercentage + "%");
@@ -183,7 +187,7 @@ public class PlayerController : MonoBehaviour
         // Debug.Log(damage + " damage");
         //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
         //direction = direction.normalized;
-        float knockbackValue = (14 * ((currentPercentage + damage) * (damage / 3)) / 100) + 7; //knockback that scales
+        float knockbackValue = (14 * ((currentPercentage + damage) * (damage / 2)) / 150) + 7; //knockback that scales
         rb.AddForce(direction * knockbackValue, ForceMode2D.Impulse);
         isGrabbed = false;
         //Debug.Log(currentPercentage + "current percentage");
@@ -413,7 +417,7 @@ public class PlayerController : MonoBehaviour
         {
             rightHandCollider.radius = .5f;
             rightHandCollider.isTrigger = true;
-            rightHandTransform.localScale = new Vector2(1, 1);
+            //rightHandTransform.localScale = new Vector2(1, 1);
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
         }
 
@@ -436,7 +440,7 @@ public class PlayerController : MonoBehaviour
         {
             leftHandCollider.radius = .5f;
             leftHandCollider.isTrigger = true;
-            leftHandTransform.localScale = new Vector2(1, 1);
+            //leftHandTransform.localScale = new Vector2(1, 1);
             leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
         }
         if (rightHandTransform.localPosition.x == 0 && rightHandTransform.localPosition.y == .4f)
@@ -819,7 +823,6 @@ public class PlayerController : MonoBehaviour
     }
     public virtual void FaceMouse()
     {
-        if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft || rightHandTransform.localPosition.x > .1f && returningRight) return;
         if (state == State.Dashing) return;
         if (state == State.PowerShieldStunned) return;
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
@@ -849,7 +852,13 @@ public class PlayerController : MonoBehaviour
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
         if (state == State.Knockback) return;
-
+        Vector2 joystickPosition = joystickLook.normalized;
+        if (joystickPosition.x != 0 || joystickPosition.y != 0)
+        {
+            Vector2 lastLookedPosition = joystickPosition;
+            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+            transform.right = lastLookedPosition;
+        }
         punchedRightTimer = inputBuffer;
         if (returningRight) return;
         //punchedRight = true;
@@ -862,7 +871,13 @@ public class PlayerController : MonoBehaviour
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
         if (state == State.Knockback) return;
-
+        Vector2 joystickPosition = joystickLook.normalized;
+        if (joystickPosition.x != 0 || joystickPosition.y != 0)
+        {
+            Vector2 lastLookedPosition = joystickPosition;
+            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+            transform.right = lastLookedPosition;
+        }
         punchedLeftTimer = inputBuffer;
         if (returningLeft) return;
         //punchedLeft = true;
