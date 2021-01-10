@@ -12,7 +12,7 @@ PlayerSettings:
   targetDevice: 2
   useOnDemandResources: 0
   accelerometerFrequency: 60
-  companyName: f
+  companyName: Full Tilt Games
   productName: LocalFighter
   defaultCursor: {fileID: 0}
   cursorHotspot: {x: 0, y: 0}

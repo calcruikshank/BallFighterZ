@@ -191,3 +191,9 @@ MonoBehaviour:
   opponent: {fileID: 0}
   player: {fileID: 0}
   tip: {fileID: 8112097292764354906}
+  scaleSize: 0
+  instantiatedExplosion: {fileID: 0}
+  whichHand: 0
+  isLarge: 0
+  otherFireball: {fileID: 0}
+  fireBallPrefab: {fileID: 4497975956342777464}

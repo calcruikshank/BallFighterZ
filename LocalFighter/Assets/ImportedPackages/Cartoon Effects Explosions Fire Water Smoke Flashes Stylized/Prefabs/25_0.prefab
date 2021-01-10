@@ -152,3 +152,4 @@ MonoBehaviour:
   explosionCollider: {fileID: 0}
   damage: 0
   colliderTimer: 0
+  isLarge: 0

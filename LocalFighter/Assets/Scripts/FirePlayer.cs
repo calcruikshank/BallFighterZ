@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.InputSystem;
+using TMPro;
+using UnityEngine.SceneManagement;
 public class FirePlayer : PlayerController
 {
-   
 
+    public Vector2 rightStickLook;
     public Rigidbody2D thrownRightFireballRB, thrownLeftFireballRB;
     public GameObject thrownRightFireball;
     public GameObject thrownLeftFireball;
@@ -49,7 +51,7 @@ public class FirePlayer : PlayerController
             lastMoveDir = movement;
         }
         stunnedTimer = 0;
-        returnSpeed = 2f;
+        returnSpeed = 4f;
         isGrabbed = false;
         dashedTimer = 0f;
         canDash = true;
@@ -63,7 +65,7 @@ public class FirePlayer : PlayerController
 
         if (punchedRight && returningRight == false)
         {
-            
+
             punchedRightTimer = 0;
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(punchRange, .7f), punchSpeed * Time.deltaTime);
             if (rightHandTransform.localPosition.x == punchRange && threwRight == false)
@@ -73,13 +75,13 @@ public class FirePlayer : PlayerController
                 thrownRightFireballRB = thrownRightFireball.GetComponent<Rigidbody2D>();
                 thrownRightFireballRB.AddForce(transform.right * fireBallSpeed, ForceMode2D.Impulse);
                 threwRight = true;
-                
+
             }
         }
 
         if (returningRight)
         {
-            
+
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
             punchedRight = false;
             if (rightHandTransform.localPosition.x <= 0f)
@@ -95,7 +97,7 @@ public class FirePlayer : PlayerController
 
         if (punchedLeft && returningLeft == false)
         {
-            
+
             punchedLeftTimer = 0;
             leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(punchRange, -.7f), punchSpeed * Time.deltaTime);
             if (leftHandTransform.localPosition.x == punchRange && threwLeft == false)
@@ -105,7 +107,7 @@ public class FirePlayer : PlayerController
                 thrownLeftFireballRB = thrownLeftFireball.GetComponent<Rigidbody2D>();
                 thrownLeftFireballRB.AddForce(transform.right * fireBallSpeed, ForceMode2D.Impulse);
                 threwLeft = true;
-                
+
             }
         }
 
@@ -304,7 +306,7 @@ public class FirePlayer : PlayerController
             thrownRightFireball.GetComponent<Fireball>().DestroyRightFireball();
         }
         returningRight = true;
-        
+
     }
     public override void OnReleasePunchLeft()
     {
@@ -327,9 +329,15 @@ public class FirePlayer : PlayerController
         if (state == State.Dashing) return;
         if (state == State.Knockback) return;
         Vector2 joystickPosition = joystickLook.normalized;
-        if (joystickPosition.x != 0 || joystickPosition.y != 0)
+        if (joystickPosition.x != 0 || joystickPosition.y != 0 && rightStickLook.magnitude == 0)
         {
             Vector2 lastLookedPosition = joystickPosition;
+            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+            transform.right = lastLookedPosition;
+        }
+        if (rightStickLook.magnitude != 0)
+        {
+            Vector2 lastLookedPosition = rightStickLook;
             //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
             transform.right = lastLookedPosition;
         }
@@ -344,9 +352,15 @@ public class FirePlayer : PlayerController
         if (state == State.Dashing) return;
         if (state == State.Knockback) return;
         Vector2 joystickPosition = joystickLook.normalized;
-        if (joystickPosition.x != 0 || joystickPosition.y != 0)
+        if (joystickPosition.x != 0 || joystickPosition.y != 0 && rightStickLook.magnitude == 0)
         {
             Vector2 lastLookedPosition = joystickPosition;
+            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+            transform.right = lastLookedPosition;
+        }
+        if (rightStickLook.magnitude != 0)
+        {
+            Vector2 lastLookedPosition = rightStickLook;
             //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
             transform.right = lastLookedPosition;
         }
@@ -354,21 +368,36 @@ public class FirePlayer : PlayerController
         //punchedRight = true;
         shieldingLeft = false;
     }
-    
+
     void OnReleaseDash()
     {
-        
+
     }
     void OnReleaseDashController()
     {
-        
+
     }
 
-    public override void FaceJoystick()
+    public override void OnRightStickDash(InputValue value)
     {
         if (punchedLeft || punchedRight) return;
         if (state == State.Dashing) return;
         if (state == State.PowerShieldStunned) return;
+        rightStickLook = value.Get<Vector2>().normalized;
+        if (rightStickLook.x != 0 || rightStickLook.y != 0)
+        {
+            Vector2 lastLookedPosition = rightStickLook;
+            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+            transform.right = lastLookedPosition;
+        }
+    }
+
+    public override void FaceJoystick()
+    {
+        if (threwLeft || threwRight) return;
+        if (state == State.Dashing) return;
+        if (state == State.PowerShieldStunned) return;
+        if (rightStickLook.magnitude != 0)return;
         Vector2 joystickPosition = joystickLook.normalized;
         if (joystickPosition.x != 0 || joystickPosition.y != 0)
         {

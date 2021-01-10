@@ -129,7 +129,7 @@ MonoBehaviour:
   moveSpeed: 8
   punchRange: 2
   punchSpeed: 25
-  returnSpeed: 0.5
+  returnSpeed: 1
   currentPercentage: 0
   brakeSpeed: 0
   stunnedTimer: 0
@@ -162,6 +162,7 @@ MonoBehaviour:
   isPowerShielding: 0
   startedPunchRight: 0
   startedPunchLeft: 0
+  instantiatedArrow: 0
   rightHandTransform: {fileID: 926449330623663813}
   leftHandTransform: {fileID: 926449329438952366}
   grabPosition: {fileID: 926449329175581504}
@@ -178,6 +179,7 @@ MonoBehaviour:
   playerBody: {fileID: 926449330050574784}
   shield: {fileID: 5381451697479884506}
   arrowPointer: {fileID: 7974093981532498847, guid: 4edff92417311964b8c52b9108a8f160, type: 3}
+  arrowPointerInstantiated: {fileID: 0}
   halfShieldRemaining: 0
   totalShieldRemaining: 0
   actualShield: 0.88235295
@@ -187,6 +189,7 @@ MonoBehaviour:
   cameraShake: {fileID: 0}
   teleportAnimation: {fileID: 6190551132794790254, guid: b117350768a6c524ba323f423b62f3e3, type: 3}
   state: 0
+  rightStickLook: {x: 0, y: 0}
   thrownRightFireballRB: {fileID: 0}
   thrownLeftFireballRB: {fileID: 0}
   thrownRightFireball: {fileID: 0}

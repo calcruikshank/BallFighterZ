@@ -29,7 +29,8 @@ public class PlayerController : MonoBehaviour
     public float dashedTimer, perfectShieldTimer, perfectShieldFrameData;
     public ScreenShake cameraShake;
     public GameObject teleportAnimation;
-
+    public GameObject playerAnimatorBase;
+    public AnimationTransformHandler animationTransformHandler;
     public State state;
     public enum State
     {
@@ -58,6 +59,8 @@ public class PlayerController : MonoBehaviour
 
     public virtual void Start()
     {
+        animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
+        animationTransformHandler.SetPlayer(this.gameObject);
         totalShieldRemaining = 225f / 255f;
         if (gameManager != null)
         {
@@ -791,7 +794,7 @@ public class PlayerController : MonoBehaviour
     {
         inputMovement = value.Get<Vector2>();
     }
-    void OnRightStickDash(InputValue value) //this actually dashes based on right stick input
+    public virtual void OnRightStickDash(InputValue value) //this actually dashes based on right stick input
     {
         if (state != State.Normal) return;
         if (value != null)
