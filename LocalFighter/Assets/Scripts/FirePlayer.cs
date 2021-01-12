@@ -51,7 +51,7 @@ public class FirePlayer : PlayerController
             lastMoveDir = movement;
         }
         stunnedTimer = 0;
-        returnSpeed = 4f;
+        returnSpeed = 2f;
         isGrabbed = false;
         dashedTimer = 0f;
         canDash = true;
@@ -327,7 +327,7 @@ public class FirePlayer : PlayerController
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
-        if (state == State.Knockback) return;
+        //if (state == State.Knockback) return;
         Vector2 joystickPosition = joystickLook.normalized;
         if (joystickPosition.x != 0 || joystickPosition.y != 0 && rightStickLook.magnitude == 0)
         {
@@ -350,7 +350,7 @@ public class FirePlayer : PlayerController
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
-        if (state == State.Knockback) return;
+        //if (state == State.Knockback) return;
         Vector2 joystickPosition = joystickLook.normalized;
         if (joystickPosition.x != 0 || joystickPosition.y != 0 && rightStickLook.magnitude == 0)
         {

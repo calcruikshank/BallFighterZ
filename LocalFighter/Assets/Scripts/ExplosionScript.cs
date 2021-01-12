@@ -19,7 +19,7 @@ public class ExplosionScript : MonoBehaviour
         this.transform.localScale = new Vector2(1, 1);
         if (isLarge)
         {
-            this.transform.localScale = new Vector2(3, 3);
+            this.transform.localScale = new Vector2(2, 2);
         }
     }
 

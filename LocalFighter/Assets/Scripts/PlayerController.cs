@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
 
     public float moveSpeed, punchRange, punchSpeed, returnSpeed, currentPercentage, brakeSpeed, stunnedTimer, shieldSpeed, grabTimer, powerStunnedTimer, punchedRightTimer, punchedLeftTimer, inputBuffer, shieldLeftTimer, shieldRightTimer, powerDashSpeed, powerShieldTimer;
 
-    public bool punchedRight, punchedLeft, returningRight, returningLeft, pummeledLeft, pummeledRight, isGrabbing, isGrabbed, shieldingRight, shieldingLeft, isBlockingRight, isBlockingLeft, readyToPummelRight, readyToPummelLeft, canDash, gameIsOver, isPowerShielding,startedPunchRight, startedPunchLeft, instantiatedArrow = false;
+    public bool punchedRight, punchedLeft, returningRight, returningLeft, pummeledLeft, pummeledRight, isGrabbing, isGrabbed, shieldingRight, shieldingLeft, isBlockingRight, isBlockingLeft, readyToPummelRight, readyToPummelLeft, canDash, gameIsOver, isPowerShielding, startedPunchRight, startedPunchLeft, instantiatedArrow = false;
 
     public Transform rightHandTransform, leftHandTransform, grabPosition, grabbedPosition;
     public CircleCollider2D rightHandCollider, leftHandCollider;
@@ -31,6 +31,9 @@ public class PlayerController : MonoBehaviour
     public GameObject teleportAnimation;
     public GameObject playerAnimatorBase;
     public AnimationTransformHandler animationTransformHandler;
+    public Animator animator;
+
+
     public State state;
     public enum State
     {
@@ -61,6 +64,7 @@ public class PlayerController : MonoBehaviour
     {
         animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
         animationTransformHandler.SetPlayer(this.gameObject);
+        animator = animationTransformHandler.GetComponent<Animator>();
         totalShieldRemaining = 225f / 255f;
         if (gameManager != null)
         {
@@ -83,7 +87,7 @@ public class PlayerController : MonoBehaviour
             stocksLeft = 4;
             stocksLeftText.text = (stocksLeft.ToString());
         }
-        
+
     }
 
 
@@ -169,6 +173,12 @@ public class PlayerController : MonoBehaviour
         dashedTimer = 0f;
         canDash = true;
         Time.timeScale = 1;
+
+        if (animator != null)
+        {
+            animator.SetFloat("Speed", Mathf.Abs(movement.y));
+            animator.SetFloat("SpeedX", Mathf.Abs(movement.x));
+        }
 
     }
 
@@ -449,7 +459,7 @@ public class PlayerController : MonoBehaviour
         if (rightHandTransform.localPosition.x == 0 && rightHandTransform.localPosition.y == .4f)
         {
             isBlockingRight = true;
-            
+
         }
         if (rightHandTransform.localPosition.y != .4f)
         {
@@ -462,7 +472,7 @@ public class PlayerController : MonoBehaviour
         if (leftHandTransform.localPosition.x == 0 && leftHandTransform.localPosition.y == -.4f)
         {
             isBlockingLeft = true;
-            
+
         }
         if (isBlockingRight && !isBlockingLeft)
         {
@@ -747,8 +757,8 @@ public class PlayerController : MonoBehaviour
             Destroy(arrowPointerInstantiated);
             state = State.Normal;
         }
-        
-        
+
+
     }
     public void PowerDash(Vector2 powerDashDirection)
     {
@@ -805,7 +815,7 @@ public class PlayerController : MonoBehaviour
         {
 
             Dash(dashPosition.normalized);
-            
+
 
         }
         //if(usingMouse) FaceMouse();
@@ -814,7 +824,7 @@ public class PlayerController : MonoBehaviour
 
     void OnMouseMove(InputValue value)
     {
-        
+
         mousePosition = value.Get<Vector2>();
         FaceMouse();
     }
@@ -835,7 +845,7 @@ public class PlayerController : MonoBehaviour
 
     public virtual void FaceJoystick()
     {
-        if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft|| rightHandTransform.localPosition.x > .1f && returningRight) return;
+        if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft || rightHandTransform.localPosition.x > .1f && returningRight) return;
         if (state == State.Dashing) return;
         if (state == State.PowerShieldStunned) return;
         Vector2 joystickPosition = joystickLook.normalized;
@@ -854,7 +864,7 @@ public class PlayerController : MonoBehaviour
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
-        if (state == State.Knockback) return;
+        //if (state == State.Knockback) return;
         Vector2 joystickPosition = joystickLook.normalized;
         if (joystickPosition.x != 0 || joystickPosition.y != 0)
         {
@@ -873,7 +883,7 @@ public class PlayerController : MonoBehaviour
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
-        if (state == State.Knockback) return;
+        //if (state == State.Knockback) return;
         Vector2 joystickPosition = joystickLook.normalized;
         if (joystickPosition.x != 0 || joystickPosition.y != 0)
         {
@@ -914,7 +924,7 @@ public class PlayerController : MonoBehaviour
         if (state == State.Dashing) return;
 
         shieldLeftTimer = inputBuffer;
-        
+
         //shieldingLeft = true;
     }
 
@@ -941,7 +951,7 @@ public class PlayerController : MonoBehaviour
     void OnMouseDash()
     {
         if (state != State.Normal) return;
-       
+
         Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
         //Vector2 direction = inputMovement.normalized;
         Dash(direction.normalized);

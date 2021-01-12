@@ -19,6 +19,9 @@ public class Hammer : PlayerController
     public Rigidbody2D instantiatedLightningBallRB;
     public override void Start()
     {
+        animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
+        animationTransformHandler.SetPlayer(this.gameObject);
+        animator = animationTransformHandler.GetComponent<Animator>();
         totalShieldRemaining = 225f / 255f;
         gameManager.SetTeam((PlayerController)this);
         if (team == 0)
@@ -368,15 +371,14 @@ public class Hammer : PlayerController
 
     public override void Dash(Vector3 direction)
     {
-        if (dashTimer >= 3f)
-        {
+        
             dashPosition = direction;
             transform.right = dashPosition;
             if (!punchedRight && !returningRight && !returnHammerRight)
             {
                 state = State.Dashing;
             }
-        }
+       
         
     }
 
@@ -393,7 +395,7 @@ public class Hammer : PlayerController
             thrownRightHammer = Instantiate(thrownHammerPrefab, rightHandTransform.position, transform.rotation);
             thrownRightHammer.GetComponent<ThrownHammer>().SetPlayer(this, 0);
             thrownRightHammerRB = thrownRightHammer.GetComponent<Rigidbody2D>();
-            thrownRightHammerRB.AddForce(transform.right * hammerSpeed, ForceMode2D.Impulse);
+            thrownRightHammerRB.AddForce(transform.right * 30f, ForceMode2D.Impulse);
         }
         if (thrownRightHammerRB != null)
         {
@@ -418,7 +420,7 @@ public class Hammer : PlayerController
             {
 
                 returnHammerRightSpeed += 200 * Time.deltaTime;
-                thrownRightHammerRB.transform.position = Vector3.MoveTowards(thrownRightHammerRB.transform.position, rightHandTransform.position, returnHammerRightSpeed * Time.deltaTime);
+                thrownRightHammerRB.transform.position = Vector3.MoveTowards(thrownRightHammerRB.transform.position, rightHandTransform.position, returnSpeed * Time.deltaTime);
             }
             if (thrownRightHammerRB.transform.position == rightHandTransform.position)
             {
@@ -552,7 +554,7 @@ public class Hammer : PlayerController
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
-        if (state == State.Knockback) return;
+        //if (state == State.Knockback) return;
         punchedRightTimer = inputBuffer;
         if (returningRight) return;
         //punchedRight = true;
@@ -563,7 +565,7 @@ public class Hammer : PlayerController
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
-        if (state == State.Knockback) return;
+        //if (state == State.Knockback) return;
         punchedLeftTimer = inputBuffer;
         if (returningLeft) return;
         //punchedLeft = true;

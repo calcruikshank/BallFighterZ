@@ -18,7 +18,6 @@ public class AnimationTransformHandler : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(playerToAnimate.transform.right);
         this.transform.position = playerToAnimate.transform.position;
         if (playerToAnimate.transform.right.x < 0)
         {

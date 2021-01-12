@@ -213,6 +213,8 @@ MonoBehaviour:
   strikeTimer: 0
   isStriking: 0
   opponent: {fileID: 0}
+  lightningCollider: {fileID: 0}
+  colliderTimer: 0
 --- !u!58 &6342831374402877799
 CircleCollider2D:
   m_ObjectHideFlags: 0
