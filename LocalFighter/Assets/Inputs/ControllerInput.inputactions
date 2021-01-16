@@ -315,22 +315,22 @@
                 },
                 {
                     "name": "",
-                    "id": "6b04bc83-11c8-49aa-98c5-1cf228119263",
-                    "path": "<Gamepad>/buttonSouth",
+                    "id": "9990425d-20bd-4f39-83b1-cbbeb6ad073e",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Controller",
+                    "groups": "Keyboard And Mouse",
                     "action": "ReleasePunchRight",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "9990425d-20bd-4f39-83b1-cbbeb6ad073e",
-                    "path": "<Mouse>/rightButton",
+                    "id": "25910106-ceeb-4de7-b521-4a3c751a05c2",
+                    "path": "<Gamepad>/buttonEast",
                     "interactions": "",
                     "processors": "",
-                    "groups": "Keyboard And Mouse",
+                    "groups": "",
                     "action": "ReleasePunchRight",
                     "isComposite": false,
                     "isPartOfComposite": false

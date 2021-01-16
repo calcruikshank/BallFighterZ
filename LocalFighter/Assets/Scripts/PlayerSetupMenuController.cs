@@ -12,8 +12,9 @@ public class PlayerSetupMenuController : MonoBehaviour
     [SerializeField] private GameObject readyPanel;
     [SerializeField] private GameObject menuPanel;
     [SerializeField] private Button readyButton;
+    [SerializeField] private Button backButton;
 
-    private float ignoreInputTime = 1.5f;
+    private float ignoreInputTime = .3f;
     private bool inputEnabled;
 
     public void SetPlayerIndex(int pi)
@@ -35,6 +36,7 @@ public class PlayerSetupMenuController : MonoBehaviour
         {
             inputEnabled = true;
         }
+        
     }
 
 
@@ -60,6 +62,18 @@ public class PlayerSetupMenuController : MonoBehaviour
         }
         PlayerConfigurationManager.Instance.ReadyPlayer(PlayerIndex);
         readyButton.gameObject.SetActive(false);
+        backButton.gameObject.SetActive(false);
+    }
+
+    public void BackFromReady()
+    {
+        if (!inputEnabled)
+        {
+            return;
+        }
+        readyPanel.SetActive(false);
+        menuPanel.SetActive(true);
+        menuPanel.GetComponentInChildren<Button>().Select();
     }
 
 }

@@ -104,6 +104,7 @@ public class PlayerController : MonoBehaviour
             case State.Knockback:
                 HandleKnockback();
                 HandleThrowingHands();
+                HandleShielding();
                 break;
             case State.Grabbed:
                 HandleGrabbed();
@@ -135,6 +136,8 @@ public class PlayerController : MonoBehaviour
                 break;
             case State.ShockGrabbed:
                 HandleShockGrabbed();
+                HandleShielding();
+                HandleThrowingHands();
                 break;
         }
     }
@@ -193,7 +196,14 @@ public class PlayerController : MonoBehaviour
     public void Knockback(float damage, Vector2 direction)
     {
         StartCoroutine(cameraShake.Shake(.04f, .4f));
-
+        EndPunchLeft();
+        EndPunchRight();
+        shieldingLeft = false;
+        shieldingRight = false;
+        isBlockingLeft = false;
+        isBlockingRight = false;
+        shieldRightTimer = 0;
+        shieldLeftTimer = 0;
         currentPercentage += damage;
         percentageText.text = (currentPercentage + "%");
         brakeSpeed = 20f;
@@ -374,6 +384,9 @@ public class PlayerController : MonoBehaviour
 
     public void ShockGrabbed()
     {
+        isGrabbed = true;
+        isBlockingLeft = false;
+        isBlockingRight = false;
         state = State.ShockGrabbed;
     }
     public void HandleGrabbed()
@@ -391,6 +404,12 @@ public class PlayerController : MonoBehaviour
         moveSpeed = 12f;
         brakeSpeed = 20f;
         float knockbackValue = 20f;
+        shieldRightTimer = 0;
+        shieldLeftTimer = 0;
+        shieldingLeft = false;
+        shieldingRight = false;
+        isBlockingLeft = false;
+        isBlockingRight = false;
         rb.AddForce(direction * knockbackValue, ForceMode2D.Impulse);
 
         //Debug.Log(currentPercentage + "current percentage");
@@ -563,24 +582,26 @@ public class PlayerController : MonoBehaviour
 
     }
 
-    public void EndPunchRight()
+    public virtual void EndPunchRight()
     {
         returningRight = true;
         punchedRight = false;
+        punchedRightTimer = 0f;
         rightHandCollider.enabled = false;
         rightHandTransform.localScale = new Vector2(1, 1);
         pummeledLeft = false;
-        state = State.Normal;
+        //state = State.Normal;
     }
 
-    public void EndPunchLeft()
+    public virtual void EndPunchLeft()
     {
         returningLeft = true;
         punchedLeft = false;
+        punchedLeftTimer = 0f;
         leftHandCollider.enabled = false;
         leftHandTransform.localScale = new Vector2(1, 1);
         pummeledRight = false;
-        state = State.Normal;
+        //state = State.Normal;
     }
     public void Respawn()
     {
@@ -909,7 +930,7 @@ public class PlayerController : MonoBehaviour
     {
         if (state == State.Grabbed) return;
         if (state == State.Dashing) return;
-
+        if (state == State.Knockback) return;
         shieldRightTimer = inputBuffer;
         if (punchedRight || returningRight)
         {
@@ -922,6 +943,7 @@ public class PlayerController : MonoBehaviour
     {
         if (state == State.Grabbed) return;
         if (state == State.Dashing) return;
+        if (state == State.Knockback) return;
 
         shieldLeftTimer = inputBuffer;
 

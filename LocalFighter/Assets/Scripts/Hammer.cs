@@ -54,7 +54,6 @@ public class Hammer : PlayerController
         if (punchedRightTimer > 0 && rightHandTransform.localPosition.x <= 0) punchedRight = true;
 
 
-
         //Debug.Log(returningRight); current problem is when i am thrown returning right is set to true and its not set back again 
         if (punchedRight && returningRight == false && returnHammerRight == false)
         {
@@ -189,6 +188,7 @@ public class Hammer : PlayerController
 
     public void ReturnRightHammer()
     {
+        
         thrownRightHammerRB.velocity = Vector3.zero;
         returnHammerRightSpeed = 5f;
         returnHammerRight = true;
@@ -513,6 +513,36 @@ public class Hammer : PlayerController
             }
         }*/
     }
+
+
+    public override void EndPunchRight()
+    {
+        if (thrownRightHammer != null)
+        {
+            threwRight = false;
+            returnHammerRight = true;
+        }
+        returningRight = true;
+        punchedRight = false;
+        punchedRightTimer = 0f;
+        rightHandCollider.enabled = false;
+        rightHandTransform.localScale = new Vector2(1, 1);
+        pummeledLeft = false;
+        //state = State.Normal;
+    }
+
+    public override void EndPunchLeft()
+    {
+        threwLeft = true;
+        returningLeft = true;
+        punchedLeft = false;
+        punchedLeftTimer = 0f;
+        leftHandCollider.enabled = false;
+        leftHandTransform.localScale = new Vector2(1, 1);
+        pummeledRight = false;
+        //state = State.Normal;
+    }
+
 
 
 

@@ -13,6 +13,7 @@ public class LightningBall : MonoBehaviour
     public PlayerController opponent;
     public CapsuleCollider2D lightningCollider;
     public float colliderTimer;
+    public float buggedTimer;
     // Start is called before the first frame update
     void Start()
     {
@@ -22,11 +23,14 @@ public class LightningBall : MonoBehaviour
         lifeTimer = 0f;
         isStriking = false;
         colliderTimer = 0f;
+        buggedTimer = 0f;
     }
 
     // Update is called once per frame
     void Update()
     {
+        
+       
         if (isStriking)
         {
             Strike();
@@ -71,11 +75,31 @@ public class LightningBall : MonoBehaviour
     }
     public void Strike()
     {
+        if(opponent == null)
+        {
+            colliderTimer += Time.deltaTime;
+            instantiatedLightning = Instantiate(lightningPrefab, transform.position, arrowTransform.rotation);
+            instantiatedLightning.GetComponent<LightningCollider>().SetPlayer(this.player);
+
+            lightningCollider = instantiatedLightning.GetComponent<CapsuleCollider2D>();
+
+            lightningCollider.enabled = true;
+            //instantiateexplosion
+            this.transform.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+            player.returningLeft = false;
+            player.punchedLeft = false;
+            if (colliderTimer > .01f)
+            {
+                lightningCollider.enabled = false;
+            }
+            Destroy(this.gameObject);
+        }
+        buggedTimer += Time.deltaTime;
         isStriking = true;
         this.transform.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
         arrowGameObject.SetActive(true);
         strikeTimer += Time.deltaTime;
-        if (strikeTimer > .1f)
+        if (strikeTimer > .1f && opponent != null)
         {
             ExplodeLightning();
         }
@@ -97,15 +121,19 @@ public class LightningBall : MonoBehaviour
 
     public void ExplodeLightning()
     {
-        Debug.Log("Exploding!!!!!!!!!!");
-        instantiatedLightning = Instantiate(lightningPrefab, transform.position, arrowTransform.rotation);
-        //instantiateexplosion
-        this.transform.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
-        player.returningLeft = false;
-        player.punchedLeft = false;
-        opponent.rb.velocity = Vector3.zero;
-        opponent.Throw(arrowTransform.right);
         
-        Destroy(this.gameObject);
+            //why the hell is opponent ever null please explain!!! it explodeslightning only if opponent isnt null on line 88
+            Debug.Log("Exploding!!!!!!!!!!");
+            instantiatedLightning = Instantiate(lightningPrefab, transform.position, arrowTransform.rotation);
+            //instantiateexplosion
+            this.transform.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
+            player.returningLeft = false;
+            player.punchedLeft = false;
+            opponent.rb.velocity = Vector3.zero;
+            opponent.Throw(arrowTransform.right);
+
+            Destroy(this.gameObject);
+        
+        
     }
 }
