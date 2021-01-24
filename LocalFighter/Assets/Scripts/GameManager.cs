@@ -14,6 +14,10 @@ public class GameManager : MonoBehaviour
     public GameObject team1StockPrefab;
     public Transform text0Stock;
     public Transform text1Stock;
+    public Transform text3;
+    public Transform text4;
+    public Transform text0Stock2;
+    public Transform text1Stock2;
     public bool gameIsOver;
     // Start is called before the first frame update
     void Start()
@@ -29,7 +33,7 @@ public class GameManager : MonoBehaviour
 
     public void SetTeam(PlayerController player)
     {
-        player.team = teamID % 2;
+        player.team = teamID;
         SetText(teamID, player);
         teamID++;
         Debug.Log(player.team);
@@ -58,6 +62,27 @@ public class GameManager : MonoBehaviour
             stockText.transform.SetParent(text1Stock, false);
             player.stocksLeftText = stockText.GetComponent<TMP_Text>();
         }
+        if (spawnLocation == 2)
+        {
+            GameObject textObject = Instantiate(team0Prefab, text3.position, Quaternion.identity);
+            textObject.transform.SetParent(text3, false);
+            player.percentageText = textObject.GetComponent<TMP_Text>();
+
+            GameObject stockText = Instantiate(team0StockPrefab, text0Stock2.position, Quaternion.identity);
+            stockText.transform.SetParent(text0Stock2, false);
+            player.stocksLeftText = stockText.GetComponent<TMP_Text>();
+        }
+        if (spawnLocation == 3)
+        {
+            GameObject textObject = Instantiate(team1Prefab, text4.position, Quaternion.identity);
+            textObject.transform.SetParent(text4, false);
+            player.percentageText = textObject.GetComponent<TMP_Text>();
+
+            GameObject stockText = Instantiate(team1StockPrefab, text1Stock2.position, Quaternion.identity);
+            stockText.transform.SetParent(text1Stock2, false);
+            player.stocksLeftText = stockText.GetComponent<TMP_Text>();
+        }
+
 
     }
 }

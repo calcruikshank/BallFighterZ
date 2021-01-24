@@ -188,9 +188,9 @@ MonoBehaviour:
   perfectShieldFrameData: 0.12
   cameraShake: {fileID: 0}
   teleportAnimation: {fileID: 6190551132794790254, guid: b117350768a6c524ba323f423b62f3e3, type: 3}
-  playerAnimatorBase: {fileID: 0}
+  playerAnimatorBase: {fileID: 1226895734732942804, guid: 2f2aa8d230954234f8aab5168a88831c, type: 3}
   animationTransformHandler: {fileID: 0}
-  animator: {fileID: 0}
+  animator: {fileID: 3392596350508757681, guid: 2f2aa8d230954234f8aab5168a88831c, type: 3}
   state: 0
   rightStickLook: {x: 0, y: 0}
   thrownRightFireballRB: {fileID: 0}
@@ -277,7 +277,7 @@ GameObject:
   - component: {fileID: 926449329438952366}
   - component: {fileID: 926449329438952365}
   - component: {fileID: 926449329438952364}
-  - component: {fileID: 1954109427271221984}
+  - component: {fileID: 3401755000676184386}
   m_Layer: 0
   m_Name: LeftHand
   m_TagString: Untagged
@@ -367,7 +367,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &1954109427271221984
+--- !u!114 &3401755000676184386
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -376,12 +376,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 926449329438952360}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 41fc0bc58ddb8ca4ca9fb7d86cce4a43, type: 3}
+  m_Script: {fileID: 11500000, guid: 7c026945d61ca4645aeda0d8e4b20369, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1881354780174972696}
   opponent: {fileID: 0}
-  downTicker: 1.5
   explosionPrefab: {fileID: 1889934606081272, guid: 0fa683b2d5255964e903cea0feab8c9c, type: 3}
 --- !u!1 &926449329486882131
 GameObject:
@@ -504,7 +503,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 926449330050574845}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -688,7 +687,7 @@ GameObject:
   - component: {fileID: 926449330623663813}
   - component: {fileID: 926449330623663812}
   - component: {fileID: 926449330623663811}
-  - component: {fileID: 5338259371018255632}
+  - component: {fileID: 4811465352392443076}
   m_Layer: 0
   m_Name: RightHand
   m_TagString: Untagged
@@ -778,7 +777,7 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
---- !u!114 &5338259371018255632
+--- !u!114 &4811465352392443076
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -787,12 +786,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 926449330623663871}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 575e607790e5c84499d0a9137949dc47, type: 3}
+  m_Script: {fileID: 11500000, guid: 7c026945d61ca4645aeda0d8e4b20369, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 1881354780174972696}
   opponent: {fileID: 0}
-  downTicker: 1.5
   explosionPrefab: {fileID: 1889934606081272, guid: 0fa683b2d5255964e903cea0feab8c9c, type: 3}
 --- !u!1 &5381451697479884506
 GameObject:
@@ -931,7 +929,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5516404074995864675}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -1013,7 +1011,7 @@ SpriteRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6679035959553429790}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1

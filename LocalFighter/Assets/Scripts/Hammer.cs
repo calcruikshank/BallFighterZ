@@ -47,7 +47,7 @@ public class Hammer : PlayerController
 
     public override void HandleThrowingHands()
     {
-        
+        returnSpeed = 4;
         punchedRightTimer -= Time.deltaTime;
         punchedLeftTimer -= Time.deltaTime;
         if (punchedLeftTimer > 0 && leftHandTransform.localPosition.x <= 0) punchedLeft = true;
@@ -91,7 +91,7 @@ public class Hammer : PlayerController
 
         if (returningRight && returnHammerRight == true)
         {
-            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnHammerRightSpeed * Time.deltaTime);
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
             punchedRight = false;
             
             if (rightHandTransform.localPosition.x <= 0f && thrownRightHammerRB.transform.position == rightHandTransform.position)
@@ -186,35 +186,21 @@ public class Hammer : PlayerController
         dashTimer += Time.deltaTime;
     }
 
-    public void ReturnRightHammer()
-    {
-        
-        thrownRightHammerRB.velocity = Vector3.zero;
-        returnHammerRightSpeed = 5f;
-        returnHammerRight = true;
-        punchedRight = false;
-    }
-    public void ReturnLeftHammer()
-    {
-        thrownLeftHammerRB.velocity = Vector3.zero;
-        returnLeftHammerSpeed = 5f;
-        returnHammerLeft = true;
-        punchedLeft = false;
-    }
-
-
     public override void HandleShielding()
     {
-        if (punchedRight || punchedLeft) return;
+        canShieldAgainTimer += Time.deltaTime;
+        canShieldAgainTimerLeft += Time.deltaTime;
         shieldLeftTimer -= Time.deltaTime;
-        if (shieldLeftTimer > 0 && returningLeft == false && punchedLeft == false)
+        if (shieldLeftTimer > 0 && returningLeft == false && punchedLeft == false && canShieldAgainTimerLeft > shieldAgainThreshold)
         {
             shieldingLeft = true;
+            canShieldAgainTimerLeft = 0f;
         }
         shieldRightTimer -= Time.deltaTime;
-        if (shieldRightTimer > 0 && returningRight == false && punchedRight == false)
+        if (shieldRightTimer > 0 && returningRight == false && punchedRight == false && canShieldAgainTimer > shieldAgainThreshold)
         {
             shieldingRight = true;
+            canShieldAgainTimer = 0f;
         }
         stunnedTimer = 0;
         if (actualShield <= 25f / 255f)
@@ -236,7 +222,7 @@ public class Hammer : PlayerController
         {
             rightHandCollider.radius = .5f;
             rightHandCollider.isTrigger = true;
-            rightHandTransform.localScale = new Vector2(1, 1);
+            //rightHandTransform.localScale = new Vector2(1, 1);
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
         }
 
@@ -259,7 +245,7 @@ public class Hammer : PlayerController
         {
             leftHandCollider.radius = .5f;
             leftHandCollider.isTrigger = true;
-            leftHandTransform.localScale = new Vector2(1, 1);
+            //leftHandTransform.localScale = new Vector2(1, 1);
             leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
         }
         if (rightHandTransform.localPosition.x == 0 && rightHandTransform.localPosition.y == .4f)
@@ -267,11 +253,11 @@ public class Hammer : PlayerController
             isBlockingRight = true;
 
         }
-        if (rightHandTransform.localPosition.y != .4f)
+        if (rightHandTransform.localPosition.y <= .2f)
         {
             isBlockingRight = false;
         }
-        if (leftHandTransform.localPosition.y != -.4f)
+        if (leftHandTransform.localPosition.y <= -.2f)
         {
             isBlockingLeft = false;
         }
@@ -369,6 +355,25 @@ public class Hammer : PlayerController
 
     }
 
+    public void ReturnRightHammer()
+    {
+        
+        thrownRightHammerRB.velocity = Vector3.zero;
+        returnHammerRightSpeed = 5f;
+        returnHammerRight = true;
+        punchedRight = false;
+    }
+    public void ReturnLeftHammer()
+    {
+        thrownLeftHammerRB.velocity = Vector3.zero;
+        returnLeftHammerSpeed = 5f;
+        returnHammerLeft = true;
+        punchedLeft = false;
+    }
+
+
+    
+
     public override void Dash(Vector3 direction)
     {
         
@@ -435,7 +440,7 @@ public class Hammer : PlayerController
             thrownRightHammerRB.velocity = Vector3.zero;
             thrownRightHammerRB.transform.position = Vector3.MoveTowards(thrownRightHammerRB.transform.position, rightHandTransform.position, returnHammerRightSpeed * Time.deltaTime);
             threwRight = false;
-            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnHammerRightSpeed * Time.deltaTime);
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnSpeed);
             punchedRight = false;
             
             
@@ -581,6 +586,9 @@ public class Hammer : PlayerController
 
     public override void OnPunchRight()
     {
+        if (shieldingLeft || shieldingRight) return;
+
+        if (state == State.FireGrabbed) return;
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
@@ -592,6 +600,9 @@ public class Hammer : PlayerController
     }
     public override void OnPunchLeft()
     {
+        if (shieldingLeft || shieldingRight) return;
+
+        if (state == State.FireGrabbed) return;
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;

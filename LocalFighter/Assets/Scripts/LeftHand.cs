@@ -70,7 +70,7 @@ public class LeftHand : MonoBehaviour
                 player.readyToPummelLeft = false;
             }
 
-            if (player.returningLeft && transform.localPosition.x >= 1.25F || player.punchedLeft)
+            if (player.returningLeft && transform.localPosition.x >= 1.5F || player.punchedLeft)
             {
                 if (opponentTookDamage == false)
                 {

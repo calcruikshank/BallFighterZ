@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
 
     public float moveSpeed, punchRange, punchSpeed, returnSpeed, currentPercentage, brakeSpeed, stunnedTimer, shieldSpeed, grabTimer, powerStunnedTimer, punchedRightTimer, punchedLeftTimer, inputBuffer, shieldLeftTimer, shieldRightTimer, powerDashSpeed, powerShieldTimer;
 
-    public bool punchedRight, punchedLeft, returningRight, returningLeft, pummeledLeft, pummeledRight, isGrabbing, isGrabbed, shieldingRight, shieldingLeft, isBlockingRight, isBlockingLeft, readyToPummelRight, readyToPummelLeft, canDash, gameIsOver, isPowerShielding, startedPunchRight, startedPunchLeft, instantiatedArrow = false;
+    public bool punchedRight, punchedLeft, returningRight, returningLeft, pummeledLeft, pummeledRight, isGrabbing, isGrabbed, shieldingRight, shieldingLeft, isBlockingRight, isBlockingLeft, readyToPummelRight, readyToPummelLeft, canDash, gameIsOver, isPowerShielding, startedPunchRight, startedPunchLeft, instantiatedArrow, respawned = false;
 
     public Transform rightHandTransform, leftHandTransform, grabPosition, grabbedPosition;
     public CircleCollider2D rightHandCollider, leftHandCollider;
@@ -32,7 +32,8 @@ public class PlayerController : MonoBehaviour
     public GameObject playerAnimatorBase;
     public AnimationTransformHandler animationTransformHandler;
     public Animator animator;
-
+    public float canShieldAgainTimer, canShieldAgainTimerLeft = 0f;
+    public float shieldAgainThreshold = .3f;
 
     public State state;
     public enum State
@@ -47,7 +48,8 @@ public class PlayerController : MonoBehaviour
         PowerShieldStunned,
         PowerShielding,
         PowerDashing,
-        ShockGrabbed
+        ShockGrabbed,
+        FireGrabbed
     }
 
     void Awake()
@@ -91,7 +93,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    void Update()
+    protected virtual void Update()
     {
         switch (state)
         {
@@ -107,6 +109,11 @@ public class PlayerController : MonoBehaviour
                 HandleShielding();
                 break;
             case State.Grabbed:
+                HandleGrabbed();
+                HandleShielding();
+                HandleThrowingHands();
+                break;
+            case State.FireGrabbed:
                 HandleGrabbed();
                 HandleShielding();
                 HandleThrowingHands();
@@ -143,7 +150,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
 
         switch (state)
@@ -156,6 +163,9 @@ public class PlayerController : MonoBehaviour
                 break;
             case State.PowerDashing:
                 FixedHandlePowerDashing();
+                break;
+            case State.Dashing:
+                FixedHandleDash();
                 break;
         }
     }
@@ -171,7 +181,8 @@ public class PlayerController : MonoBehaviour
             lastMoveDir = movement;
         }
         stunnedTimer = 0;
-        returnSpeed = 4f;
+        
+
         isGrabbed = false;
         dashedTimer = 0f;
         canDash = true;
@@ -182,7 +193,7 @@ public class PlayerController : MonoBehaviour
             animator.SetFloat("Speed", Mathf.Abs(movement.y));
             animator.SetFloat("SpeedX", Mathf.Abs(movement.x));
         }
-
+        respawned = false;
     }
 
     public virtual void FixedHandleMovement()
@@ -193,7 +204,7 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    public void Knockback(float damage, Vector2 direction)
+    public virtual void Knockback(float damage, Vector2 direction)
     {
         StartCoroutine(cameraShake.Shake(.04f, .4f));
         EndPunchLeft();
@@ -205,7 +216,7 @@ public class PlayerController : MonoBehaviour
         shieldRightTimer = 0;
         shieldLeftTimer = 0;
         currentPercentage += damage;
-        percentageText.text = (currentPercentage + "%");
+        percentageText.text = ((int)currentPercentage + "%");
         brakeSpeed = 20f;
         // Debug.Log(damage + " damage");
         //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
@@ -220,6 +231,14 @@ public class PlayerController : MonoBehaviour
 
     public void HandleKnockback()
     {
+        if (opponent != null)
+        {
+            if (opponent.transform.position == grabPosition.position)
+            {
+                opponent.isGrabbed = false;
+                opponent.state = State.Knockback;
+            }
+        }
         movement.x = inputMovement.x;
         movement.y = inputMovement.y;
         movement = movement;
@@ -298,18 +317,33 @@ public class PlayerController : MonoBehaviour
                 returningLeft = false;
             }
         }
+        if (!returningLeft || !returningRight) returnSpeed = 4f;
+        if (returningLeft && leftHandTransform.localPosition.x <= 1.25f && returningRight && rightHandTransform.localPosition.x <= 1.25f)
+        {
+            returnSpeed = 1f;
+        }
     }
 
     public void HandlePummel()
     {
+        if (opponent != null && opponent.respawned)
+        {
+            isGrabbing = false;
+            opponent.transform.position = Vector3.zero;
+            opponent.isGrabbed = false;
+            state = State.Normal;
+            opponent.rb.velocity = Vector3.zero;
+            opponent.respawned = false;
+        }
         returnSpeed = 25f;
         grabTimer += Time.deltaTime;
-        if (grabTimer > (opponent.currentPercentage / 50f) + .2f)
+        if (grabTimer > (opponent.currentPercentage / 50f) + .2f && isGrabbing == true && opponent.isGrabbed)
         {
             returningLeft = true;
             returningRight = true;
             isGrabbing = false;
             opponent.rb.velocity = Vector3.zero;
+            Debug.Log("grabtimer is greater");
             opponent.Throw(this.grabPosition.right);
             grabTimer = 0;
             state = State.Normal;
@@ -338,6 +372,7 @@ public class PlayerController : MonoBehaviour
         }
         if (!pummeledLeft && !pummeledRight)
         {
+            Debug.Log("didnt pummel left or right");
             returningLeft = true;
             returningRight = true;
             isGrabbing = false;
@@ -360,7 +395,7 @@ public class PlayerController : MonoBehaviour
         }
 
     }
-    public void Grab(PlayerController opponentCheck)
+    public virtual void Grab(PlayerController opponentCheck)
     {
         moveSpeed = 5f;
         returningLeft = false;
@@ -373,13 +408,22 @@ public class PlayerController : MonoBehaviour
         rightHandTransform.localPosition = new Vector2(punchRange, .4f);
         state = State.Grabbing;
     }
-    public void Grabbed(Transform player)
+    public virtual void Grabbed(Transform player)
     {
         punchesToRelease = 0;
         grabbedPosition = player; //the transform that grabbed you is equal to the player that grabbed you grab position
         returningLeft = true;
         returningRight = true;
         state = State.Grabbed;
+    }
+
+    public void FireGrabbed(Transform player)
+    {
+        punchesToRelease = 4;
+        grabbedPosition = player; //the transform that grabbed you is equal to the player that grabbed you grab position
+        returningLeft = true;
+        returningRight = true;
+        state = State.FireGrabbed;
     }
 
     public void ShockGrabbed()
@@ -394,11 +438,14 @@ public class PlayerController : MonoBehaviour
         isGrabbed = true;
         isBlockingLeft = false;
         isBlockingRight = false;
-
-        transform.position = grabbedPosition.position;
+        if (isGrabbed)
+        {
+            transform.position = grabbedPosition.position;
+        }
     }
     public void Throw(Vector2 direction)
     {
+        Debug.Log("Throw");
         isGrabbed = false;
         grabTimer = 0;
         moveSpeed = 12f;
@@ -419,15 +466,19 @@ public class PlayerController : MonoBehaviour
 
     public virtual void HandleShielding()
     {
+        canShieldAgainTimer += Time.deltaTime;
+        canShieldAgainTimerLeft += Time.deltaTime;
         shieldLeftTimer -= Time.deltaTime;
-        if (shieldLeftTimer > 0 && returningLeft == false && punchedLeft == false)
+        if (shieldLeftTimer > 0 && returningLeft == false && punchedLeft == false && canShieldAgainTimerLeft > shieldAgainThreshold)
         {
             shieldingLeft = true;
+            canShieldAgainTimerLeft = 0f;
         }
         shieldRightTimer -= Time.deltaTime;
-        if (shieldRightTimer > 0 && returningRight == false && punchedRight == false)
+        if (shieldRightTimer > 0 && returningRight == false && punchedRight == false && canShieldAgainTimer > shieldAgainThreshold)
         {
             shieldingRight = true;
+            canShieldAgainTimer = 0f;
         }
         stunnedTimer = 0;
         if (actualShield <= 25f / 255f)
@@ -480,11 +531,11 @@ public class PlayerController : MonoBehaviour
             isBlockingRight = true;
 
         }
-        if (rightHandTransform.localPosition.y != .4f)
+        if (rightHandTransform.localPosition.y <= .2f)
         {
             isBlockingRight = false;
         }
-        if (leftHandTransform.localPosition.y != -.4f)
+        if (leftHandTransform.localPosition.y <= -.2f)
         {
             isBlockingLeft = false;
         }
@@ -605,13 +656,18 @@ public class PlayerController : MonoBehaviour
     }
     public void Respawn()
     {
+        grabTimer = 0;
         canDash = true;
         currentPercentage = 0;
         rb.velocity = Vector3.zero;
         transform.position = new Vector2(0, 0);
-        percentageText.text = (currentPercentage + "%");
+        percentageText.text = ((int)currentPercentage + "%");
         stocksLeftText.text = (stocksLeft.ToString());
         totalShieldRemaining = 225f / 255f;
+        isGrabbed = false;
+        isGrabbing = false;
+        respawned = true;
+        state = State.Normal;
     }
 
     public void HandleStunned()
@@ -639,12 +695,12 @@ public class PlayerController : MonoBehaviour
     public void TakePummelDamage()
     {
         currentPercentage++;
-        percentageText.text = (currentPercentage + "%");
+        percentageText.text = ((int)currentPercentage + "%");
     }
 
     public virtual void HandleDash()
     {
-        returnSpeed = 1.25f;
+        returnSpeed = 2f;
         rb.velocity = Vector3.zero;
         shieldingRight = false;
         isBlockingRight = false;
@@ -658,12 +714,23 @@ public class PlayerController : MonoBehaviour
             canDash = true;
 
         }
+        if (rightHandTransform.localPosition.x != 0 || punchedRight)
+        {
+            canDash = false;
+        }
         //state = State.Normal;
+    }
+
+    public virtual void FixedHandleDash()
+    {
+
     }
     public virtual void Dash(Vector3 direction)
     {
         if (canDash)
         {
+            punchedRight = true;
+            returningRight = false;
             //Debug.Log(direction);
             Instantiate(teleportAnimation, transform.position, Quaternion.identity);
             direction = direction.normalized;
@@ -672,14 +739,13 @@ public class PlayerController : MonoBehaviour
             state = State.Dashing;
             canDash = false;
 
-            punchedRight = true;
         }
 
     }
     public void AddDamage(float damage)
     {
         currentPercentage += damage;
-        percentageText.text = (currentPercentage + "%");
+        percentageText.text = ((int)currentPercentage + "%");
     }
     public void EndGrab()
     {
@@ -714,11 +780,13 @@ public class PlayerController : MonoBehaviour
         powerStunnedTimer += Time.deltaTime;
         if (powerStunnedTimer >= .5f)
         {
+            Debug.Log("change state to normal");
             state = State.Normal;
         }
     }
     public void PowerShield()
     {
+        rb.velocity = Vector3.zero;
         instantiatedArrow = false;
         StartCoroutine(cameraShake.Shake(.03f, .3f));
         Instantiate(teleportAnimation, transform.position, Quaternion.identity);
@@ -727,6 +795,7 @@ public class PlayerController : MonoBehaviour
     }
     public void HandlePowerShielding()
     {
+        Debug.Log("isPowerShielding");
         Time.timeScale = .2f;
         powerShieldTimer += Time.deltaTime;
         if (inputMovement.magnitude > .8f && instantiatedArrow == false)
@@ -742,7 +811,7 @@ public class PlayerController : MonoBehaviour
                 Destroy(arrowPointerInstantiated);
             }
             arrowPointerInstantiated.transform.position = transform.position;
-            arrowPointerInstantiated.transform.rotation = transform.rotation;
+            arrowPointerInstantiated.transform.right = (inputMovement);
         }
         if (powerShieldTimer > .2f && inputMovement.magnitude > .8f)
         {
@@ -814,7 +883,10 @@ public class PlayerController : MonoBehaviour
     }
     public void HandleShockGrabbed()
     {
-        rb.velocity = Vector3.zero;
+        if (isGrabbed)
+        {
+            rb.velocity = Vector3.zero;
+        }
     }
 
 
@@ -823,7 +895,7 @@ public class PlayerController : MonoBehaviour
     #region InputRegion
     void OnKeyboardMove(InputValue value)
     {
-        inputMovement = value.Get<Vector2>();
+        inputMovement = value.Get<Vector2>().normalized;
     }
     public virtual void OnRightStickDash(InputValue value) //this actually dashes based on right stick input
     {
@@ -883,8 +955,10 @@ public class PlayerController : MonoBehaviour
     {
         pummeledRight = true;
         if (state == State.Grabbing) return;
+        if (state == State.FireGrabbed) return;
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
+        if (shieldingLeft || shieldingRight) return;
         //if (state == State.Knockback) return;
         Vector2 joystickPosition = joystickLook.normalized;
         if (joystickPosition.x != 0 || joystickPosition.y != 0)
@@ -902,8 +976,11 @@ public class PlayerController : MonoBehaviour
     {
         pummeledLeft = true;
         if (state == State.Grabbing) return;
+        if (state == State.FireGrabbed) return;
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
+        if (shieldingLeft || shieldingRight) return;
+
         //if (state == State.Knockback) return;
         Vector2 joystickPosition = joystickLook.normalized;
         if (joystickPosition.x != 0 || joystickPosition.y != 0)
@@ -928,6 +1005,7 @@ public class PlayerController : MonoBehaviour
 
     void OnShieldRight()
     {
+        if (state == State.FireGrabbed) return;
         if (state == State.Grabbed) return;
         if (state == State.Dashing) return;
         if (state == State.Knockback) return;
@@ -941,6 +1019,7 @@ public class PlayerController : MonoBehaviour
 
     void OnShieldLeft()
     {
+        if (state == State.FireGrabbed) return;
         if (state == State.Grabbed) return;
         if (state == State.Dashing) return;
         if (state == State.Knockback) return;
@@ -970,10 +1049,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnMouseDash()
+    protected virtual void OnMouseDash()
     {
         if (state != State.Normal) return;
-
+        
         Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
         //Vector2 direction = inputMovement.normalized;
         Dash(direction.normalized);
@@ -983,8 +1062,11 @@ public class PlayerController : MonoBehaviour
 
     void OnShieldBoth()
     {
+        if (state == State.FireGrabbed) return;
+        if (state == State.ShockGrabbed) return;
         if (state == State.Grabbed) return;
         if (state == State.Dashing) return;
+        if (state == State.Knockback) return;
         if (punchedRight || returningRight)
         {
             return;

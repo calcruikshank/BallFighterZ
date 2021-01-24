@@ -66,7 +66,7 @@ public class RightHand : MonoBehaviour
                 player.readyToPummelRight = false;
             }
             
-            if (player.returningRight && transform.localPosition.x >= 1.25F || player.punchedRight)
+            if (player.returningRight && transform.localPosition.x >= 1.5F || player.punchedRight)
             {
                 if (opponentTookDamage == false)
                 {
