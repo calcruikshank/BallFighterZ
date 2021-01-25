@@ -474,7 +474,7 @@ public class FirePlayer : PlayerController
 
     public override void Respawn()
     {
-
+        
         animationTransformHandler.SetEmittingToFalse();
         animationTransformHandler.DisableEmitter();
         grabTimer = 0;

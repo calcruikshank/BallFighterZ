@@ -9,6 +9,9 @@ public class NeutralGoal : MonoBehaviour
     public GameObject textRedWonPrefab;
     public GameObject restartText;
     public GameManager gameManager;
+    [SerializeField] ParticleSystem particle;
+
+    ScreenShake cameraShake;
     // Start is called before the first frame update
     void Start()
     {
@@ -17,6 +20,8 @@ public class NeutralGoal : MonoBehaviour
     void Awake()
     {
         gameManager = FindObjectOfType<GameManager>();
+
+        cameraShake = FindObjectOfType<ScreenShake>();
     }
     // Update is called once per frame
     void Update()
@@ -54,6 +59,9 @@ public class NeutralGoal : MonoBehaviour
             }
             if (player.stocksLeft >= 0)
             {
+
+                StartCoroutine(cameraShake.Shake(.05f, .5f));
+                particle.Play();
                 player.Respawn();
                 //gameObject.transform.position = new Vector2(0, 0);
                 Debug.Log("lost a stock");
