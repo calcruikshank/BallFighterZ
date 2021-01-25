@@ -507,6 +507,7 @@ MonoBehaviour:
   startedPunchRight: 0
   startedPunchLeft: 0
   instantiatedArrow: 0
+  respawned: 0
   rightHandTransform: {fileID: 3999547214018492892}
   leftHandTransform: {fileID: 3999547215199272119}
   grabPosition: {fileID: 3999547214390731865}
@@ -535,6 +536,10 @@ MonoBehaviour:
   playerAnimatorBase: {fileID: 1226895734732942804, guid: 2f2aa8d230954234f8aab5168a88831c, type: 3}
   animationTransformHandler: {fileID: 0}
   animator: {fileID: 0}
+  canShieldAgainTimer: 0
+  canShieldAgainTimerLeft: 0
+  shieldAgainThreshold: 0.3
+  moveSpeedSetter: 8
   state: 0
   hammerLeft: {fileID: 0}
   hammerRight: {fileID: 4276827285794005317}

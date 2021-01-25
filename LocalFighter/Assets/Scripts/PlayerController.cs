@@ -34,6 +34,9 @@ public class PlayerController : MonoBehaviour
     public Animator animator;
     public float canShieldAgainTimer, canShieldAgainTimerLeft = 0f;
     public float shieldAgainThreshold = .3f;
+    [SerializeField] float moveSpeedSetter = 12f;
+    protected Vector2 lookPositionRightStick;
+
 
     public State state;
     public enum State
@@ -173,6 +176,7 @@ public class PlayerController : MonoBehaviour
 
     public virtual void HandleMovement()
     {
+        
         movement.x = inputMovement.x;
         movement.y = inputMovement.y;
         movement = movement;
@@ -181,7 +185,7 @@ public class PlayerController : MonoBehaviour
             lastMoveDir = movement;
         }
         stunnedTimer = 0;
-        
+
 
         isGrabbed = false;
         dashedTimer = 0f;
@@ -194,6 +198,8 @@ public class PlayerController : MonoBehaviour
             animator.SetFloat("SpeedX", Mathf.Abs(movement.x));
         }
         respawned = false;
+        
+        animationTransformHandler.SetEmittingToFalse();
     }
 
     public virtual void FixedHandleMovement()
@@ -206,6 +212,10 @@ public class PlayerController : MonoBehaviour
 
     public virtual void Knockback(float damage, Vector2 direction)
     {
+        if (respawned == false)
+        {
+            animationTransformHandler.EnableEmitter();
+        }
         StartCoroutine(cameraShake.Shake(.04f, .4f));
         EndPunchLeft();
         EndPunchRight();
@@ -231,6 +241,7 @@ public class PlayerController : MonoBehaviour
 
     public void HandleKnockback()
     {
+        animationTransformHandler.SetEmittingToTrue();
         if (opponent != null)
         {
             if (opponent.transform.position == grabPosition.position)
@@ -443,7 +454,7 @@ public class PlayerController : MonoBehaviour
             transform.position = grabbedPosition.position;
         }
     }
-    public void Throw(Vector2 direction)
+    public virtual void Throw(Vector2 direction)
     {
         Debug.Log("Throw");
         isGrabbed = false;
@@ -627,7 +638,13 @@ public class PlayerController : MonoBehaviour
             {
                 totalShieldRemaining += 5f / 255f * Time.deltaTime;
             }
-            moveSpeed = 12f;
+            if (punchedLeft || punchedRight || returningRight || returningLeft)
+            {
+                moveSpeed = moveSpeedSetter - 4f;
+                return;
+            }
+
+            moveSpeed = moveSpeedSetter;
         }
 
 
@@ -654,8 +671,10 @@ public class PlayerController : MonoBehaviour
         pummeledRight = false;
         //state = State.Normal;
     }
-    public void Respawn()
+    public virtual void Respawn()
     {
+        animationTransformHandler.SetEmittingToFalse();
+        animationTransformHandler.DisableEmitter();
         grabTimer = 0;
         canDash = true;
         currentPercentage = 0;
@@ -800,6 +819,10 @@ public class PlayerController : MonoBehaviour
         powerShieldTimer += Time.deltaTime;
         if (inputMovement.magnitude > .8f && instantiatedArrow == false)
         {
+            if (arrowPointerInstantiated != null)
+            {
+                Destroy(arrowPointerInstantiated);
+            }
             arrowPointerInstantiated = Instantiate(arrowPointer, transform.position, transform.rotation);
             instantiatedArrow = true;
         }
@@ -893,25 +916,22 @@ public class PlayerController : MonoBehaviour
 
 
     #region InputRegion
-    void OnKeyboardMove(InputValue value)
+    void OnMove(InputValue value)
     {
-        inputMovement = value.Get<Vector2>().normalized;
+        inputMovement = value.Get<Vector2>();
     }
-    public virtual void OnRightStickDash(InputValue value) //this actually dashes based on right stick input
+    public virtual void OnRightStick(InputValue value) //this actually dashes based on right stick input
     {
-        if (state != State.Normal) return;
         if (value != null)
         {
-            dashPosition = value.Get<Vector2>();
+            lookPositionRightStick = value.Get<Vector2>();
         }
-        if (dashPosition.magnitude >= .9f)
+        if (lookPositionRightStick.magnitude >= .5f)
         {
-
-            Dash(dashPosition.normalized);
-
-
+            joystickLook = lookPositionRightStick;
         }
-        //if(usingMouse) FaceMouse();
+        FaceJoystick();
+        
 
     }
 
@@ -921,10 +941,13 @@ public class PlayerController : MonoBehaviour
         mousePosition = value.Get<Vector2>();
         FaceMouse();
     }
-    void OnKeyboardMove1(InputValue value)
+    void OnLeftJoystickLook(InputValue value)
     {
         //Debug.Log(joystickLook);
-        joystickLook = value.Get<Vector2>();
+        if (lookPositionRightStick.magnitude == 0)
+        {
+            joystickLook = value.Get<Vector2>();
+        }
         FaceJoystick();
     }
     public virtual void FaceMouse()
@@ -1052,7 +1075,7 @@ public class PlayerController : MonoBehaviour
     protected virtual void OnMouseDash()
     {
         if (state != State.Normal) return;
-        
+
         Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
         //Vector2 direction = inputMovement.normalized;
         Dash(direction.normalized);
@@ -1083,6 +1106,17 @@ public class PlayerController : MonoBehaviour
         shieldingLeft = false;
         shieldingRight = false;
     }
+
+    protected virtual void OnDash()
+    {
+        if (state != State.Normal) return;
+
+
+        Dash(inputMovement.normalized);
+
+
+    }
+
     #endregion
 
 }

@@ -6,7 +6,7 @@ public class Hammer : PlayerController
 {
     public GameObject hammerLeft;
     public GameObject hammerRight;
-    
+
     public Rigidbody2D thrownRightHammerRB, thrownLeftHammerRB;
     public GameObject thrownRightHammer;
     public GameObject thrownLeftHammer;
@@ -41,8 +41,8 @@ public class Hammer : PlayerController
         canDash = true;
         stocksLeft = 4;
         stocksLeftText.text = (stocksLeft.ToString());
-        dashTimer = 3;
-       
+        dashTimer = .5f;
+
     }
 
     public override void HandleThrowingHands()
@@ -85,15 +85,15 @@ public class Hammer : PlayerController
                 returnHammerRightSpeed += 200 * Time.deltaTime;
                 thrownRightHammerRB.transform.position = Vector3.MoveTowards(thrownRightHammerRB.transform.position, rightHandTransform.position, returnHammerRightSpeed * Time.deltaTime);
             }
-            
-            
+
+
         }
 
         if (returningRight && returnHammerRight == true)
         {
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
             punchedRight = false;
-            
+
             if (rightHandTransform.localPosition.x <= 0f && thrownRightHammerRB.transform.position == rightHandTransform.position)
             {
                 Destroy(thrownRightHammer);
@@ -105,11 +105,28 @@ public class Hammer : PlayerController
             }
         }
 
-        if (rightHandTransform.localPosition.x <= 0 && !returnHammerRight)
+        if (rightHandTransform.localPosition.x <= 0 && !returnHammerRight && punchedRight == false)
         {
             returningRight = false;
         }
-        
+
+        if (returningRight)
+        {
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
+            if (rightHandTransform.localPosition.x <= 0f && thrownRightHammer != null)
+            {
+                if (thrownRightHammerRB.transform.position == rightHandTransform.position)
+                {
+                    Destroy(thrownRightHammer);
+                    hammerRight.SetActive(true);
+                    returnHammerRight = false;
+                    returningRight = false;
+                    threwRight = false;
+                    returnHammerRight = false;
+                }
+            }
+        }
+
 
 
         if (punchedLeft && returningLeft == false && instantiatedLightningBall == null)
@@ -183,8 +200,146 @@ public class Hammer : PlayerController
                 returnHammerLeft = false;
             }
         }*/
-        dashTimer += Time.deltaTime;
+        dashTimer -= Time.deltaTime;
     }
+
+
+    public void ReturnRightHammer()
+    {
+
+        thrownRightHammerRB.velocity = Vector3.zero;
+        returnHammerRightSpeed = 5f;
+        returnHammerRight = true;
+        punchedRight = false;
+        returningRight = true;
+        threwRight = false;
+    }
+    public void ReturnLeftHammer()
+    {
+        thrownLeftHammerRB.velocity = Vector3.zero;
+        returnLeftHammerSpeed = 5f;
+        returnHammerLeft = true;
+        punchedLeft = false;
+    }
+
+
+
+
+    public override void Dash(Vector3 direction)
+    {
+
+        dashPosition = direction;
+        transform.right = dashPosition;
+        if (!punchedRight && !returningRight && !returnHammerRight && dashTimer < 0)
+        {
+            dashTimer = .5f;
+            state = State.Dashing;
+        }
+
+
+    }
+
+    public override void HandleDash()
+    {
+
+        transform.right = dashPosition;
+        returnSpeed = 1f;
+        rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(punchRange, .6f), punchSpeed * Time.deltaTime);
+        if (rightHandTransform.localPosition.x == punchRange && threwRight == false && returnHammerRight == false)
+        {
+            hammerRight.SetActive(false);
+            threwRight = true;
+            thrownRightHammer = Instantiate(thrownHammerPrefab, rightHandTransform.position, transform.rotation);
+            thrownRightHammer.GetComponent<ThrownHammer>().SetPlayer(this, 0);
+            thrownRightHammerRB = thrownRightHammer.GetComponent<Rigidbody2D>();
+            thrownRightHammerRB.AddForce(transform.right * 30f, ForceMode2D.Impulse);
+        }
+        if (thrownRightHammerRB != null)
+        {
+
+            rb.velocity = thrownRightHammerRB.velocity;
+        }
+        if (thrownRightHammerRB == null)
+        {
+            rb.velocity = Vector3.zero;
+        }
+
+        if (returnHammerRight)
+        {
+
+
+            thrownRightHammerRB.velocity = Vector3.zero;
+            if (thrownRightHammerRB.velocity.magnitude > .2f)
+            {
+                thrownRightHammerRB.AddForce(oppositeRightHammerForce * .005f, ForceMode2D.Impulse);
+            }
+            if (thrownRightHammerRB.velocity.magnitude <= .2f)
+            {
+
+                thrownRightHammerRB.velocity = Vector3.zero;
+                returnHammerRightSpeed += 200 * Time.deltaTime;
+                thrownRightHammerRB.transform.position = Vector3.MoveTowards(thrownRightHammerRB.transform.position, rightHandTransform.position, returnSpeed * Time.deltaTime);
+            }
+            if (thrownRightHammerRB.transform.position == rightHandTransform.position)
+            {
+                thrownRightHammerRB.velocity = Vector3.zero;
+                returningRight = true;
+            }
+
+
+        }
+        if (returningRight)
+        {
+            thrownRightHammerRB.velocity = Vector3.zero;
+            thrownRightHammerRB.transform.position = Vector3.MoveTowards(thrownRightHammerRB.transform.position, rightHandTransform.position, returnHammerRightSpeed * Time.deltaTime);
+            threwRight = false;
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnSpeed);
+            punchedRight = false;
+
+
+            if (rightHandTransform.localPosition.x <= 0f)
+            {
+                thrownRightHammerRB.velocity = Vector3.zero;
+                returnHammerRight = false;
+                Destroy(thrownRightHammer);
+                state = State.Normal;
+                hammerRight.SetActive(true);
+                returningRight = false;
+            }
+        }
+
+
+    }
+
+
+    public override void EndPunchRight()
+    {
+        if (thrownRightHammer != null)
+        {
+            threwRight = false;
+            returnHammerRight = true;
+        }
+        returningRight = true;
+        punchedRight = false;
+        punchedRightTimer = 0f;
+        rightHandCollider.enabled = false;
+        rightHandTransform.localScale = new Vector2(1, 1);
+        pummeledLeft = false;
+        //state = State.Normal;
+    }
+
+    public override void EndPunchLeft()
+    {
+        threwLeft = true;
+        returningLeft = true;
+        punchedLeft = false;
+        punchedLeftTimer = 0f;
+        leftHandCollider.enabled = false;
+        leftHandTransform.localScale = new Vector2(1, 1);
+        pummeledRight = false;
+        //state = State.Normal;
+    }
+
 
     public override void HandleShielding()
     {
@@ -349,211 +504,19 @@ public class Hammer : PlayerController
             {
                 totalShieldRemaining += 5f / 255f * Time.deltaTime;
             }
+            
+
             moveSpeed = 8f;
         }
 
 
     }
 
-    public void ReturnRightHammer()
-    {
-        
-        thrownRightHammerRB.velocity = Vector3.zero;
-        returnHammerRightSpeed = 5f;
-        returnHammerRight = true;
-        punchedRight = false;
-    }
-    public void ReturnLeftHammer()
-    {
-        thrownLeftHammerRB.velocity = Vector3.zero;
-        returnLeftHammerSpeed = 5f;
-        returnHammerLeft = true;
-        punchedLeft = false;
-    }
-
-
-    
-
-    public override void Dash(Vector3 direction)
-    {
-        
-            dashPosition = direction;
-            transform.right = dashPosition;
-            if (!punchedRight && !returningRight && !returnHammerRight)
-            {
-                state = State.Dashing;
-            }
-       
-        
-    }
-
-    public override void HandleDash()
-    {
-
-        transform.right = dashPosition;
-        returnSpeed = 1;
-        rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(punchRange, .6f), punchSpeed * Time.deltaTime);
-        if (rightHandTransform.localPosition.x == punchRange && threwRight == false && returnHammerRight == false)
-        {
-            hammerRight.SetActive(false);
-            threwRight = true;
-            thrownRightHammer = Instantiate(thrownHammerPrefab, rightHandTransform.position, transform.rotation);
-            thrownRightHammer.GetComponent<ThrownHammer>().SetPlayer(this, 0);
-            thrownRightHammerRB = thrownRightHammer.GetComponent<Rigidbody2D>();
-            thrownRightHammerRB.AddForce(transform.right * 30f, ForceMode2D.Impulse);
-        }
-        if (thrownRightHammerRB != null)
-        {
-
-            rb.velocity = thrownRightHammerRB.velocity;
-        }
-        if (thrownRightHammerRB == null)
-        {
-            rb.velocity = Vector3.zero;
-        }
-        
-        if (returnHammerRight)
-        {
-
-
-            thrownRightHammerRB.velocity = Vector3.zero;
-            if (thrownRightHammerRB.velocity.magnitude > .2f)
-            {
-                thrownRightHammerRB.AddForce(oppositeRightHammerForce * .005f, ForceMode2D.Impulse);
-            }
-            if (thrownRightHammerRB.velocity.magnitude <= .2f)
-            {
-
-                returnHammerRightSpeed += 200 * Time.deltaTime;
-                thrownRightHammerRB.transform.position = Vector3.MoveTowards(thrownRightHammerRB.transform.position, rightHandTransform.position, returnSpeed * Time.deltaTime);
-            }
-            if (thrownRightHammerRB.transform.position == rightHandTransform.position)
-            {
-                returningRight = true;
-            }
-
-
-        }
-        if (returningRight)
-        {
-
-            thrownRightHammerRB.velocity = Vector3.zero;
-            thrownRightHammerRB.transform.position = Vector3.MoveTowards(thrownRightHammerRB.transform.position, rightHandTransform.position, returnHammerRightSpeed * Time.deltaTime);
-            threwRight = false;
-            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnSpeed);
-            punchedRight = false;
-            
-            
-            if (rightHandTransform.localPosition.x <= 0f)
-            {
-                thrownRightHammerRB.velocity = Vector3.zero;
-                dashTimer = 0;
-                returnHammerRight = false;
-                returningRight = false;
-                Destroy(thrownRightHammer);
-                state = State.Normal;
-                hammerRight.SetActive(true);
-            }
-        }
-
-
-        /*leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(punchRange, .6f), punchSpeed * Time.deltaTime);
-        if (leftHandTransform.localPosition.x == punchRange && threwLeft == false && returnHammerLeft == false)
-        {
-            hammerLeft.SetActive(false);
-            threwLeft = true;
-            thrownLeftHammer = Instantiate(thrownHammerPrefab, leftHandTransform.position, transform.rotation);
-            thrownLeftHammer.GetComponent<ThrownHammer>().SetPlayer(this, 0);
-            thrownLeftHammerRB = thrownLeftHammer.GetComponent<Rigidbody2D>();
-            thrownLeftHammerRB.AddForce(transform.right * hammerSpeed, ForceMode2D.Impulse);
-        }
-        if (thrownLeftHammerRB != null)
-        {
-
-            rb.velocity = thrownLeftHammerRB.velocity;
-        }
-        if (thrownLeftHammerRB == null)
-        {
-            rb.velocity = Vector3.zero;
-        }
-
-        if (returnHammerLeft)
-        {
-
-
-            if (thrownLeftHammerRB.velocity.magnitude > .2f)
-            {
-                thrownLeftHammerRB.AddForce(oppositeRightHammerForce * .005f, ForceMode2D.Impulse);
-            }
-            if (thrownLeftHammerRB.velocity.magnitude <= .2f)
-            {
-
-                returnLeftHammerSpeed += 200 * Time.deltaTime;
-                thrownLeftHammerRB.transform.position = Vector3.MoveTowards(thrownLeftHammerRB.transform.position, leftHandTransform.position, returnLeftHammerSpeed * Time.deltaTime);
-            }
-            if (thrownLeftHammerRB.transform.position == leftHandTransform.position)
-            {
-                returningLeft = true;
-            }
-
-
-        }
-        if (returningLeft)
-        {
-
-            thrownLeftHammerRB.transform.position = Vector3.MoveTowards(thrownLeftHammerRB.transform.position, leftHandTransform.position, returnLeftHammerSpeed * Time.deltaTime);
-            threwLeft = false;
-            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(0, 0), returnLeftHammerSpeed * Time.deltaTime);
-            punchedLeft = false;
-
-
-            if (rightHandTransform.localPosition.x <= 0f)
-            {
-
-                returnHammerLeft = false;
-                returningLeft = false;
-                Destroy(thrownLeftHammer);
-                state = State.Normal;
-                hammerLeft.SetActive(true);
-            }
-        }*/
-    }
-
-
-    public override void EndPunchRight()
-    {
-        if (thrownRightHammer != null)
-        {
-            threwRight = false;
-            returnHammerRight = true;
-        }
-        returningRight = true;
-        punchedRight = false;
-        punchedRightTimer = 0f;
-        rightHandCollider.enabled = false;
-        rightHandTransform.localScale = new Vector2(1, 1);
-        pummeledLeft = false;
-        //state = State.Normal;
-    }
-
-    public override void EndPunchLeft()
-    {
-        threwLeft = true;
-        returningLeft = true;
-        punchedLeft = false;
-        punchedLeftTimer = 0f;
-        leftHandCollider.enabled = false;
-        leftHandTransform.localScale = new Vector2(1, 1);
-        pummeledRight = false;
-        //state = State.Normal;
-    }
-
-
 
 
     public override void FaceMouse()
     {
-        
+
         if (state == State.PowerShieldStunned) return;
         if (state == State.Dashing) return;
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
@@ -570,19 +533,74 @@ public class Hammer : PlayerController
             oppositeRightHammerForce = -thrownRightHammerRB.velocity;
             returnHammerRightSpeed = 0f;
             returnHammerRight = true;
-            
+
         }
         if (punchedRight)
         {
+
+            punchedRight = false;
+            returnSpeed = 4f;
             returningRight = true;
             threwRight = false;
-            punchedRight = false;
         }
     }
     public override void OnReleasePunchLeft()
     {
-        
+
     }
+
+    public override void Throw(Vector2 direction)
+    {
+        if (thrownRightHammer != null)
+        {
+            ReturnRightHammer();
+        }
+        Debug.Log("Throw");
+        isGrabbed = false;
+        grabTimer = 0;
+        moveSpeed = 12f;
+        brakeSpeed = 20f;
+        float knockbackValue = 20f;
+        shieldRightTimer = 0;
+        shieldLeftTimer = 0;
+        shieldingLeft = false;
+        shieldingRight = false;
+        isBlockingLeft = false;
+        isBlockingRight = false;
+        rb.AddForce(direction * knockbackValue, ForceMode2D.Impulse);
+
+        //Debug.Log(currentPercentage + "current percentage");
+        state = State.Knockback;
+    }
+
+    public override void Knockback(float damage, Vector2 direction)
+    {
+        if (thrownRightHammer != null)
+        {
+            ReturnRightHammer();
+        }
+        StartCoroutine(cameraShake.Shake(.04f, .4f));
+        EndPunchLeft();
+        EndPunchRight();
+        shieldingLeft = false;
+        shieldingRight = false;
+        isBlockingLeft = false;
+        isBlockingRight = false;
+        shieldRightTimer = 0;
+        shieldLeftTimer = 0;
+        currentPercentage += damage;
+        percentageText.text = ((int)currentPercentage + "%");
+        brakeSpeed = 20f;
+        // Debug.Log(damage + " damage");
+        //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
+        //direction = direction.normalized;
+        float knockbackValue = (14 * ((currentPercentage + damage) * (damage / 2)) / 150) + 7; //knockback that scales
+        rb.AddForce(direction * knockbackValue, ForceMode2D.Impulse);
+        isGrabbed = false;
+        //Debug.Log(currentPercentage + "current percentage");
+        state = State.Knockback;
+    }
+
 
     public override void OnPunchRight()
     {
@@ -592,9 +610,14 @@ public class Hammer : PlayerController
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
+
         //if (state == State.Knockback) return;
         punchedRightTimer = inputBuffer;
-        if (returningRight) return;
+        if (returningRight)
+        {
+
+            return;
+        }
         //punchedRight = true;
         shieldingRight = false;
     }
@@ -614,9 +637,10 @@ public class Hammer : PlayerController
     }
     public override void FaceJoystick()
     {
-        
+
         if (state == State.Dashing) return;
         if (state == State.PowerShieldStunned) return;
+        if (punchedLeft || punchedRight) return;
         Vector2 joystickPosition = joystickLook.normalized;
         if (joystickPosition.x != 0 || joystickPosition.y != 0)
         {

@@ -9,10 +9,12 @@ public class AnimationTransformHandler : MonoBehaviour
     public GameObject facingForward;
     public GameObject facingUp;
     public GameObject facingDownRight;
+    TrailRenderer trailRender;
     // Start is called before the first frame update
     void Start()
     {
-        
+        trailRender = this.gameObject.GetComponent<TrailRenderer>();
+        trailRender.emitting = false;
     }
 
     // Update is called once per frame
@@ -66,5 +68,34 @@ public class AnimationTransformHandler : MonoBehaviour
     public void SetPlayer(GameObject playerGO)
     {
         playerToAnimate = playerGO;
+    }
+
+    public void SetEmittingToTrue()
+    {
+        if (trailRender != null)
+        {
+            trailRender.emitting = true;
+        }
+    }
+    public void SetEmittingToFalse()
+    {
+        if (trailRender != null)
+        {
+            trailRender.emitting = false;
+        }
+    }
+    public void EnableEmitter()
+    {
+        if (trailRender != null)
+        {
+            trailRender.enabled = (true);
+        }
+    }
+    public void DisableEmitter()
+    {
+        if (trailRender != null)
+        {
+            trailRender.enabled = (false);
+        }
     }
 }

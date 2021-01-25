@@ -163,6 +163,7 @@ MonoBehaviour:
   startedPunchRight: 0
   startedPunchLeft: 0
   instantiatedArrow: 0
+  respawned: 0
   rightHandTransform: {fileID: 926449330623663813}
   leftHandTransform: {fileID: 926449329438952366}
   grabPosition: {fileID: 926449329175581504}
@@ -191,6 +192,10 @@ MonoBehaviour:
   playerAnimatorBase: {fileID: 1226895734732942804, guid: 2f2aa8d230954234f8aab5168a88831c, type: 3}
   animationTransformHandler: {fileID: 0}
   animator: {fileID: 3392596350508757681, guid: 2f2aa8d230954234f8aab5168a88831c, type: 3}
+  canShieldAgainTimer: 0
+  canShieldAgainTimerLeft: 0
+  shieldAgainThreshold: 0.3
+  moveSpeedSetter: 10
   state: 0
   rightStickLook: {x: 0, y: 0}
   thrownRightFireballRB: {fileID: 0}
@@ -205,6 +210,7 @@ MonoBehaviour:
   oppositeRightHammerForce: {x: 0, y: 0}
   oppositeLeftHammerForce: {x: 0, y: 0}
   dashTimer: 0
+  firePlayerGrabbing: 0
 --- !u!1 &926449329175581567
 GameObject:
   m_ObjectHideFlags: 0

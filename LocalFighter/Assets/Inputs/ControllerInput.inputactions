@@ -6,7 +6,7 @@
             "id": "664105de-9e32-4ff2-99b8-df3fb6d33a42",
             "actions": [
                 {
-                    "name": "RightStickDash",
+                    "name": "RightStick",
                     "type": "Value",
                     "id": "7d8856a2-71c1-4987-8637-38058d2001d7",
                     "expectedControlType": "Stick",
@@ -14,7 +14,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "KeyboardMove",
+                    "name": "Move",
                     "type": "Value",
                     "id": "de7db1a5-6067-474c-8566-eafc1e03529e",
                     "expectedControlType": "Stick",
@@ -22,7 +22,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "KeyboardMove1",
+                    "name": "LeftJoystickLook",
                     "type": "Value",
                     "id": "1fd15ee8-ec03-4b2f-902f-9f8d87b6aa93",
                     "expectedControlType": "Stick",
@@ -156,6 +156,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=1)"
+                },
+                {
+                    "name": "Dash",
+                    "type": "Button",
+                    "id": "905ea316-bde7-4a9e-bb49-6aa62c5a23ad",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -166,7 +174,7 @@
                     "interactions": "",
                     "processors": "StickDeadzone(min=0.2)",
                     "groups": "Controller",
-                    "action": "RightStickDash",
+                    "action": "RightStick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -177,7 +185,7 @@
                     "interactions": "",
                     "processors": "StickDeadzone",
                     "groups": "Controller",
-                    "action": "KeyboardMove",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -188,7 +196,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "KeyboardMove",
+                    "action": "Move",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -199,7 +207,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard And Mouse",
-                    "action": "KeyboardMove",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -210,7 +218,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard And Mouse",
-                    "action": "KeyboardMove",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -221,7 +229,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard And Mouse",
-                    "action": "KeyboardMove",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -232,7 +240,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard And Mouse",
-                    "action": "KeyboardMove",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -425,6 +433,17 @@
                 },
                 {
                     "name": "",
+                    "id": "f03f1340-8581-442e-863c-80009ae97606",
+                    "path": "<Keyboard>/b",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard And Mouse",
+                    "action": "Restart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "a397536d-8377-455d-bd1c-dc36e9d21d5f",
                     "path": "<Mouse>/position",
                     "interactions": "",
@@ -441,7 +460,7 @@
                     "interactions": "",
                     "processors": "StickDeadzone",
                     "groups": "Controller",
-                    "action": "KeyboardMove1",
+                    "action": "LeftJoystickLook",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -491,6 +510,17 @@
                 },
                 {
                     "name": "",
+                    "id": "5cdef685-2cd8-48b7-8964-29d7a121c99c",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "ReleaseDash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "b0374481-b72e-4b77-ba60-23afcf775ea0",
                     "path": "<Gamepad>/rightStick",
                     "interactions": "",
@@ -519,6 +549,17 @@
                     "processors": "",
                     "groups": "Keyboard And Mouse",
                     "action": "Select",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "0be46c3b-083f-4a52-8a78-9b0dd8a2b0b4",
+                    "path": "<Gamepad>/buttonWest",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "Dash",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
