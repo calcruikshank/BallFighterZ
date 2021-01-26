@@ -19,6 +19,8 @@ public class Hammer : PlayerController
     public Rigidbody2D instantiatedLightningBallRB;
     public override void Start()
     {
+        canAirShieldThreshold = .3f;
+
         animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
         animationTransformHandler.SetPlayer(this.gameObject);
         animator = animationTransformHandler.GetComponent<Animator>();
@@ -26,15 +28,31 @@ public class Hammer : PlayerController
         gameManager.SetTeam((PlayerController)this);
         if (team == 0)
         {
+            GameObject redHandObject = Instantiate(redHand, Vector3.zero, Quaternion.identity);
+            redHandObject.transform.SetParent(rightHandTransform, false);
+            GameObject redHandObject1 = Instantiate(redHand, Vector3.zero, Quaternion.identity);
+            redHandObject1.transform.SetParent(leftHandTransform, false);
+
+            shield = Instantiate(redShield, Vector3.zero, Quaternion.identity);
+            shield.transform.SetParent(this.transform, false);
+
             Color redColor = new Color(255f / 255f, 97f / 255f, 96f / 255f);
             playerBody.material.SetColor("_Color", redColor);
-            shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", redColor);
+            //shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", redColor);
         }
         if (team == 1)
         {
+            GameObject blueHandObject = Instantiate(blueHand, Vector3.zero, Quaternion.identity);
+            blueHandObject.transform.SetParent(rightHandTransform, false);
+            GameObject blueHandObject1 = Instantiate(blueHand, Vector3.zero, Quaternion.identity);
+            blueHandObject1.transform.SetParent(leftHandTransform, false);
+
+            shield = Instantiate(blueShield, Vector3.zero, Quaternion.identity);
+            shield.transform.SetParent(this.transform, false);
+
             Color blueColor = new Color(124f / 255f, 224f / 255f, 224f / 255f);
             playerBody.material.SetColor("_Color", blueColor);
-            shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", blueColor);
+            //shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", blueColor);
         }
         rightHandCollider = rightHandTransform.GetComponent<CircleCollider2D>();
         leftHandCollider = leftHandTransform.GetComponent<CircleCollider2D>();
@@ -579,6 +597,15 @@ public class Hammer : PlayerController
         {
             ReturnRightHammer();
         }
+        if (respawned == false)
+        {
+            animationTransformHandler.EnableEmitter();
+        }
+        canAirShield = false;
+        pressedAirShieldWhileInKnockback = false;
+        canAirShieldTimer = 0f;
+        //canAirShieldThreshold = knockbackValue * .01f;
+        //canAirShieldThreshold = .5f;
         StartCoroutine(cameraShake.Shake(.04f, .4f));
         EndPunchLeft();
         EndPunchRight();

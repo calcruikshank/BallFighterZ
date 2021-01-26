@@ -26,6 +26,8 @@ public class FirePlayer : PlayerController
 
     public override void Start()
     {
+
+        canAirShieldThreshold = .3f;
         if (playerAnimatorBase != null)
         {
             animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
@@ -37,15 +39,31 @@ public class FirePlayer : PlayerController
         gameManager.SetTeam((PlayerController)this);
         if (team == 0)
         {
+            GameObject redHandObject = Instantiate(redHand, Vector3.zero, Quaternion.identity);
+            redHandObject.transform.SetParent(rightHandTransform, false);
+            GameObject redHandObject1 = Instantiate(redHand, Vector3.zero, Quaternion.identity);
+            redHandObject1.transform.SetParent(leftHandTransform, false);
+
+            shield = Instantiate(redShield, Vector3.zero, Quaternion.identity);
+            shield.transform.SetParent(this.transform, false);
+
             Color redColor = new Color(255f / 255f, 97f / 255f, 96f / 255f);
             playerBody.material.SetColor("_Color", redColor);
-            shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", redColor);
+            //shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", redColor);
         }
         if (team == 1)
         {
+            GameObject blueHandObject = Instantiate(blueHand, Vector3.zero, Quaternion.identity);
+            blueHandObject.transform.SetParent(rightHandTransform, false);
+            GameObject blueHandObject1 = Instantiate(blueHand, Vector3.zero, Quaternion.identity);
+            blueHandObject1.transform.SetParent(leftHandTransform, false);
+
+            shield = Instantiate(blueShield, Vector3.zero, Quaternion.identity);
+            shield.transform.SetParent(this.transform, false);
+
             Color blueColor = new Color(124f / 255f, 224f / 255f, 224f / 255f);
             playerBody.material.SetColor("_Color", blueColor);
-            shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", blueColor);
+            //shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", blueColor);
         }
         rightHandCollider = rightHandTransform.GetComponent<CircleCollider2D>();
         leftHandCollider = leftHandTransform.GetComponent<CircleCollider2D>();
@@ -356,45 +374,7 @@ public class FirePlayer : PlayerController
         Time.timeScale = 1;
     }
 
-    public override void Knockback(float damage, Vector2 direction)
-    {
-        if (respawned == false)
-        {
-            animationTransformHandler.EnableEmitter();
-        }
-        dashingIdle = false;
-        rightStickLook = Vector3.zero;
-
-        rightHandCollider.enabled = false;
-        leftHandCollider.enabled = false;
-        isGrabbing = false;
-        if (opponent != null && opponent.isGrabbed)
-        {
-            opponent.isGrabbed = false;
-            opponent.Throw(this.grabPosition.right);
-        }
-        StartCoroutine(cameraShake.Shake(.04f, .4f));
-        EndPunchLeft();
-        EndPunchRight();
-        shieldingLeft = false;
-        shieldingRight = false;
-        isBlockingLeft = false;
-        isBlockingRight = false;
-        shieldRightTimer = 0;
-        shieldLeftTimer = 0;
-        currentPercentage += damage;
-        percentageText.text = ((int)currentPercentage + "%");
-        brakeSpeed = 20f;
-        // Debug.Log(damage + " damage");
-        //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
-        //direction = direction.normalized;
-        rb.velocity = Vector3.zero;
-        float knockbackValue = (14 * ((currentPercentage + damage) * (damage / 2)) / 150) + 7; //knockback that scales
-        rb.AddForce(direction * knockbackValue, ForceMode2D.Impulse);
-        isGrabbed = false;
-        //Debug.Log(currentPercentage + "current percentage");
-        state = State.Knockback;
-    }
+    
     void OnReleaseDash()
     {
 
