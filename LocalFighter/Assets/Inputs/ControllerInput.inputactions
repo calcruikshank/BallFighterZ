@@ -378,50 +378,6 @@
                 },
                 {
                     "name": "",
-                    "id": "473a8f39-7d54-40da-acdc-f4d1b55adc9e",
-                    "path": "<Gamepad>/rightShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller",
-                    "action": "ShieldRight",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "185a59b7-7ab4-459e-a1fd-0ddb30d79cbc",
-                    "path": "<Gamepad>/leftShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller",
-                    "action": "ShieldLeft",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "416db132-a20d-4a07-a00e-e72c6d3059d9",
-                    "path": "<Gamepad>/leftShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller",
-                    "action": "ReleaseShieldLeft",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "bcd69a90-a8ed-44e5-ab17-67db5b863bc5",
-                    "path": "<Gamepad>/rightShoulder",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Controller",
-                    "action": "ReleaseShieldRight",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "abfdb2d0-af37-41e7-9c29-958837c28ec3",
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",
@@ -488,11 +444,33 @@
                 },
                 {
                     "name": "",
+                    "id": "564c46d1-c4d7-4eb1-bb31-663451301cfe",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
+                    "action": "ShieldBoth",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "7a701501-ee3a-404a-9f4d-c564653a6458",
                     "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard And Mouse",
+                    "action": "ReleaseShieldBoth",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "06c35911-46ac-4043-9ee8-b7d4ac8627bc",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Controller",
                     "action": "ReleaseShieldBoth",
                     "isComposite": false,
                     "isPartOfComposite": false

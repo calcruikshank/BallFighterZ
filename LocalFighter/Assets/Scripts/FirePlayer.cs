@@ -27,7 +27,7 @@ public class FirePlayer : PlayerController
     public override void Start()
     {
 
-        canAirShieldThreshold = .3f;
+        canAirShieldThreshold = .25f;
         if (playerAnimatorBase != null)
         {
             animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
@@ -253,13 +253,15 @@ public class FirePlayer : PlayerController
 
     public override void OnPunchRight()
     {
-        if (shieldingLeft || shieldingRight) return;
+        
 
         if (state == State.FireGrabbed) return;
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
         if (dashingIdle == false && state == State.Dashing) return;
         //if (state == State.Knockback) return;
+        if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
+        if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
         Vector2 joystickPosition = joystickLook.normalized;
         if (joystickPosition.x != 0 || joystickPosition.y != 0 && rightStickLook.magnitude == 0 && !dashingIdle)
         {
@@ -279,13 +281,14 @@ public class FirePlayer : PlayerController
     }
     public override void OnPunchLeft()
     {
-        if (shieldingLeft || shieldingRight) return;
 
         if (state == State.FireGrabbed) return;
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
         if (dashingIdle == false && state == State.Dashing) return;
         //if (state == State.Knockback) return;
+        if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
+        if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
         Vector2 joystickPosition = joystickLook.normalized;
         if (joystickPosition.x != 0 || joystickPosition.y != 0 && rightStickLook.magnitude == 0 && !dashingIdle)
         {

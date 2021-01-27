@@ -19,7 +19,7 @@ public class Hammer : PlayerController
     public Rigidbody2D instantiatedLightningBallRB;
     public override void Start()
     {
-        canAirShieldThreshold = .3f;
+        canAirShieldThreshold = .25f;
 
         animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
         animationTransformHandler.SetPlayer(this.gameObject);
@@ -622,6 +622,8 @@ public class Hammer : PlayerController
         //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
         //direction = direction.normalized;
         float knockbackValue = (14 * ((currentPercentage + damage) * (damage / 2)) / 150) + 7; //knockback that scales
+        canAirShieldThreshold = knockbackValue * .01f;
+        Debug.Log(canAirShieldThreshold + "air shield Timer threshold");
         rb.AddForce(direction * knockbackValue, ForceMode2D.Impulse);
         isGrabbed = false;
         //Debug.Log(currentPercentage + "current percentage");
@@ -631,13 +633,13 @@ public class Hammer : PlayerController
 
     public override void OnPunchRight()
     {
-        if (shieldingLeft || shieldingRight) return;
+        if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
 
         if (state == State.FireGrabbed) return;
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
-
+        if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
         //if (state == State.Knockback) return;
         punchedRightTimer = inputBuffer;
         if (returningRight)
@@ -650,12 +652,13 @@ public class Hammer : PlayerController
     }
     public override void OnPunchLeft()
     {
-        if (shieldingLeft || shieldingRight) return;
+        if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
 
         if (state == State.FireGrabbed) return;
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
+        if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
         //if (state == State.Knockback) return;
         punchedLeftTimer = inputBuffer;
         if (returningLeft) return;

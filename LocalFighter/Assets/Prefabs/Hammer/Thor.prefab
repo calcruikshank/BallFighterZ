@@ -388,7 +388,7 @@ MonoBehaviour:
   powerDashTowards: {x: 0, y: 0}
   moveSpeed: 8
   punchRange: 2
-  punchSpeed: 35
+  punchSpeed: 45
   returnSpeed: 35
   currentPercentage: 0
   brakeSpeed: 0
@@ -461,6 +461,7 @@ MonoBehaviour:
   redShield: {fileID: 5471689960208006358, guid: d8132f173a4055f43aace3a906167654, type: 3}
   blueShield: {fileID: 5471689960208006358, guid: d01cb7b2521010b478c93130fdec3028, type: 3}
   airShieldAnimation: {fileID: 114444, guid: d8f1fb6a388df0b47b0a8ab81b0ce77d, type: 3}
+  airShieldInstantiated: {fileID: 0}
   state: 0
   hammerLeft: {fileID: 0}
   hammerRight: {fileID: 4276827285794005317}
@@ -473,7 +474,7 @@ MonoBehaviour:
   returnHammerRight: 0
   threwLeft: 0
   returnHammerLeft: 0
-  hammerSpeed: 40
+  hammerSpeed: 45
   returnHammerRightSpeed: 50
   returnLeftHammerSpeed: 50
   oppositeRightHammerForce: {x: 0, y: 0}

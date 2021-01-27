@@ -79,7 +79,7 @@ public class LeftHand : MonoBehaviour
                     float damage = 4 * transform.localScale.x;
                     if (player.dashedTimer > 0f)
                     {
-                        damage = 20;
+                        damage = 12;
                         Debug.Log("took dash damage " + damage);
                     }
                     Vector2 punchTowards = player.grabPosition.right.normalized;
