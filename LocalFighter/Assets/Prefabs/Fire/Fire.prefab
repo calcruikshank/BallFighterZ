@@ -157,7 +157,6 @@ MonoBehaviour:
   readyToPummelRight: 0
   readyToPummelLeft: 0
   canDash: 0
-  gameIsOver: 0
   isPowerShielding: 0
   startedPunchRight: 0
   startedPunchLeft: 0
@@ -200,6 +199,7 @@ MonoBehaviour:
   redShield: {fileID: 5471689960208006358, guid: d8132f173a4055f43aace3a906167654, type: 3}
   blueShield: {fileID: 5471689960208006358, guid: d01cb7b2521010b478c93130fdec3028, type: 3}
   airShieldAnimation: {fileID: 114444, guid: d8f1fb6a388df0b47b0a8ab81b0ce77d, type: 3}
+  airShieldInstantiated: {fileID: 0}
   state: 0
   rightStickLook: {x: 0, y: 0}
   thrownRightFireballRB: {fileID: 0}
@@ -215,6 +215,7 @@ MonoBehaviour:
   oppositeLeftHammerForce: {x: 0, y: 0}
   dashTimer: 0
   firePlayerGrabbing: 0
+  fireFoxPrefab: {fileID: 1654919534328920, guid: f514fb15c97dca144a6f7f8c521bae5a, type: 3}
 --- !u!1 &926449329175581567
 GameObject:
   m_ObjectHideFlags: 0

@@ -23,7 +23,9 @@ public class FirePlayer : PlayerController
     float returningRightTimer;
     float returningLeftTimer;
     float dashingTimer;
-
+    [SerializeField] GameObject fireFoxPrefab;
+    GameObject leftHandFire, rightHandFire;
+    float beginDashTimer = .25f;
     public override void Start()
     {
 
@@ -76,6 +78,14 @@ public class FirePlayer : PlayerController
 
     public override void HandleMovement()
     {
+        if (rightHandFire != null)
+        {
+            Destroy(rightHandFire);
+        }
+        if (leftHandFire != null)
+        {
+            Destroy(leftHandFire);
+        }
         movement.x = inputMovement.x;
         movement.y = inputMovement.y;
         movement = movement;
@@ -309,72 +319,93 @@ public class FirePlayer : PlayerController
 
     public override void HandleDash()
     {
-        dashLookPosition = Vector3.RotateTowards(transform.right, inputMovement.normalized, 8 * Time.deltaTime, 0f);
+        if (beginDashTimer > 0)
+        {
+            rb.velocity = Vector3.zero;
+        }
+        beginDashTimer -= Time.deltaTime;
+        if (beginDashTimer <= 0)
+        {
+            rightHandFire.transform.position = transform.position;
+            rightHandFire.transform.rotation = transform.rotation;
+            leftHandFire.transform.position = transform.position;
+            leftHandFire.transform.rotation = transform.rotation;
+            leftHandFire.transform.localScale = leftHandTransform.localScale;
+            rightHandFire.transform.localScale = leftHandTransform.localScale;
+            dashLookPosition = Vector3.RotateTowards(transform.right, inputMovement.normalized, 8 * Time.deltaTime, 0f);
 
-        //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-        if(!dashingIdle)
-            transform.right = dashLookPosition;
-        if (!returningLeft)
-        {
-            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(punchRange, -.4f), punchSpeed * Time.deltaTime);
-            leftHandCollider.enabled = true;
-        }
-        if (!returningRight)
-        {
-            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(punchRange, .4f), punchSpeed * Time.deltaTime);
-            rightHandCollider.enabled = true;
-        }
-        float powerDashSpeedMulti = 1.5f;
-        movement.x = dashLookPosition.x;
-        movement.y = dashLookPosition.y;
-        if (movement.x != 0 || movement.y != 0)
-        {
-            lastMoveDir = movement;
-        }
-        stunnedTimer = 0;
-        returnSpeed = 8f;
-        isGrabbed = false;
-        dashedTimer = 0f;
-
-        float powerDashMinSpeed = 20f;
-        if (dashSpeed > powerDashMinSpeed)
-        {
-            dashSpeed -= dashSpeed * powerDashSpeedMulti * Time.deltaTime;
-            dashingIdle = false;
-        }
-        if (dashSpeed <= powerDashMinSpeed)
-        {
-            dashSpeed -= dashSpeed * powerDashSpeedMulti * Time.deltaTime;
-            dashingIdle = true;
-            if (dashSpeed <= 15f)
+            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+            if (!dashingIdle)
+                transform.right = dashLookPosition;
+            if (!returningLeft)
             {
-                if (isGrabbing && opponent != null && !throwPlayer && opponent.isGrabbed && isGrabbing)
-                {
-                    opponent.rb.velocity = Vector3.zero;
-                    opponent.Throw(this.grabPosition.right);
-                    Debug.Log("Threw Player");
-                    isGrabbing = false;
-                }
-                rightHandCollider.enabled = false;
-                leftHandCollider.enabled = false;
-
-                returningRight = true;
-                returningLeft = true;
+                leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(punchRange, -.4f), punchSpeed * Time.deltaTime);
+                leftHandCollider.enabled = true;
             }
-            if (dashSpeed < 10)
+            if (!returningRight)
             {
-                rightStickLook = Vector3.zero;
+                rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(punchRange, .4f), punchSpeed * Time.deltaTime);
+                rightHandCollider.enabled = true;
+            }
+            float powerDashSpeedMulti = 1.5f;
+            movement.x = dashLookPosition.x;
+            movement.y = dashLookPosition.y;
+            if (movement.x != 0 || movement.y != 0)
+            {
+                lastMoveDir = movement;
+            }
+            stunnedTimer = 0;
+            returnSpeed = 8f;
+            isGrabbed = false;
+            dashedTimer = 0f;
+
+            float powerDashMinSpeed = 20f;
+            if (dashSpeed > powerDashMinSpeed)
+            {
+                dashSpeed -= dashSpeed * powerDashSpeedMulti * Time.deltaTime;
                 dashingIdle = false;
-                state = State.Normal;
+            }
+            if (dashSpeed <= powerDashMinSpeed)
+            {
+                dashSpeed -= dashSpeed * powerDashSpeedMulti * Time.deltaTime;
+                dashingIdle = true;
+                if (dashSpeed <= 15f)
+                {
+                    if (isGrabbing && opponent != null && !throwPlayer && opponent.isGrabbed && isGrabbing)
+                    {
+                        opponent.rb.velocity = Vector3.zero;
+                        opponent.Throw(this.grabPosition.right);
+                        Debug.Log("Threw Player");
+                        isGrabbing = false;
+                    }
+                    rightHandCollider.enabled = false;
+                    leftHandCollider.enabled = false;
+
+                    returningRight = true;
+                    returningLeft = true;
+                }
+                if (dashSpeed < 10)
+                {
+                    Destroy(rightHandFire); 
+                    Destroy(leftHandFire); 
+                    rightStickLook = Vector3.zero;
+                    dashingIdle = false;
+                    state = State.Normal;
+                }
             }
         }
+        
     }
 
     public override void FixedHandleDash()
     {
-        rb.velocity = movement * dashSpeed;
+        if (beginDashTimer <= 0)
+        {
+            rb.velocity = movement * dashSpeed;
 
-        Time.timeScale = 1;
+            Time.timeScale = 1;
+        }
+        
     }
 
     
@@ -451,6 +482,9 @@ public class FirePlayer : PlayerController
         returningLeft = false;
         dashSpeed = 30f;
         dashingTimer = 0f;
+        rightHandFire = Instantiate(fireFoxPrefab, transform.position, transform.rotation);
+        leftHandFire = Instantiate(fireFoxPrefab, transform.position, transform.rotation);
+        beginDashTimer = .25f;
         state = State.Dashing;
 
     }
@@ -493,6 +527,11 @@ public class FirePlayer : PlayerController
             returningLeft = false;
             dashSpeed = 30f;
             dashingTimer = 0f;
+            /*rightHandFire = Instantiate(fireFoxPrefab, rightHandTransform.position, rightHandTransform.rotation);
+            leftHandFire = Instantiate(fireFoxPrefab, leftHandTransform.position, leftHandTransform.rotation);*/
+            rightHandFire = Instantiate(fireFoxPrefab, transform.position, transform.rotation);
+            leftHandFire = Instantiate(fireFoxPrefab, transform.position, transform.rotation);
+            beginDashTimer = .25f;
             state = State.Dashing;
         }
     }
