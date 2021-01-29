@@ -10,6 +10,13 @@ public class RightHand : MonoBehaviour
     bool startDownTicker;
     bool opponentTookDamage;
     public GameObject explosionPrefab;
+    CircleCollider2D thisCollider;
+
+
+    void Start()
+    {
+        thisCollider = this.transform.GetComponent<CircleCollider2D>();
+    }
     void OnTriggerEnter2D(Collider2D other)
     {
         
@@ -34,6 +41,7 @@ public class RightHand : MonoBehaviour
                         float damage = 6;
                         Vector2 punchTowards = player.grabPosition.right.normalized;
                         opponent.Knockback(damage, punchTowards);
+                        thisCollider.enabled = false;
                     }
                     return;
                 }
@@ -52,6 +60,7 @@ public class RightHand : MonoBehaviour
                 {
                     opponent.totalShieldRemaining += 20f / 255f;
                     opponent.PowerShield();
+                    thisCollider.enabled = false;
                     player.PowerShieldStun();
                     Debug.Log("Opponent is power shielding");
                     return;
@@ -82,6 +91,7 @@ public class RightHand : MonoBehaviour
                     //Vector2 handLocation = transform.position;
                     opponent.rb.velocity = Vector3.zero;
                     opponent.Knockback(damage, punchTowards);
+                    thisCollider.enabled = false;
                     //opponent.Knockback(damage, handLocation);
                     Debug.Log(damage + " damage beforeSending");
                     opponentTookDamage = true;
@@ -89,7 +99,7 @@ public class RightHand : MonoBehaviour
                 }
                 
             }
-            
+            thisCollider.enabled = false;
         }
         
     }

@@ -19,6 +19,10 @@ public class GameManager : MonoBehaviour
     public Transform text0Stock2;
     public Transform text1Stock2;
     public bool gameIsOver;
+    int numOfTeamsLeft = 0;
+    int numOfBluePlayers;
+    int numOfRedPlayers;
+    [SerializeField] GameObject textBlueWonPrefab, textRedWonPrefab, restartText;
     // Start is called before the first frame update
     void Start()
     {
@@ -37,7 +41,15 @@ public class GameManager : MonoBehaviour
         SetText(teamID, player);
         teamID++;
         Debug.Log(player.team);
-        
+        if (player.team % 2 == 0)
+        {
+            numOfRedPlayers++;
+        }
+        if (player.team % 2 == 1)
+        {
+            numOfBluePlayers++;
+        }
+
     }
 
     public void SetText(int spawnLocation, PlayerController player)
@@ -84,5 +96,35 @@ public class GameManager : MonoBehaviour
         }
 
 
+    }
+
+
+    public void RemoveBluePlayer(PlayerController player)
+    {
+        numOfBluePlayers--;
+        Debug.Log("blue lost");
+        if (numOfBluePlayers <= 0)
+        {
+            gameIsOver = true;
+            textRedWonPrefab.SetActive(true);
+            restartText.SetActive(true);
+            //Destroy(player.gameObject);
+
+            Debug.Log("blue lost inside if statement");
+        }
+    }
+
+    public void RemoveRedPlayer(PlayerController player)
+    {
+        numOfRedPlayers--;
+        if (numOfRedPlayers <= 0)
+        {
+            gameIsOver = true;
+            textBlueWonPrefab.SetActive(true);
+            restartText.SetActive(true);
+            //Destroy(player.gameObject);
+            Debug.Log("RedLost");
+            //gameManager.gameIsOver = true;
+        }
     }
 }

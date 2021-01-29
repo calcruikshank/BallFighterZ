@@ -13,10 +13,12 @@ public class ThrownHammer : MonoBehaviour
     public Transform pointOfThunder;
     public GameObject lightningEffect;
     public GameObject lightingEffectLive;
+    Collider2D hammerCollider;
     // Start is called before the first frame update
     void Start()
     {
         lightingEffectLive = Instantiate(lightningEffect, pointOfThunder.position, transform.rotation);
+        hammerCollider = this.gameObject.GetComponent<Collider2D>();
     }
 
     // Update is called once per frame
@@ -36,75 +38,62 @@ public class ThrownHammer : MonoBehaviour
         if (other != null && other != other.transform.parent.GetComponent<ThrownHammer>())
         {
 
-            if (opponentTookDamage == false)
+
+
+
+            opponent = other.transform.parent.GetComponent<PlayerController>();
+            if (opponent != player && opponent != null)
             {
 
-
-
-                opponent = other.transform.parent.GetComponent<PlayerController>();
-                if (opponent != player && opponent != null)
+                if (player.isGrabbed)
                 {
 
-                    if (player.isGrabbed)
+                    player.punchesToRelease++;
+                    opponentTookDamage = true;
+                    hammerCollider.enabled = false;
+                    //Physics2D.IgnoreCollision(hammerCollider, other);
+                    if (player.punchesToRelease >= 1)
                     {
-
-                        player.punchesToRelease++;
-                        opponentTookDamage = true;
-                        if (player.punchesToRelease >= 1)
-                        {
-                            player.EndGrab();
-                            opponent.EndGrab();
-                            opponent.isGrabbing = false;
-                            float grabbeddamage = 6;
-                            Instantiate(explosionPrefab, pointOfContact.position, transform.rotation);
-                            Vector2 releaseTowards = transform.right;
-                            if (this.GetComponent<Rigidbody2D>().velocity.magnitude <= .2f)
-                            {
-                                releaseTowards = -releaseTowards;
-                            }
-                            //Vector2 handLocation = transform.position;
-                            opponent.rb.velocity = Vector3.zero;
-                            opponent.Knockback(grabbeddamage, releaseTowards);
-                        }
-                        if (whichHammer == 0)
-                        {
-                            //Debug.Log("returnRightHammer");
-                            player.GetComponent<Hammer>().ReturnRightHammer();
-                        }
-                        if (whichHammer == 1)
-                        {
-                            //Debug.Log("returnRightHammer");
-                            player.GetComponent<Hammer>().ReturnLeftHammer();
-                        }
-                        return;
-                    }
-
-                    if (opponent.isBlockingLeft || opponent.isBlockingRight)
-                    {
-                        if (opponent.isPowerShielding)
-                        {
-                            Instantiate(explosionPrefab, pointOfContact.position, transform.rotation);
-                            opponent.totalShieldRemaining += 20f / 255f;
-                            opponent.PowerShield();
-                            player.PowerShieldStun();
-                            Debug.Log("Opponent is power shielding");
-                            opponentTookDamage = true;
-                            if (whichHammer == 0)
-                            {
-                                //Debug.Log("returnRightHammer");
-                                player.GetComponent<Hammer>().ReturnRightHammer();
-                            }
-                            if (whichHammer == 1)
-                            {
-                                //Debug.Log("returnRightHammer");
-                                player.GetComponent<Hammer>().ReturnLeftHammer();
-                            }
-                            return;
-
-                        }
+                        player.EndGrab();
+                        opponent.EndGrab();
+                        opponent.isGrabbing = false;
+                        float grabbeddamage = 6;
                         Instantiate(explosionPrefab, pointOfContact.position, transform.rotation);
+                        Vector2 releaseTowards = transform.right;
+                        if (this.GetComponent<Rigidbody2D>().velocity.magnitude <= .2f)
+                        {
+                            releaseTowards = -releaseTowards;
+                        }
+                        //Vector2 handLocation = transform.position;
+                        opponent.rb.velocity = Vector3.zero;
+                        opponent.Knockback(grabbeddamage, releaseTowards);
+                    }
+                    if (whichHammer == 0)
+                    {
+                        //Debug.Log("returnRightHammer");
+                        player.GetComponent<Hammer>().ReturnRightHammer();
+                    }
+                    if (whichHammer == 1)
+                    {
+                        //Debug.Log("returnRightHammer");
+                        player.GetComponent<Hammer>().ReturnLeftHammer();
+                    }
+                    return;
+                }
+
+                if (opponent.isBlockingLeft || opponent.isBlockingRight)
+                {
+                    if (opponent.isPowerShielding)
+                    {
+                        Instantiate(explosionPrefab, pointOfContact.position, transform.rotation);
+                        opponent.totalShieldRemaining += 20f / 255f;
+                        opponent.PowerShield();
+                        player.PowerShieldStun();
+                        Debug.Log("Opponent is power shielding");
                         opponentTookDamage = true;
-                        opponent.totalShieldRemaining -= 10f / 255f;
+                        hammerCollider.enabled = false;
+                        //Physics2D.IgnoreCollision(hammerCollider, other);
+                        //this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
                         if (whichHammer == 0)
                         {
                             //Debug.Log("returnRightHammer");
@@ -116,22 +105,44 @@ public class ThrownHammer : MonoBehaviour
                             player.GetComponent<Hammer>().ReturnLeftHammer();
                         }
                         return;
+
                     }
                     Instantiate(explosionPrefab, pointOfContact.position, transform.rotation);
-                    float damage = 6;
-                    Vector2 punchTowards = transform.right;
-                    if (this.GetComponent<Rigidbody2D>().velocity.magnitude <= .2f)
-                    {
-                        punchTowards = -punchTowards;
-                    }
-                    //Vector2 handLocation = transform.position;
-                    opponent.rb.velocity = Vector3.zero;
-                    opponent.Knockback(damage, punchTowards);
-                    //opponent.Knockback(damage, handLocation);
-                    //Debug.Log(damage + " damage beforeSending");
                     opponentTookDamage = true;
+                    hammerCollider.enabled = false;
+                    //Physics2D.IgnoreCollision(hammerCollider, other);
+                    //this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                    opponent.totalShieldRemaining -= 10f / 255f;
+                    if (whichHammer == 0)
+                    {
+                        //Debug.Log("returnRightHammer");
+                        player.GetComponent<Hammer>().ReturnRightHammer();
+                    }
+                    if (whichHammer == 1)
+                    {
+                        //Debug.Log("returnRightHammer");
+                        player.GetComponent<Hammer>().ReturnLeftHammer();
+                    }
+                    return;
                 }
+                Instantiate(explosionPrefab, pointOfContact.position, transform.rotation);
+                float damage = 6;
+                Vector2 punchTowards = transform.right;
+                if (this.GetComponent<Rigidbody2D>().velocity.magnitude <= .2f)
+                {
+                    punchTowards = -punchTowards;
+                }
+                //Vector2 handLocation = transform.position;
+                opponent.rb.velocity = Vector3.zero;
+                opponent.Knockback(damage, punchTowards);
+                //opponent.Knockback(damage, handLocation);
+                //Debug.Log(damage + " damage beforeSending");
+                opponentTookDamage = true;
+                //this.gameObject.GetComponent<BoxCollider2D>().enabled = false;
+                hammerCollider.enabled = false;
+               // Physics2D.IgnoreCollision(hammerCollider, other);
             }
+
 
             if (whichHammer == 0)
             {

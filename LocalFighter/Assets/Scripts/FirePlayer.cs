@@ -27,7 +27,7 @@ public class FirePlayer : PlayerController
     public override void Start()
     {
 
-        canAirShieldThreshold = .25f;
+        canAirShieldThreshold = .1f;
         if (playerAnimatorBase != null)
         {
             animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
@@ -37,7 +37,7 @@ public class FirePlayer : PlayerController
 
         totalShieldRemaining = 225f / 255f;
         gameManager.SetTeam((PlayerController)this);
-        if (team == 0)
+        if (team % 2 == 0)
         {
             GameObject redHandObject = Instantiate(redHand, Vector3.zero, Quaternion.identity);
             redHandObject.transform.SetParent(rightHandTransform, false);
@@ -51,7 +51,7 @@ public class FirePlayer : PlayerController
             playerBody.material.SetColor("_Color", redColor);
             //shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", redColor);
         }
-        if (team == 1)
+        if (team % 2 == 1)
         {
             GameObject blueHandObject = Instantiate(blueHand, Vector3.zero, Quaternion.identity);
             blueHandObject.transform.SetParent(rightHandTransform, false);

@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
 
     public float moveSpeed, punchRange, punchSpeed, returnSpeed, currentPercentage, brakeSpeed, stunnedTimer, shieldSpeed, grabTimer, powerStunnedTimer, punchedRightTimer, punchedLeftTimer, inputBuffer, shieldLeftTimer, shieldRightTimer, powerDashSpeed, powerShieldTimer;
 
-    public bool punchedRight, punchedLeft, returningRight, returningLeft, pummeledLeft, pummeledRight, isGrabbing, isGrabbed, shieldingRight, shieldingLeft, isBlockingRight, isBlockingLeft, readyToPummelRight, readyToPummelLeft, canDash, gameIsOver, isPowerShielding, startedPunchRight, startedPunchLeft, instantiatedArrow, respawned = false;
+    public bool punchedRight, punchedLeft, returningRight, returningLeft, pummeledLeft, pummeledRight, isGrabbing, isGrabbed, shieldingRight, shieldingLeft, isBlockingRight, isBlockingLeft, readyToPummelRight, readyToPummelLeft, canDash, isPowerShielding, startedPunchRight, startedPunchLeft, instantiatedArrow, respawned = false;
 
     public Transform rightHandTransform, leftHandTransform, grabPosition, grabbedPosition;
     public CircleCollider2D rightHandCollider, leftHandCollider;
@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
     protected bool airShielding, canAirShield, pressedAirShield, pressedAirShieldWhileInKnockback;
     protected float airShieldTimer, canAirShieldTimer, canAirShieldThreshold, airPowerShieldTimer;
     [SerializeField] protected GameObject airShieldAnimation, airShieldInstantiated;
-
+    bool releaseShieldBuffer = false;
     public State state;
     public enum State
     {
@@ -71,7 +71,7 @@ public class PlayerController : MonoBehaviour
 
     public virtual void Start()
     {
-        canAirShieldThreshold = .25f;
+        canAirShieldThreshold = .1f;
         animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
         animationTransformHandler.SetPlayer(this.gameObject);
         animator = animationTransformHandler.GetComponent<Animator>();
@@ -79,7 +79,7 @@ public class PlayerController : MonoBehaviour
         if (gameManager != null)
         {
             gameManager.SetTeam(this);
-            if (team == 0)
+            if (team % 2 == 0)
             {
                 GameObject redHandObject = Instantiate(redHand, Vector3.zero, Quaternion.identity);
                 redHandObject.transform.SetParent(rightHandTransform, false);
@@ -91,9 +91,11 @@ public class PlayerController : MonoBehaviour
 
                 Color redColor = new Color(255f / 255f, 97f / 255f, 96f / 255f);
                 playerBody.material.SetColor("_Color", redColor);
+
+                Debug.Log(team + "make a red shield");
                 //shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", redColor);
             }
-            if (team == 1)
+            if (team % 2 == 1)
             {
                 GameObject blueHandObject = Instantiate(blueHand, Vector3.zero, Quaternion.identity);
                 blueHandObject.transform.SetParent(rightHandTransform, false);
@@ -107,6 +109,7 @@ public class PlayerController : MonoBehaviour
                 playerBody.material.SetColor("_Color", blueColor);
                 //shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", blueColor);
             }
+
             rightHandCollider = rightHandTransform.GetComponent<CircleCollider2D>();
             leftHandCollider = leftHandTransform.GetComponent<CircleCollider2D>();
             canDash = true;
@@ -198,7 +201,7 @@ public class PlayerController : MonoBehaviour
 
     public virtual void HandleMovement()
     {
-        
+
         movement.x = inputMovement.x;
         movement.y = inputMovement.y;
         movement = movement;
@@ -220,7 +223,7 @@ public class PlayerController : MonoBehaviour
             animator.SetFloat("SpeedX", Mathf.Abs(movement.x));
         }
         respawned = false;
-        
+
         animationTransformHandler.SetEmittingToFalse();
     }
 
@@ -258,7 +261,7 @@ public class PlayerController : MonoBehaviour
         //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
         //direction = direction.normalized;
         float knockbackValue = (14 * ((currentPercentage + damage) * (damage / 2)) / 150) + 7; //knockback that scales
-        canAirShieldThreshold = knockbackValue * .01f;
+        //canAirShieldThreshold = knockbackValue * .01f;
         rb.AddForce(direction * knockbackValue, ForceMode2D.Impulse);
         isGrabbed = false;
         //Debug.Log(currentPercentage + "current percentage");
@@ -290,17 +293,26 @@ public class PlayerController : MonoBehaviour
         {
             lastMoveDir = movement;
         }
-        if (rb.velocity.magnitude <= 5f)
+        if (rb.velocity.magnitude <= 5)
         {
+            if (releaseShieldBuffer)
+            {
+                releaseShieldBuffer = false;
+                shieldLeftTimer = 0;
+                shieldRightTimer = 0;
+                shieldingLeft = false;
+                shieldingRight = false;
+            }
             rb.velocity = new Vector2(0, 0);
             state = State.Normal;
         }
         if (rb.velocity.magnitude > 0)
         {
+            
             oppositeForce = -rb.velocity;
             brakeSpeed = brakeSpeed + (100f * Time.deltaTime);
             rb.AddForce(oppositeForce * Time.deltaTime * brakeSpeed);
-            rb.AddForce(lastMoveDir * Time.deltaTime * brakeSpeed * .5f); //DI
+            rb.AddForce(movement * .25f); //DI
         }
     }
 
@@ -366,7 +378,7 @@ public class PlayerController : MonoBehaviour
         {
             returnSpeed = 1f;
         }
-        
+
     }
 
     public void HandlePummel()
@@ -442,7 +454,7 @@ public class PlayerController : MonoBehaviour
     }
     public virtual void Grab(PlayerController opponentCheck)
     {
-        moveSpeed = 5f;
+        moveSpeed = 0f;
         returningLeft = false;
         returningRight = false;
         punchedLeft = false;
@@ -506,7 +518,7 @@ public class PlayerController : MonoBehaviour
         isBlockingLeft = false;
         isBlockingRight = false;
         rb.AddForce(direction * knockbackValue, ForceMode2D.Impulse);
-        canAirShieldThreshold = knockbackValue * .01f;
+        //canAirShieldThreshold = knockbackValue * .01f;
         //canAirShieldThreshold = knockbackValue * .01f;
         //Debug.Log(currentPercentage + "current percentage");
         state = State.Knockback;
@@ -711,6 +723,11 @@ public class PlayerController : MonoBehaviour
     }
     public virtual void Respawn()
     {
+        if (stocksLeft <= 0 && this.gameObject != null)
+        {
+            Destroy(animationTransformHandler.gameObject);
+            Destroy(this.gameObject);
+        }
         animationTransformHandler.SetEmittingToFalse();
         animationTransformHandler.DisableEmitter();
         grabTimer = 0;
@@ -844,6 +861,14 @@ public class PlayerController : MonoBehaviour
     }
     public void PowerShield()
     {
+        if (releaseShieldBuffer)
+        {
+            releaseShieldBuffer = false;
+            shieldLeftTimer = 0;
+            shieldRightTimer = 0;
+            shieldingLeft = false;
+            shieldingRight = false;
+        }
         rb.velocity = Vector3.zero;
         instantiatedArrow = false;
         StartCoroutine(cameraShake.Shake(.03f, .3f));
@@ -853,6 +878,14 @@ public class PlayerController : MonoBehaviour
     }
     public void HandlePowerShielding()
     {
+        if (releaseShieldBuffer)
+        {
+            releaseShieldBuffer = false;
+            shieldLeftTimer = 0;
+            shieldRightTimer = 0;
+            shieldingLeft = false;
+            shieldingRight = false;
+        }
         Debug.Log("isPowerShielding");
         Time.timeScale = .2f;
         powerShieldTimer += Time.deltaTime;
@@ -916,6 +949,8 @@ public class PlayerController : MonoBehaviour
     }
     public void PowerDash(Vector2 powerDashDirection)
     {
+        canShieldAgainTimer = shieldAgainThreshold;
+        canShieldAgainTimerLeft = shieldAgainThreshold;
         powerDashSpeed = 50f;
         powerDashTowards = powerDashDirection.normalized;
         state = State.PowerDashing;
@@ -953,7 +988,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void HandleAirShielding()
+    protected void HandleAirShielding()
     {
         airShieldTimer -= Time.deltaTime;
         if (airShieldTimer > 0 && canAirShield && pressedAirShield)
@@ -972,7 +1007,7 @@ public class PlayerController : MonoBehaviour
         if (airShielding)
         {
             airPowerShieldTimer += Time.deltaTime;
-            if (airPowerShieldTimer >= .25f)
+            if (airPowerShieldTimer >= .5f)
             {
                 shieldingLeft = false;
                 shieldingRight = false;
@@ -981,6 +1016,13 @@ public class PlayerController : MonoBehaviour
                 pressedAirShield = false;
                 isBlockingLeft = false;
                 isBlockingRight = false;
+            }
+            if (perfectShieldTimer >= .5f)
+            {
+                shieldLeftTimer = 0;
+                shieldRightTimer = 0;
+                shieldingLeft = false;
+                shieldingRight = false;
             }
         }
     }
@@ -1002,7 +1044,7 @@ public class PlayerController : MonoBehaviour
             joystickLook = lookPositionRightStick;
         }
         FaceJoystick();
-        
+
 
     }
 
@@ -1143,23 +1185,24 @@ public class PlayerController : MonoBehaviour
 
     void OnReleaseShieldRight()
     {
+        if (state == State.Knockback)
+        {
+            return;
+        }
         shieldRightTimer = 0;
         shieldingRight = false;
     }
     void OnReleaseShieldLeft()
     {
-
+        if (state == State.Knockback)
+        {
+            return;
+        }
         shieldLeftTimer = 0;
         shieldingLeft = false;
     }
 
-    void OnRestart()
-    {
-        if (gameManager.gameIsOver)
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-    }
+
 
     protected virtual void OnMouseDash()
     {
@@ -1178,28 +1221,32 @@ public class PlayerController : MonoBehaviour
         if (state == State.ShockGrabbed) return;
         if (state == State.Grabbed) return;
         if (state == State.Dashing) return;
-        if (state == State.Knockback)
-        {
-            pressedAirShield = true;
-            airShieldTimer = inputBuffer;
-        }
+        
         if (!canAirShield && state == State.Knockback)
         {
             return;
         }
         
-        if (punchedRight || punchedLeft)
+        if (punchedRight && punchedLeft)
         {
             return;
         }
-
+        if (state == State.Knockback)
+        {
+            pressedAirShield = true;
+            airShieldTimer = inputBuffer;
+        }
         shieldLeftTimer = inputBuffer;
         shieldRightTimer = inputBuffer;
     }
 
     void OnReleaseShieldBoth()
     {
-        
+        if (state == State.Knockback)
+        {
+            releaseShieldBuffer = true;
+            return;
+        }
         shieldLeftTimer = 0;
         shieldRightTimer = 0;
         shieldingLeft = false;
@@ -1215,6 +1262,18 @@ public class PlayerController : MonoBehaviour
 
 
     }
+    void OnRestart()
+    {
+        if (gameManager.gameIsOver)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+    }
+    void OnCharacterSelect()
+    {
+        SceneManager.LoadScene(0);
+    }
+
 
     #endregion
 

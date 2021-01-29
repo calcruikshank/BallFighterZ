@@ -39,27 +39,33 @@ public class NeutralGoal : MonoBehaviour
             player.stocksLeft--;
             if (player.stocksLeft <= 0)
             {
-                if (player.team == 0)
+                if (player.team % 2 == 0)
                 {
-                    textBlueWonPrefab.SetActive(true);
-                    restartText.SetActive(true);
+                    gameManager.RemoveRedPlayer(player);
+                    Destroy(player.animationTransformHandler.gameObject);
                     Destroy(player.gameObject);
-                    Debug.Log("RedLost");
-                    gameManager.gameIsOver = true;
+                    //textBlueWonPrefab.SetActive(true);
+                    //restartText.SetActive(true);
+                    //Destroy(player.gameObject);
+                    //Debug.Log("RedLost");
+                    //gameManager.gameIsOver = true;
                 }
-                if (player.team == 1)
+                if (player.team % 2 == 1)
                 {
-                    textRedWonPrefab.SetActive(true);
-                    restartText.SetActive(true);
+
+                    gameManager.RemoveBluePlayer(player);
+                    Destroy(player.animationTransformHandler.gameObject);
                     Destroy(player.gameObject);
-                    Debug.Log("RedLost");
-                    gameManager.gameIsOver = true;
+                    //textRedWonPrefab.SetActive(true);
+                    //restartText.SetActive(true);
+                    //Destroy(player.gameObject);
+                    //Debug.Log("RedLost");
+                    //gameManager.gameIsOver = true;
                 }
 
             }
             if (player.stocksLeft >= 0)
             {
-
                 StartCoroutine(cameraShake.Shake(.05f, .5f));
                 particle.Play();
                 player.Respawn();

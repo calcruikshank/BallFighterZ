@@ -19,14 +19,14 @@ public class Hammer : PlayerController
     public Rigidbody2D instantiatedLightningBallRB;
     public override void Start()
     {
-        canAirShieldThreshold = .25f;
+        canAirShieldThreshold = .1f;
 
         animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
         animationTransformHandler.SetPlayer(this.gameObject);
         animator = animationTransformHandler.GetComponent<Animator>();
         totalShieldRemaining = 225f / 255f;
         gameManager.SetTeam((PlayerController)this);
-        if (team == 0)
+        if (team % 2 == 0)
         {
             GameObject redHandObject = Instantiate(redHand, Vector3.zero, Quaternion.identity);
             redHandObject.transform.SetParent(rightHandTransform, false);
@@ -40,7 +40,7 @@ public class Hammer : PlayerController
             playerBody.material.SetColor("_Color", redColor);
             //shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", redColor);
         }
-        if (team == 1)
+        if (team % 2 == 1)
         {
             GameObject blueHandObject = Instantiate(blueHand, Vector3.zero, Quaternion.identity);
             blueHandObject.transform.SetParent(rightHandTransform, false);
@@ -85,7 +85,7 @@ public class Hammer : PlayerController
                 thrownRightHammer = Instantiate(thrownHammerPrefab, rightHandTransform.position, transform.rotation);
                 thrownRightHammer.GetComponent<ThrownHammer>().SetPlayer(this, 0);
                 thrownRightHammerRB = thrownRightHammer.GetComponent<Rigidbody2D>();
-                thrownRightHammerRB.AddForce(transform.right * hammerSpeed, ForceMode2D.Impulse);
+                thrownRightHammerRB.AddForce((transform.right) * (hammerSpeed), ForceMode2D.Impulse);
             }
         }
 
@@ -590,8 +590,7 @@ public class Hammer : PlayerController
         //Debug.Log(currentPercentage + "current percentage");
         state = State.Knockback;
     }
-
-    public override void Knockback(float damage, Vector2 direction)
+    public virtual void Knockback(float damage, Vector2 direction)
     {
         if (thrownRightHammer != null)
         {
@@ -604,7 +603,6 @@ public class Hammer : PlayerController
         canAirShield = false;
         pressedAirShieldWhileInKnockback = false;
         canAirShieldTimer = 0f;
-        //canAirShieldThreshold = knockbackValue * .01f;
         //canAirShieldThreshold = .5f;
         StartCoroutine(cameraShake.Shake(.04f, .4f));
         EndPunchLeft();
@@ -622,8 +620,7 @@ public class Hammer : PlayerController
         //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
         //direction = direction.normalized;
         float knockbackValue = (14 * ((currentPercentage + damage) * (damage / 2)) / 150) + 7; //knockback that scales
-        canAirShieldThreshold = knockbackValue * .01f;
-        Debug.Log(canAirShieldThreshold + "air shield Timer threshold");
+        //canAirShieldThreshold = knockbackValue * .01f;
         rb.AddForce(direction * knockbackValue, ForceMode2D.Impulse);
         isGrabbed = false;
         //Debug.Log(currentPercentage + "current percentage");
@@ -631,10 +628,11 @@ public class Hammer : PlayerController
     }
 
 
+
     public override void OnPunchRight()
     {
         if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
-
+        //if (state == State.Knockback) return;
         if (state == State.FireGrabbed) return;
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
@@ -653,7 +651,7 @@ public class Hammer : PlayerController
     public override void OnPunchLeft()
     {
         if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
-
+        //if (state == State.Knockback) return;
         if (state == State.FireGrabbed) return;
         if (state == State.Grabbing) return;
         if (state == State.Stunned) return;
