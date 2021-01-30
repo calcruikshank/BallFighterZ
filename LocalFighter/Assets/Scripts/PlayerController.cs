@@ -507,6 +507,8 @@ public class PlayerController : MonoBehaviour
         //canAirShieldThreshold = .5f;
         Debug.Log("Throw");
         isGrabbed = false;
+        EndPunchLeft();
+        EndPunchRight();
         grabTimer = 0;
         moveSpeed = 12f;
         brakeSpeed = 20f;
@@ -523,7 +525,34 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(currentPercentage + "current percentage");
         state = State.Knockback;
     }
-
+    public virtual void NinjaThrow(Vector2 direction)
+    {
+        canAirShield = false;
+        pressedAirShieldWhileInKnockback = false;
+        canAirShieldTimer = 0f;
+        //canAirShieldThreshold = .5f;
+        StartCoroutine(cameraShake.Shake(.04f, .4f));
+        EndPunchLeft();
+        EndPunchRight();
+        shieldingLeft = false;
+        shieldingRight = false;
+        isBlockingLeft = false;
+        isBlockingRight = false;
+        shieldRightTimer = 0;
+        shieldLeftTimer = 0;
+        currentPercentage += 5f;
+        percentageText.text = ((int)currentPercentage + "%");
+        brakeSpeed = 20f;
+        // Debug.Log(damage + " damage");
+        //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
+        //direction = direction.normalized;
+        float knockbackValue = 20f; //knockback that scales
+        //canAirShieldThreshold = knockbackValue * .01f;
+        rb.AddForce(direction * knockbackValue, ForceMode2D.Impulse);
+        isGrabbed = false;
+        //Debug.Log(currentPercentage + "current percentage");
+        state = State.Knockback;
+    }
 
     public virtual void HandleShielding()
     {

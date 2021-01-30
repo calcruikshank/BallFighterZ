@@ -7,6 +7,7 @@ public class PlayerInitializer : MonoBehaviour
     public GameObject thorPrefab;
     public GameObject fistPrefab;
     public GameObject firePrefab;
+    public GameObject ninjaPrefab;
     public PlayerInputManager gameSceneManager;
     [SerializeField] private Transform[] playerSpawns;
     
@@ -37,6 +38,13 @@ public class PlayerInitializer : MonoBehaviour
             {
                 //var player = Instantiate(thorPrefab, playerSpawns[i].position, playerSpawns[i].rotation);
                 var player = PlayerInput.Instantiate(firePrefab, playerConfigs[i].PlayerIndex, playerConfigs[i].currentControlScheme, 0, playerConfigs[i].deviceId); //figure out how to get the device id
+                //gameSceneManager.playerPrefab = thorPrefab;
+                player.GetComponent<PlayerInputHandler>().InitializePlayer(playerConfigs[i]);
+            }
+            if (playerConfigs[i].characterClass == 3)
+            {
+                //var player = Instantiate(thorPrefab, playerSpawns[i].position, playerSpawns[i].rotation);
+                var player = PlayerInput.Instantiate(ninjaPrefab, playerConfigs[i].PlayerIndex, playerConfigs[i].currentControlScheme, 0, playerConfigs[i].deviceId); //figure out how to get the device id
                 //gameSceneManager.playerPrefab = thorPrefab;
                 player.GetComponent<PlayerInputHandler>().InitializePlayer(playerConfigs[i]);
             }

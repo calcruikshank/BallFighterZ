@@ -117,7 +117,7 @@ Transform:
   - {fileID: 4926712472512032119}
   - {fileID: 6274694058452446311}
   - {fileID: 2937346641240155235}
-  - {fileID: 2713329528816882585}
+  - {fileID: 7469618099724286636}
   - {fileID: 7699280708762087975}
   - {fileID: 3030551975317783489}
   - {fileID: 7896175211703954297}
@@ -238,7 +238,7 @@ MonoBehaviour:
   - {x: -0.57178915, y: -1.5700108, z: 0}
   m_ShapePathHash: -817397846
   m_Mesh: {fileID: 0}
-  m_InstanceId: 56992
+  m_InstanceId: 73414
 --- !u!96 &3022404880235389067
 TrailRenderer:
   serializedVersion: 2
@@ -430,7 +430,7 @@ GameObject:
   - component: {fileID: 2713329528816882585}
   - component: {fileID: 8991679194488330611}
   m_Layer: 0
-  m_Name: WhiteCirclew
+  m_Name: Shadow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -444,11 +444,11 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2191064167592362140}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.4, z: 0}
-  m_LocalScale: {x: 1.8913023, y: 1.8913023, z: 1.8913023}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 1226895734732942807}
-  m_RootOrder: 4
+  m_Father: {fileID: 7469618099724286636}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8991679194488330611
 SpriteRenderer:
@@ -747,6 +747,37 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &6164676052388852652
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7469618099724286636}
+  m_Layer: 0
+  m_Name: ShadowHolder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7469618099724286636
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6164676052388852652}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.4, z: 0}
+  m_LocalScale: {x: 1.8913025, y: 1.8913025, z: 1.8913025}
+  m_Children:
+  - {fileID: 2713329528816882585}
+  m_Father: {fileID: 1226895734732942807}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6319545560430747526
 GameObject:
   m_ObjectHideFlags: 0
