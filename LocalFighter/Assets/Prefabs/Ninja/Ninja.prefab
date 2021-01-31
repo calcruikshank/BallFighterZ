@@ -203,6 +203,7 @@ MonoBehaviour:
   state: 0
   shurikenPrefab: {fileID: 506329253092317510, guid: 2fa113dbf7060fe489441feaa11cf76c, type: 3}
   kunaiPrefab: {fileID: 1489977666597667631, guid: 348a491cef103a54eafc580adeacd5d4, type: 3}
+  sliceAnimation: {fileID: 1240720585705368, guid: 823be00cfa397dd44ad5dccc21cef3b2, type: 3}
   hitBox: {fileID: 926449330050574847}
   midFire: {fileID: 3057071382310876432}
   botFire: {fileID: 3653153906028752986}

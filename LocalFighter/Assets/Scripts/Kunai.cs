@@ -68,7 +68,7 @@ public class Kunai : MonoBehaviour
             {
                 opponent.rb.velocity = Vector3.zero;
                 knockTowards = transform.right;
-                opponent.NinjaThrow(knockTowards);
+                opponent.Throw(knockTowards);
             }
 
 

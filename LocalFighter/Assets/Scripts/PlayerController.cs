@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
     protected bool airShielding, canAirShield, pressedAirShield, pressedAirShieldWhileInKnockback;
     protected float airShieldTimer, canAirShieldTimer, canAirShieldThreshold, airPowerShieldTimer;
     [SerializeField] protected GameObject airShieldAnimation, airShieldInstantiated;
-    bool releaseShieldBuffer = false;
+    protected bool releaseShieldBuffer = false;
     public State state;
     public enum State
     {
@@ -241,7 +241,7 @@ public class PlayerController : MonoBehaviour
         {
             animationTransformHandler.EnableEmitter();
         }
-        canAirShield = false;
+        canAirShield = true;
         pressedAirShieldWhileInKnockback = false;
         canAirShieldTimer = 0f;
         //canAirShieldThreshold = .5f;
@@ -269,14 +269,8 @@ public class PlayerController : MonoBehaviour
     }
 
 
-    public void HandleKnockback()
+    public virtual void HandleKnockback()
     {
-        canAirShieldTimer += Time.deltaTime;
-        if (canAirShieldTimer > canAirShieldThreshold && canAirShield == false && pressedAirShieldWhileInKnockback == false)
-        {
-            canAirShield = true;
-            pressedAirShieldWhileInKnockback = true;
-        }
         animationTransformHandler.SetEmittingToTrue();
         if (opponent != null)
         {
@@ -312,7 +306,7 @@ public class PlayerController : MonoBehaviour
             oppositeForce = -rb.velocity;
             brakeSpeed = brakeSpeed + (100f * Time.deltaTime);
             rb.AddForce(oppositeForce * Time.deltaTime * brakeSpeed);
-            rb.AddForce(movement * .25f); //DI
+            rb.AddForce(movement * .05f); //DI
         }
     }
 
@@ -502,10 +496,12 @@ public class PlayerController : MonoBehaviour
     }
     public virtual void Throw(Vector2 direction)
     {
+        canAirShield = true;
         pressedAirShieldWhileInKnockback = false;
         canAirShieldTimer = 0f;
         //canAirShieldThreshold = .5f;
         Debug.Log("Throw");
+        StartCoroutine(cameraShake.Shake(.04f, .4f));
         isGrabbed = false;
         EndPunchLeft();
         EndPunchRight();
@@ -525,37 +521,11 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(currentPercentage + "current percentage");
         state = State.Knockback;
     }
-    public virtual void NinjaThrow(Vector2 direction)
-    {
-        canAirShield = false;
-        pressedAirShieldWhileInKnockback = false;
-        canAirShieldTimer = 0f;
-        //canAirShieldThreshold = .5f;
-        StartCoroutine(cameraShake.Shake(.04f, .4f));
-        EndPunchLeft();
-        EndPunchRight();
-        shieldingLeft = false;
-        shieldingRight = false;
-        isBlockingLeft = false;
-        isBlockingRight = false;
-        shieldRightTimer = 0;
-        shieldLeftTimer = 0;
-        currentPercentage += 5f;
-        percentageText.text = ((int)currentPercentage + "%");
-        brakeSpeed = 20f;
-        // Debug.Log(damage + " damage");
-        //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
-        //direction = direction.normalized;
-        float knockbackValue = 20f; //knockback that scales
-        //canAirShieldThreshold = knockbackValue * .01f;
-        rb.AddForce(direction * knockbackValue, ForceMode2D.Impulse);
-        isGrabbed = false;
-        //Debug.Log(currentPercentage + "current percentage");
-        state = State.Knockback;
-    }
+    
 
     public virtual void HandleShielding()
     {
+
         canShieldAgainTimer += Time.deltaTime;
         canShieldAgainTimerLeft += Time.deltaTime;
         shieldLeftTimer -= Time.deltaTime;
@@ -757,6 +727,10 @@ public class PlayerController : MonoBehaviour
             Destroy(animationTransformHandler.gameObject);
             Destroy(this.gameObject);
         }
+        shieldingLeft = false;
+        isBlockingLeft = false;
+        shieldingRight = false;
+        isBlockingRight = false;
         animationTransformHandler.SetEmittingToFalse();
         animationTransformHandler.DisableEmitter();
         grabTimer = 0;
@@ -1019,8 +993,10 @@ public class PlayerController : MonoBehaviour
 
     protected void HandleAirShielding()
     {
+
+        canAirShieldTimer += Time.deltaTime;
         airShieldTimer -= Time.deltaTime;
-        if (airShieldTimer > 0 && canAirShield && pressedAirShield)
+        if (airShieldTimer > 0 && canAirShield && canAirShieldTimer > canAirShieldThreshold)
         {
             pressedAirShield = false;
             airShieldTimer = 0;
@@ -1028,20 +1004,21 @@ public class PlayerController : MonoBehaviour
             airShieldInstantiated = Instantiate(airShieldAnimation, transform.position, Quaternion.identity);
             canAirShield = false;
             airPowerShieldTimer = 0f;
+            canAirShieldTimer = 0f;
         }
-        if (airShieldInstantiated != null)
-        {
-            airShieldInstantiated.transform.position = this.transform.position;
-        }
+        
         if (airShielding)
         {
+            if (airShieldInstantiated != null)
+            {
+                airShieldInstantiated.transform.position = this.transform.position;
+            }
             airPowerShieldTimer += Time.deltaTime;
             if (airPowerShieldTimer >= .5f)
             {
                 shieldingLeft = false;
                 shieldingRight = false;
                 airShielding = false;
-                canAirShield = false;
                 pressedAirShield = false;
                 isBlockingLeft = false;
                 isBlockingRight = false;
@@ -1180,7 +1157,8 @@ public class PlayerController : MonoBehaviour
             pressedAirShield = true;
             airShieldTimer = inputBuffer;
         }
-        if (!canAirShield && state == State.Knockback)
+        if (!canAirShield) return;
+        if (state == State.Knockback && canAirShieldTimer <= canAirShieldThreshold)
         {
             return;
         }
@@ -1203,7 +1181,8 @@ public class PlayerController : MonoBehaviour
             pressedAirShield = true;
             airShieldTimer = inputBuffer;
         }
-        if (!canAirShield && state == State.Knockback)
+        if (!canAirShield) return;
+        if (state == State.Knockback && canAirShieldTimer <= canAirShieldThreshold)
         {
             return;
         }
@@ -1250,8 +1229,9 @@ public class PlayerController : MonoBehaviour
         if (state == State.ShockGrabbed) return;
         if (state == State.Grabbed) return;
         if (state == State.Dashing) return;
+        if (!canAirShield) return;
         
-        if (!canAirShield && state == State.Knockback)
+        if (state == State.Knockback && canAirShieldTimer <= canAirShieldThreshold)
         {
             return;
         }

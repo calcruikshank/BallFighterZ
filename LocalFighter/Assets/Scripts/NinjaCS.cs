@@ -6,6 +6,7 @@ public class NinjaCS : PlayerController
 {
     [SerializeField] GameObject shurikenPrefab;
     [SerializeField] GameObject kunaiPrefab;
+    [SerializeField] GameObject sliceAnimation;
     public CircleCollider2D hitBox;
     Collider2D opponentHitBox;
     [SerializeField] Transform midFire, botFire, topFire;
@@ -67,11 +68,15 @@ public class NinjaCS : PlayerController
 
     public override void HandleThrowingHands()
     {
-        if (state != State.Dashing && opponentHitBox != null)
+        
+        if (state != State.Dashing)
         {
             hitBox.enabled = true;
             hitBox.isTrigger = false;
-            Physics2D.IgnoreCollision(hitBox, opponentHitBox, false);
+            if (opponentHitBox != null)
+            {
+                Physics2D.IgnoreCollision(hitBox, opponentHitBox, false);
+            }
         }
         punchedRightTimer -= Time.deltaTime;
         punchedLeftTimer -= Time.deltaTime;
@@ -122,7 +127,7 @@ public class NinjaCS : PlayerController
 
 
         returningLeft = false;
-        if (!returningLeft || !returningRight && state != State.Dashing) returnSpeed = 4f;
+        if (!returningLeft || !returningRight && state != State.Dashing) returnSpeed = 2.5f;
         
 
     }
@@ -186,6 +191,56 @@ public class NinjaCS : PlayerController
     public override void FixedHandleDash()
     {
         rb.velocity = dashDir * dashSpeedNinja;
+    }
+
+    public override void HandleKnockback()
+    {
+
+        hitBox.enabled = true;
+        hitBox.isTrigger = false;
+        if (opponentHitBox != null)
+        {
+            Physics2D.IgnoreCollision(hitBox, opponentHitBox, false);
+        }
+        canAirShieldTimer += Time.deltaTime;
+        
+        animationTransformHandler.SetEmittingToTrue();
+        if (opponent != null)
+        {
+            if (opponent.transform.position == grabPosition.position)
+            {
+                opponent.isGrabbed = false;
+                opponent.state = State.Knockback;
+            }
+        }
+        movement.x = inputMovement.x;
+        movement.y = inputMovement.y;
+        movement = movement;
+        if (movement.x != 0 || movement.y != 0)
+        {
+            lastMoveDir = movement;
+        }
+        if (rb.velocity.magnitude <= 5)
+        {
+            if (releaseShieldBuffer)
+            {
+                releaseShieldBuffer = false;
+                shieldLeftTimer = 0;
+                shieldRightTimer = 0;
+                shieldingLeft = false;
+                shieldingRight = false;
+            }
+            rb.velocity = new Vector2(0, 0);
+            state = State.Normal;
+        }
+        if (rb.velocity.magnitude > 0)
+        {
+
+            oppositeForce = -rb.velocity;
+            brakeSpeed = brakeSpeed + (100f * Time.deltaTime);
+            rb.AddForce(oppositeForce * Time.deltaTime * brakeSpeed);
+            rb.AddForce(movement * .05f); //DI
+        }
     }
 
 
@@ -286,6 +341,7 @@ public class NinjaCS : PlayerController
         }
         if (opponent != null && opponent != this)
         {
+            Instantiate(sliceAnimation, opponent.transform.position, transform.rotation);
             opponentHitBox = other;
             Physics2D.IgnoreCollision(hitBox, opponentHitBox);
             if (opponent.isBlockingLeft || opponent.isBlockingRight)

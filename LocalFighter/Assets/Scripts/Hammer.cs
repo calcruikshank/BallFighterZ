@@ -91,9 +91,16 @@ public class Hammer : PlayerController
 
         if (returnHammerRight)
         {
-
-            if (thrownRightHammerRB.velocity.magnitude > .2f)
+            if (thrownRightHammerRB.velocity.magnitude != 0f)
             {
+            }
+            
+            punchedRight = false;
+            
+            if (thrownRightHammerRB.velocity.magnitude > 1f)
+            {
+
+                Debug.Log("hammer velocity = " + thrownRightHammerRB.velocity);
                 thrownRightHammerRB.AddForce(oppositeRightHammerForce * Time.deltaTime * 5, ForceMode2D.Impulse);
             }
             if (thrownRightHammerRB.velocity.magnitude <= 1f)
@@ -103,7 +110,7 @@ public class Hammer : PlayerController
                 returnHammerRightSpeed += 200 * Time.deltaTime;
                 thrownRightHammerRB.transform.position = Vector3.MoveTowards(thrownRightHammerRB.transform.position, rightHandTransform.position, returnHammerRightSpeed * Time.deltaTime);
             }
-
+            
 
         }
 
@@ -225,12 +232,13 @@ public class Hammer : PlayerController
     public void ReturnRightHammer()
     {
 
+        oppositeRightHammerForce = Vector3.zero;
+        //Debug.Log("release");
         thrownRightHammerRB.velocity = Vector3.zero;
-        returnHammerRightSpeed = 5f;
+        //Debug.Log(thrownRightHammerRB.velocity);
+        returnHammerRightSpeed = 1f;
         returnHammerRight = true;
-        punchedRight = false;
-        returningRight = true;
-        threwRight = false;
+
     }
     public void ReturnLeftHammer()
     {
@@ -285,7 +293,6 @@ public class Hammer : PlayerController
         if (returnHammerRight)
         {
 
-
             thrownRightHammerRB.velocity = Vector3.zero;
             if (thrownRightHammerRB.velocity.magnitude > .2f)
             {
@@ -334,8 +341,11 @@ public class Hammer : PlayerController
     {
         if (thrownRightHammer != null)
         {
+
+            //Debug.Log(thrownRightHammerRB.velocity + " hammer velocity ");
             threwRight = false;
             returnHammerRight = true;
+            thrownRightHammerRB.velocity = Vector3.zero;
         }
         returningRight = true;
         punchedRight = false;
@@ -544,10 +554,11 @@ public class Hammer : PlayerController
 
     public override void OnReleasePunchRight()
     {
+        
         punchedRightTimer = 0;
         if (threwRight && returnHammerRight == false)
         {
-            Debug.Log("release");
+            
             oppositeRightHammerForce = -thrownRightHammerRB.velocity;
             returnHammerRightSpeed = 0f;
             returnHammerRight = true;
@@ -573,8 +584,16 @@ public class Hammer : PlayerController
         {
             ReturnRightHammer();
         }
+        pressedAirShieldWhileInKnockback = false;
+        canAirShieldTimer = 0f;
+
+        canAirShield = true;
+        //canAirShieldThreshold = .5f;
         Debug.Log("Throw");
+        StartCoroutine(cameraShake.Shake(.04f, .4f));
         isGrabbed = false;
+        EndPunchLeft();
+        EndPunchRight();
         grabTimer = 0;
         moveSpeed = 12f;
         brakeSpeed = 20f;
@@ -586,21 +605,25 @@ public class Hammer : PlayerController
         isBlockingLeft = false;
         isBlockingRight = false;
         rb.AddForce(direction * knockbackValue, ForceMode2D.Impulse);
-
+        //canAirShieldThreshold = knockbackValue * .01f;
+        //canAirShieldThreshold = knockbackValue * .01f;
         //Debug.Log(currentPercentage + "current percentage");
         state = State.Knockback;
     }
     public virtual void Knockback(float damage, Vector2 direction)
     {
-        if (thrownRightHammer != null)
+        if (thrownRightHammerRB != null)
         {
+            thrownRightHammerRB.velocity = Vector3.zero;
+
             ReturnRightHammer();
         }
         if (respawned == false)
         {
             animationTransformHandler.EnableEmitter();
         }
-        canAirShield = false;
+        
+        canAirShield = true;
         pressedAirShieldWhileInKnockback = false;
         canAirShieldTimer = 0f;
         //canAirShieldThreshold = .5f;
