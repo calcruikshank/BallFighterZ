@@ -114,7 +114,6 @@ MonoBehaviour:
   readyToPummelRight: 0
   readyToPummelLeft: 0
   canDash: 0
-  gameIsOver: 0
   isPowerShielding: 0
   startedPunchRight: 0
   startedPunchLeft: 0
@@ -157,6 +156,8 @@ MonoBehaviour:
   redShield: {fileID: 5471689960208006358, guid: d8132f173a4055f43aace3a906167654, type: 3}
   blueShield: {fileID: 5471689960208006358, guid: d01cb7b2521010b478c93130fdec3028, type: 3}
   airShieldAnimation: {fileID: 114444, guid: d8f1fb6a388df0b47b0a8ab81b0ce77d, type: 3}
+  airShieldInstantiated: {fileID: 0}
+  controlsMenu: {fileID: 8521902700825389228, guid: 2e3f0ae21481a3741b64ce2d9739c8c5, type: 3}
   state: 0
 --- !u!114 &926449328659449652
 MonoBehaviour:

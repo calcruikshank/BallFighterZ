@@ -261,6 +261,7 @@ public class FirePlayer : PlayerController
         returningLeftTimer = inputBuffer;
     }
 
+
     public override void OnPunchRight()
     {
         
@@ -326,12 +327,12 @@ public class FirePlayer : PlayerController
         beginDashTimer -= Time.deltaTime;
         if (beginDashTimer <= 0)
         {
-            rightHandFire.transform.position = transform.position;
-            rightHandFire.transform.rotation = transform.rotation;
-            leftHandFire.transform.position = transform.position;
-            leftHandFire.transform.rotation = transform.rotation;
-            leftHandFire.transform.localScale = leftHandTransform.localScale;
-            rightHandFire.transform.localScale = leftHandTransform.localScale;
+            //rightHandFire.transform.position = transform.position;
+            //rightHandFire.transform.rotation = transform.rotation;
+            //leftHandFire.transform.position = transform.position;
+            //leftHandFire.transform.rotation = transform.rotation;
+            //leftHandFire.transform.localScale = leftHandTransform.localScale;
+            //rightHandFire.transform.localScale = leftHandTransform.localScale;
             dashLookPosition = Vector3.RotateTowards(transform.right, inputMovement.normalized, 8 * Time.deltaTime, 0f);
 
             //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
@@ -482,8 +483,8 @@ public class FirePlayer : PlayerController
         returningLeft = false;
         dashSpeed = 30f;
         dashingTimer = 0f;
-        rightHandFire = Instantiate(fireFoxPrefab, transform.position, transform.rotation);
-        leftHandFire = Instantiate(fireFoxPrefab, transform.position, transform.rotation);
+        //rightHandFire = Instantiate(fireFoxPrefab, transform.position, transform.rotation);
+        //leftHandFire = Instantiate(fireFoxPrefab, transform.position, transform.rotation);
         beginDashTimer = .25f;
         state = State.Dashing;
 
@@ -529,8 +530,8 @@ public class FirePlayer : PlayerController
             dashingTimer = 0f;
             /*rightHandFire = Instantiate(fireFoxPrefab, rightHandTransform.position, rightHandTransform.rotation);
             leftHandFire = Instantiate(fireFoxPrefab, leftHandTransform.position, leftHandTransform.rotation);*/
-            rightHandFire = Instantiate(fireFoxPrefab, transform.position, transform.rotation);
-            leftHandFire = Instantiate(fireFoxPrefab, transform.position, transform.rotation);
+            //rightHandFire = Instantiate(fireFoxPrefab, transform.position, transform.rotation);
+            //leftHandFire = Instantiate(fireFoxPrefab, transform.position, transform.rotation);
             beginDashTimer = .25f;
             state = State.Dashing;
         }

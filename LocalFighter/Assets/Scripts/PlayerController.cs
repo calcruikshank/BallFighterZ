@@ -40,7 +40,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] protected GameObject redShield, blueShield;
     protected bool airShielding, canAirShield, pressedAirShield, pressedAirShieldWhileInKnockback;
     protected float airShieldTimer, canAirShieldTimer, canAirShieldThreshold, airPowerShieldTimer;
-    [SerializeField] protected GameObject airShieldAnimation, airShieldInstantiated;
+    [SerializeField] protected GameObject airShieldAnimation, airShieldInstantiated, controlsMenu, controlsMenuInstantiated;
     protected bool releaseShieldBuffer = false;
     public State state;
     public enum State
@@ -982,6 +982,10 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(arrowPointerInstantiated);
         }
+        if (controlsMenuInstantiated != null)
+        {
+            controlsMenuInstantiated.transform.position = this.transform.position;
+        }
     }
     public void HandleShockGrabbed()
     {
@@ -1157,7 +1161,7 @@ public class PlayerController : MonoBehaviour
             pressedAirShield = true;
             airShieldTimer = inputBuffer;
         }
-        if (!canAirShield) return;
+        if (!canAirShield && state == State.Knockback) return;
         if (state == State.Knockback && canAirShieldTimer <= canAirShieldThreshold)
         {
             return;
@@ -1181,7 +1185,7 @@ public class PlayerController : MonoBehaviour
             pressedAirShield = true;
             airShieldTimer = inputBuffer;
         }
-        if (!canAirShield) return;
+        if (!canAirShield && state == State.Knockback) return;
         if (state == State.Knockback && canAirShieldTimer <= canAirShieldThreshold)
         {
             return;
@@ -1229,8 +1233,8 @@ public class PlayerController : MonoBehaviour
         if (state == State.ShockGrabbed) return;
         if (state == State.Grabbed) return;
         if (state == State.Dashing) return;
-        if (!canAirShield) return;
-        
+        if (!canAirShield && state == State.Knockback) return;
+
         if (state == State.Knockback && canAirShieldTimer <= canAirShieldThreshold)
         {
             return;
@@ -1283,7 +1287,18 @@ public class PlayerController : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-
+    void OnStart()
+    {
+        Debug.Log("Pressed start");
+        controlsMenuInstantiated = Instantiate(controlsMenu, transform.position, Quaternion.identity);
+    }
+    void OnReleaseStart()
+    {
+        if (controlsMenuInstantiated != null)
+        {
+            Destroy(controlsMenuInstantiated);
+        }
+    }
     #endregion
 
 }
