@@ -373,7 +373,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.size
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinBehavior
@@ -401,7 +401,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.data[1].m_Id
-      value: dde5dd4b-52cf-463c-8aea-742d5c713bc7
+      value: a844bbaa-c43e-41a1-b9c0-166d2c634a69
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.data[1].m_Action
@@ -409,11 +409,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.data[1].m_Path
-      value: <Gamepad>/select
+      value: <Gamepad>/buttonSouth
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.data[2].m_Id
-      value: a844bbaa-c43e-41a1-b9c0-166d2c634a69
+      value: 1d82dbbc-9107-4a2c-8e5e-dc0133cca670
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.data[2].m_Action
@@ -421,11 +421,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.data[2].m_Path
-      value: <Gamepad>/buttonSouth
+      value: <Gamepad>/buttonEast
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.data[3].m_Id
-      value: 1d82dbbc-9107-4a2c-8e5e-dc0133cca670
+      value: ad935d3c-8776-4556-80e2-ddbb4200869b
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.data[3].m_Action
@@ -433,7 +433,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.data[3].m_Path
-      value: <Gamepad>/buttonEast
+      value: <Mouse>/backButton
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.data[4].m_Id

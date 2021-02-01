@@ -807,6 +807,10 @@ public class PlayerController : MonoBehaviour
 
         if (canDash)
         {
+            shieldingLeft = false;
+            shieldingRight = false;
+            isBlockingLeft = false;
+            isBlockingRight = false;
             punchedRight = true;
             returningRight = false;
             //Debug.Log(direction);
@@ -1219,7 +1223,10 @@ public class PlayerController : MonoBehaviour
     protected virtual void OnMouseDash()
     {
         if (state != State.Normal) return;
-
+        shieldingLeft = false;
+        shieldingRight = false;
+        isBlockingLeft = false;
+        isBlockingRight = false;
         Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
         //Vector2 direction = inputMovement.normalized;
         Dash(direction.normalized);

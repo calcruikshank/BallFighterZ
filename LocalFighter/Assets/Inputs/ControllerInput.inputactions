@@ -188,6 +188,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=1)"
+                },
+                {
+                    "name": "Reset",
+                    "type": "Button",
+                    "id": "bb73ff1d-cc0b-4691-b5ca-82f4d6ef98d3",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -584,6 +592,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "ReleaseStart",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d672833e-4bae-43c4-948e-53547851a804",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Reset",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -4,6 +4,8 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
+using UnityEngine.SceneManagement;
+
 public class PlayerSetupMenuController : MonoBehaviour
 {
     private int PlayerIndex;
@@ -26,7 +28,7 @@ public class PlayerSetupMenuController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
@@ -36,7 +38,7 @@ public class PlayerSetupMenuController : MonoBehaviour
         {
             inputEnabled = true;
         }
-        
+
     }
 
 
@@ -76,4 +78,10 @@ public class PlayerSetupMenuController : MonoBehaviour
         menuPanel.GetComponentInChildren<Button>().Select();
     }
 
+    public void OnReset()
+    {
+        Debug.Log("reset");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+
+    }
 }

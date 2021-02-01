@@ -253,7 +253,10 @@ public class Hammer : PlayerController
 
     public override void Dash(Vector3 direction)
     {
-
+        shieldingLeft = false;
+        shieldingRight = false;
+        isBlockingLeft = false;
+        isBlockingRight = false;
         dashPosition = direction;
         transform.right = dashPosition;
         if (!punchedRight && !returningRight && !returnHammerRight && dashTimer < 0)

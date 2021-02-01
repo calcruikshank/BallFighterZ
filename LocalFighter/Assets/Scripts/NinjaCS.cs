@@ -159,6 +159,10 @@ public class NinjaCS : PlayerController
 
     public override void Dash(Vector3 direction)
     {
+        shieldingLeft = false;
+        shieldingRight = false;
+        isBlockingLeft = false;
+        isBlockingRight = false;
         hitBox.isTrigger = true;
         Debug.Log("dash");
         dashSpeedNinja = 80f;
@@ -263,6 +267,7 @@ public class NinjaCS : PlayerController
             //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
             transform.right = lastLookedPosition;
         }
+        punchedLeftTimer = 0f;
         punchedRightTimer = inputBuffer;
         if (returningRight) return;
         //punchedRight = true;
@@ -286,6 +291,7 @@ public class NinjaCS : PlayerController
             //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
             transform.right = lastLookedPosition;
         }
+        punchedRightTimer = 0f;
         punchedLeftTimer = inputBuffer;
         if (returningLeft) return;
         //punchedLeft = true;
