@@ -78,10 +78,9 @@ public class NinjaCS : PlayerController
                 Physics2D.IgnoreCollision(hitBox, opponentHitBox, false);
             }
         }
-        punchedRightTimer -= Time.deltaTime;
+        
         punchedLeftTimer -= Time.deltaTime;
         if (punchedLeftTimer > 0) punchedLeft = true;
-        if (punchedRightTimer > 0) punchedRight = true;
 
         if (punchedRight && !returningRight && !punchedLeft)
         {
@@ -100,7 +99,7 @@ public class NinjaCS : PlayerController
         if (returningRight)
         {
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
-            punchedRight = false;
+            
             if (rightHandTransform.localPosition.x <= 0f)
             {
                 returningRight = false;
@@ -247,35 +246,8 @@ public class NinjaCS : PlayerController
         }
     }
 
-
-
-    public override void OnPunchRight()
-    {
-        pummeledRight = true;
-        if (state == State.Grabbing) return;
-        if (state == State.FireGrabbed) return;
-        if (state == State.Stunned) return;
-        if (state == State.Dashing) return;
-        if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
-        if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
-        if (punchedLeft) return;
-        //if (state == State.Knockback) return;
-        Vector2 joystickPosition = joystickLook.normalized;
-        if (joystickPosition.x != 0 || joystickPosition.y != 0)
-        {
-            Vector2 lastLookedPosition = joystickPosition;
-            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-            transform.right = lastLookedPosition;
-        }
-        punchedLeftTimer = 0f;
-        punchedRightTimer = inputBuffer;
-        if (returningRight) return;
-        //punchedRight = true;
-        shieldingRight = false;
-    }
     public override void OnPunchLeft()
     {
-        pummeledLeft = true;
         if (state == State.Grabbing) return;
         if (state == State.FireGrabbed) return;
         if (state == State.Stunned) return;
@@ -298,14 +270,7 @@ public class NinjaCS : PlayerController
         shieldingLeft = false;
     }
 
-    public override void OnReleasePunchRight()
-    {
-
-    }
-    public override void OnReleasePunchLeft()
-    {
-
-    }
+    
 
     protected override void OnMouseDash()
     {
@@ -327,8 +292,44 @@ public class NinjaCS : PlayerController
     }
 
 
+    protected override void CheckForPunchRight()
+    {
+        if (releasedRight)
+        {
+            punchedRightTimer -= Time.deltaTime;
+        }
+        if (pressedRight)
+        {
+            punchedRightTimer = inputBuffer;
+            pressedRight = false;
+            pummeledRight = true;
+            
+        }
+        if (punchedLeft) return;
+        if (shieldingLeft || shieldingRight || isBlockingLeft || isBlockingRight) return;
+        if (state == State.Grabbing) return;
+        if (state == State.FireGrabbed) return;
+        if (state == State.Stunned) return;
+        if (state == State.Dashing) return;
+        if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
+        if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
+        if (returningRight) return;
 
-
+        //punchedRight = true;
+        shieldingRight = false;
+        if (punchedRightTimer > 0)
+        {
+            Vector2 joystickPosition = joystickLook.normalized;
+            if (joystickPosition.x != 0 || joystickPosition.y != 0)
+            {
+                Vector2 lastLookedPosition = joystickPosition;
+                //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+                transform.right = lastLookedPosition;
+            }
+            punchedRight = true;
+            punchedRightTimer = 0;
+        }
+    }
 
 
 
@@ -373,4 +374,7 @@ public class NinjaCS : PlayerController
         }
 
     }
+
+
+
 }

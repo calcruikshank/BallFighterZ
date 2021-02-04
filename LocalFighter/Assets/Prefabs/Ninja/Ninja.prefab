@@ -125,7 +125,7 @@ MonoBehaviour:
   dashPosition: {x: 0, y: 0}
   joystickLook: {x: 0, y: 0}
   powerDashTowards: {x: 0, y: 0}
-  moveSpeed: 10
+  moveSpeed: 11
   punchRange: 2
   punchSpeed: 40
   returnSpeed: 4
@@ -193,7 +193,7 @@ MonoBehaviour:
   canShieldAgainTimer: 0
   canShieldAgainTimerLeft: 0
   shieldAgainThreshold: 0.25
-  moveSpeedSetter: 10
+  moveSpeedSetter: 11
   redHand: {fileID: 1150478361673233891, guid: 5d42599fbd0ccef438bbccf2265e91ae, type: 3}
   blueHand: {fileID: 1150478361673233891, guid: bb39926f569550d4cb50a394669c70c3, type: 3}
   redShield: {fileID: 5471689960208006358, guid: d8132f173a4055f43aace3a906167654, type: 3}
@@ -201,6 +201,7 @@ MonoBehaviour:
   airShieldAnimation: {fileID: 114444, guid: d8f1fb6a388df0b47b0a8ab81b0ce77d, type: 3}
   airShieldInstantiated: {fileID: 0}
   controlsMenu: {fileID: 8521902700825389228, guid: 2e3f0ae21481a3741b64ce2d9739c8c5, type: 3}
+  controlsMenuInstantiated: {fileID: 0}
   state: 0
   shurikenPrefab: {fileID: 506329253092317510, guid: 2fa113dbf7060fe489441feaa11cf76c, type: 3}
   kunaiPrefab: {fileID: 1489977666597667631, guid: 348a491cef103a54eafc580adeacd5d4, type: 3}
