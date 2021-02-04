@@ -17,6 +17,7 @@ public class Hammer : PlayerController
     public float dashTimer;
     public GameObject lightningPrefab, lightningBallPrefab, instantiatedLightning, instantiatedLightningBall;
     public Rigidbody2D instantiatedLightningBallRB;
+    
     public override void Start()
     {
         canAirShieldThreshold = .1f;
@@ -665,6 +666,7 @@ public class Hammer : PlayerController
         if (state == State.Dashing) return;
         if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
         //if (state == State.Knockback) return;
+        
         punchedRightTimer = inputBuffer;
         if (returningRight)
         {

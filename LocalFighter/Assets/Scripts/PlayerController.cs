@@ -41,7 +41,10 @@ public class PlayerController : MonoBehaviour
     protected bool airShielding, canAirShield, pressedAirShield, pressedAirShieldWhileInKnockback;
     protected float airShieldTimer, canAirShieldTimer, canAirShieldThreshold, airPowerShieldTimer;
     [SerializeField] protected GameObject airShieldAnimation, airShieldInstantiated, controlsMenu, controlsMenuInstantiated;
-    protected bool releaseShieldBuffer = false;
+    protected bool releaseShieldBuffer, pressedRight, pressedLeft, pressedShieldBoth, releasedShieldBoth = false;
+
+
+
     public State state;
     public enum State
     {
@@ -175,6 +178,7 @@ public class PlayerController : MonoBehaviour
                 HandleThrowingHands();
                 break;
         }
+        CheckForInputs();
     }
 
 
@@ -289,16 +293,15 @@ public class PlayerController : MonoBehaviour
         }
         if (rb.velocity.magnitude <= 5)
         {
+            
+            rb.velocity = new Vector2(0, 0);
+            state = State.Normal;
             if (releaseShieldBuffer)
             {
                 releaseShieldBuffer = false;
-                shieldLeftTimer = 0;
-                shieldRightTimer = 0;
                 shieldingLeft = false;
                 shieldingRight = false;
             }
-            rb.velocity = new Vector2(0, 0);
-            state = State.Normal;
         }
         if (rb.velocity.magnitude > 0)
         {
@@ -448,6 +451,17 @@ public class PlayerController : MonoBehaviour
     }
     public virtual void Grab(PlayerController opponentCheck)
     {
+        if (isGrabbed && opponent != null)
+        {
+            returningLeft = true;
+            returningRight = true;
+            isGrabbing = false;
+            opponent.rb.velocity = Vector3.zero;
+            Debug.Log("grabtimer is greater");
+            opponent.Throw(this.grabPosition.right);
+            grabTimer = 0;
+            state = State.Normal;
+        }
         moveSpeed = 0f;
         returningLeft = false;
         returningRight = false;
@@ -461,6 +475,7 @@ public class PlayerController : MonoBehaviour
     }
     public virtual void Grabbed(Transform player)
     {
+        
         punchesToRelease = 0;
         grabbedPosition = player; //the transform that grabbed you is equal to the player that grabbed you grab position
         returningLeft = true;
@@ -470,10 +485,12 @@ public class PlayerController : MonoBehaviour
 
     public void FireGrabbed(Transform player)
     {
+        
         punchesToRelease = 4;
         grabbedPosition = player; //the transform that grabbed you is equal to the player that grabbed you grab position
         returningLeft = true;
         returningRight = true;
+
         state = State.FireGrabbed;
     }
 
@@ -486,6 +503,16 @@ public class PlayerController : MonoBehaviour
     }
     public void HandleGrabbed()
     {
+        if (isGrabbing && opponent != null)
+        {
+            returningLeft = true;
+            returningRight = true;
+            isGrabbing = false;
+            opponent.rb.velocity = Vector3.zero;
+            Debug.Log("grabtimer is greater");
+            grabTimer = 0;
+            state = State.Normal;
+        }
         isGrabbed = true;
         isBlockingLeft = false;
         isBlockingRight = false;
@@ -945,6 +972,12 @@ public class PlayerController : MonoBehaviour
         }
         if (punchedRightTimer > 0 || punchedLeftTimer > 0)
         {
+            shieldLeftTimer = 0;
+            shieldRightTimer = 0;
+            shieldingLeft = false;
+            shieldingRight = false;
+            isBlockingLeft = false;
+            isBlockingRight = false;
             PowerDash(inputMovement);
             Destroy(arrowPointerInstantiated);
             return;
@@ -956,6 +989,7 @@ public class PlayerController : MonoBehaviour
     }
     public void PowerDash(Vector2 powerDashDirection)
     {
+        
         canShieldAgainTimer = shieldAgainThreshold;
         canShieldAgainTimerLeft = shieldAgainThreshold;
         powerDashSpeed = 50f;
@@ -1103,55 +1137,23 @@ public class PlayerController : MonoBehaviour
     }
     public virtual void OnPunchRight()
     {
-        pummeledRight = true;
-        if (state == State.Grabbing) return;
-        if (state == State.FireGrabbed) return;
-        if (state == State.Stunned) return;
-        if (state == State.Dashing) return;
-        if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
-        if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
-        //if (state == State.Knockback) return;
-        Vector2 joystickPosition = joystickLook.normalized;
-        if (joystickPosition.x != 0 || joystickPosition.y != 0)
-        {
-            Vector2 lastLookedPosition = joystickPosition;
-            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-            transform.right = lastLookedPosition;
-        }
-        punchedRightTimer = inputBuffer;
-        if (returningRight) return;
-        //punchedRight = true;
-        shieldingRight = false;
+        pressedRight = true;
+
+        
     }
     public virtual void OnPunchLeft()
     {
-        pummeledLeft = true;
-        if (state == State.Grabbing) return;
-        if (state == State.FireGrabbed) return;
-        if (state == State.Stunned) return;
-        if (state == State.Dashing) return;
-        if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
-        if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
-
-        //if (state == State.Knockback) return;
-        Vector2 joystickPosition = joystickLook.normalized;
-        if (joystickPosition.x != 0 || joystickPosition.y != 0)
-        {
-            Vector2 lastLookedPosition = joystickPosition;
-            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-            transform.right = lastLookedPosition;
-        }
-        punchedLeftTimer = inputBuffer;
-        if (returningLeft) return;
-        //punchedLeft = true;
-        shieldingLeft = false;
+        pressedLeft = true;
+        
     }
     public virtual void OnReleasePunchRight()
     {
+        pressedRight = false;
         pummeledRight = false;
     }
     public virtual void OnReleasePunchLeft()
     {
+        pressedLeft = false;
         pummeledLeft = false;
     }
 
@@ -1236,41 +1238,16 @@ public class PlayerController : MonoBehaviour
 
     void OnShieldBoth()
     {
-        if (state == State.FireGrabbed) return;
-        if (state == State.ShockGrabbed) return;
-        if (state == State.Grabbed) return;
-        if (state == State.Dashing) return;
-        if (!canAirShield && state == State.Knockback) return;
-
-        if (state == State.Knockback && canAirShieldTimer <= canAirShieldThreshold)
-        {
-            return;
-        }
+        pressedShieldBoth = true;
         
-        if (punchedRight && punchedLeft)
-        {
-            return;
-        }
-        if (state == State.Knockback)
-        {
-            pressedAirShield = true;
-            airShieldTimer = inputBuffer;
-        }
-        shieldLeftTimer = inputBuffer;
-        shieldRightTimer = inputBuffer;
     }
 
     void OnReleaseShieldBoth()
     {
-        if (state == State.Knockback)
-        {
-            releaseShieldBuffer = true;
-            return;
-        }
-        shieldLeftTimer = 0;
-        shieldRightTimer = 0;
-        shieldingLeft = false;
-        shieldingRight = false;
+       
+        releasedShieldBoth = true;
+            
+        
     }
 
     protected virtual void OnDash()
@@ -1308,4 +1285,118 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
+    protected virtual void CheckForInputs()
+    {
+        CheckForPunchRight();
+        CheckForPunchLeft();
+        CheckForShieldBoth();
+        CheckForReleaseShieldBoth();
+    }
+
+    protected void CheckForPunchRight()
+    {
+
+        if (pressedRight)
+        {
+            pummeledRight = true;
+            if (state == State.Grabbing) return;
+            if (state == State.FireGrabbed) return;
+            if (state == State.Stunned) return;
+            if (state == State.Dashing) return;
+            if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
+            if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
+            if (returningRight) return;
+            //if (state == State.Knockback) return;
+            Vector2 joystickPosition = joystickLook.normalized;
+            if (joystickPosition.x != 0 || joystickPosition.y != 0)
+            {
+                Vector2 lastLookedPosition = joystickPosition;
+                //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+                transform.right = lastLookedPosition;
+            }
+            punchedRightTimer = inputBuffer;
+            //punchedRight = true;
+            shieldingRight = false;
+            pressedRight = false;
+        }
+    }
+
+    protected void CheckForPunchLeft()
+    {
+        if (pressedLeft)
+        {
+            pummeledLeft = true;
+            if (state == State.Grabbing) return;
+            if (state == State.FireGrabbed) return;
+            if (state == State.Stunned) return;
+            if (state == State.Dashing) return;
+            if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
+            if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
+            if (returningLeft) return;
+            Debug.Log("Pressed Left");
+            //if (state == State.Knockback) return;
+            Vector2 joystickPosition = joystickLook.normalized;
+            if (joystickPosition.x != 0 || joystickPosition.y != 0)
+            {
+                Vector2 lastLookedPosition = joystickPosition;
+                //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+                transform.right = lastLookedPosition;
+            }
+            punchedLeftTimer = inputBuffer;
+            //punchedLeft = true;
+            shieldingLeft = false;
+            pressedLeft = false;
+        }
+    }
+
+    protected void CheckForShieldBoth()
+    {
+
+        if (pressedShieldBoth)
+        {
+            if (state == State.FireGrabbed) return;
+            if (state == State.ShockGrabbed) return;
+            if (state == State.Grabbed) return;
+            if (state == State.Dashing) return;
+            if (punchedRight || punchedLeft || returningRight || returningLeft) return;
+            if (!canAirShield && state == State.Knockback) return;
+            if (shieldingLeft || shieldingRight || isBlockingRight || isBlockingLeft) return;
+            if (state == State.Knockback && canAirShieldTimer <= canAirShieldThreshold)
+            {
+                return;
+            }
+
+            if (punchedRight && punchedLeft)
+            {
+                return;
+            }
+            if (state == State.Knockback)
+            {
+                pressedAirShield = true;
+                airShieldTimer = inputBuffer;
+            }
+            shieldLeftTimer = inputBuffer;
+            shieldRightTimer = inputBuffer;
+            Debug.Log("Pressed Shield");
+            pressedShieldBoth = false;
+        }
+    }
+
+    protected void CheckForReleaseShieldBoth()
+    {
+        if (releasedShieldBoth)
+        {
+            if (state == State.Knockback)
+            {
+                releaseShieldBuffer = true;
+                return;
+            }
+            shieldLeftTimer = 0;
+            shieldRightTimer = 0;
+            shieldingLeft = false;
+            shieldingRight = false;
+
+            releasedShieldBoth = false;
+        }
+    }
 }
