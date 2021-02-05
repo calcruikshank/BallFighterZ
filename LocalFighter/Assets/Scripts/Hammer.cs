@@ -87,12 +87,6 @@ public class Hammer : PlayerController
 
         if (returnHammerRight)
         {
-            if (thrownRightHammerRB.velocity.magnitude != 0f)
-            {
-            }
-            
-            punchedRight = false;
-            
             if (thrownRightHammerRB.velocity.magnitude > 1f)
             {
 
@@ -126,7 +120,7 @@ public class Hammer : PlayerController
             }
         }
 
-        if (rightHandTransform.localPosition.x <= 0 && !returnHammerRight && punchedRight == false)
+        if (rightHandTransform.localPosition.x <= 0 && punchedRight == false)
         {
             returningRight = false;
         }
@@ -134,21 +128,21 @@ public class Hammer : PlayerController
         if (returningRight)
         {
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
-            if (rightHandTransform.localPosition.x <= 0f && thrownRightHammer != null)
-            {
-                if (thrownRightHammerRB.transform.position == rightHandTransform.position)
-                {
-                    Destroy(thrownRightHammer);
-                    hammerRight.SetActive(true);
-                    returnHammerRight = false;
-                    returningRight = false;
-                    threwRight = false;
-                    returnHammerRight = false;
-                }
-            }
+            
         }
 
-
+        if (rightHandTransform.localPosition.x <= 0f && thrownRightHammer != null)
+        {
+            if (thrownRightHammerRB.transform.position == rightHandTransform.position)
+            {
+                Destroy(thrownRightHammer);
+                hammerRight.SetActive(true);
+                returnHammerRight = false;
+                returningRight = false;
+                threwRight = false;
+                returnHammerRight = false;
+            }
+        }
 
         if (punchedLeft && returningLeft == false && instantiatedLightningBall == null)
         {
@@ -736,7 +730,7 @@ public class Hammer : PlayerController
             punchedLeft = true;
             punchedLeftTimer = 0;
             Vector2 joystickPosition = joystickLook.normalized;
-            if (joystickPosition.x != 0 || joystickPosition.y != 0)
+            if (joystickPosition.x != 0 || joystickPosition.y != 0 && returnHammerRight == false)
             {
                 Vector2 lastLookedPosition = joystickPosition;
                 //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
