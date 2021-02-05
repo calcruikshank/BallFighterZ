@@ -18,10 +18,8 @@ public class FirePlayer : PlayerController
     public float dashTimer;
     private float dashSpeed = 30f;
     private Vector2 lastLookedPosition, dashLookPosition;
-    bool dashingIdle, throwPlayer, bufferedRight, bufferedLeft = false;
+    bool dashingIdle, throwPlayer = false;
     public bool firePlayerGrabbing;
-    float returningRightTimer;
-    float returningLeftTimer;
     float dashingTimer;
     [SerializeField] GameObject fireFoxPrefab;
     GameObject leftHandFire, rightHandFire;
@@ -110,14 +108,7 @@ public class FirePlayer : PlayerController
     }
     public override void HandleThrowingHands()
     {
-        if (bufferedRight && !punchedRight && !returningRight)
-        {
-            bufferedRight = false;
-        }
-        if (bufferedLeft && !punchedLeft && !returningLeft)
-        {
-            bufferedLeft = false;
-        }
+        
         if (!returningLeft || !returningRight) returnSpeed = 4f;
         if (returningLeft && leftHandTransform.localPosition.x <= 1.25f && returningRight && rightHandTransform.localPosition.x <= 1.25f && state != State.Dashing)
         {
@@ -136,11 +127,7 @@ public class FirePlayer : PlayerController
                 opponent.isGrabbed = false;
             }
         }
-        punchedRightTimer -= Time.deltaTime;
-        punchedLeftTimer -= Time.deltaTime;
         
-        if (punchedLeftTimer > 0 && leftHandTransform.localPosition.x <= 0 && !returningLeft) punchedLeft = true;
-        if (punchedRightTimer > 0 && rightHandTransform.localPosition.x <= 0 && !returningLeft) punchedRight = true;
 
         if (punchedRight && returningRight == false)
         {
@@ -158,20 +145,11 @@ public class FirePlayer : PlayerController
             }
         }
 
-        /*returningRightTimer -= Time.deltaTime;
-        returningLeftTimer -= Time.deltaTime;*/
-        if (returningLeftTimer > 0)
-        {
-        }
-        if (returningRightTimer > 0)
-        {
-        }
-        if (rightHandTransform.localPosition.x == punchRange && bufferedRight)
+        if (rightHandTransform.localPosition.x == punchRange && releasedRight && state != State.Dashing)
         {
             if (thrownRightFireball != null)
             {
 
-                bufferedRight = false;
                 thrownRightFireball.GetComponent<Fireball>().DestroyRightFireball();
 
             }
@@ -179,7 +157,6 @@ public class FirePlayer : PlayerController
         }
         if (returningRight)
         {
-            bufferedRight = false;
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
             punchedRight = false;
             if (rightHandTransform.localPosition.x <= 0f)
@@ -208,18 +185,16 @@ public class FirePlayer : PlayerController
             }
         }
 
-        if (leftHandTransform.localPosition.x == punchRange && bufferedLeft)
+        if (leftHandTransform.localPosition.x == punchRange && releasedLeft && state != State.Dashing)
         {
             if (thrownLeftFireball != null)
             {
-                bufferedLeft = false;
                 thrownLeftFireball.GetComponent<Fireball>().DestroyLeftFireball();
             }
             returningLeft = true;
         }
         if (returningLeft)
         {
-            bufferedLeft = false;
             leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(0, 0), returnSpeed * Time.deltaTime);
             punchedLeft = false;
             if (leftHandTransform.localPosition.x <= 0f)
@@ -243,9 +218,9 @@ public class FirePlayer : PlayerController
             instantiatedExplosion.GetComponent<ExplosionScript>().SetPlayer(this);
         }*/
         
-        bufferedRight = true;
-        returningRightTimer = inputBuffer;
-
+        pressedRight = false;
+        pummeledRight = false;
+        releasedRight = true;
     }
     public override void OnReleasePunchLeft()
     {
@@ -255,68 +230,12 @@ public class FirePlayer : PlayerController
             GameObject instantiatedExplosion = Instantiate(explosionFireballPrefab, leftHandTransform.position, this.transform.rotation);
             instantiatedExplosion.GetComponent<ExplosionScript>().SetPlayer(this);
         }*/
-        
-
-        bufferedLeft = true;
-        returningLeftTimer = inputBuffer;
+        pressedLeft = false;
+        pummeledLeft = false;
+        releasedLeft = true;
     }
 
 
-    public override void OnPunchRight()
-    {
-        
-
-        if (state == State.FireGrabbed) return;
-        if (state == State.Grabbing) return;
-        if (state == State.Stunned) return;
-        if (dashingIdle == false && state == State.Dashing) return;
-        //if (state == State.Knockback) return;
-        if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
-        if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
-        Vector2 joystickPosition = joystickLook.normalized;
-        if (joystickPosition.x != 0 || joystickPosition.y != 0 && rightStickLook.magnitude == 0 && !dashingIdle)
-        {
-            Vector2 lastLookedPosition = joystickPosition;
-            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-            transform.right = lastLookedPosition;
-        }
-        if (rightStickLook.magnitude != 0 && !dashingIdle)
-        {
-            Vector2 lastLookedPosition = rightStickLook;
-            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-            transform.right = lastLookedPosition;
-        }
-        punchedRightTimer = inputBuffer;
-        //punchedRight = true;
-        shieldingRight = false;
-    }
-    public override void OnPunchLeft()
-    {
-
-        if (state == State.FireGrabbed) return;
-        if (state == State.Grabbing) return;
-        if (state == State.Stunned) return;
-        if (dashingIdle == false && state == State.Dashing) return;
-        //if (state == State.Knockback) return;
-        if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
-        if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
-        Vector2 joystickPosition = joystickLook.normalized;
-        if (joystickPosition.x != 0 || joystickPosition.y != 0 && rightStickLook.magnitude == 0 && !dashingIdle)
-        {
-            Vector2 lastLookedPosition = joystickPosition;
-            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-            transform.right = lastLookedPosition;
-        }
-        if (rightStickLook.magnitude != 0 && !dashingIdle)
-        {
-            Vector2 lastLookedPosition = rightStickLook;
-            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-            transform.right = lastLookedPosition;
-        }
-        punchedLeftTimer = inputBuffer;
-        //punchedRight = true;
-        shieldingLeft = false;
-    }
 
     public override void HandleDash()
     {
@@ -363,6 +282,7 @@ public class FirePlayer : PlayerController
             float powerDashMinSpeed = 20f;
             if (dashSpeed > powerDashMinSpeed)
             {
+
                 dashSpeed -= dashSpeed * powerDashSpeedMulti * Time.deltaTime;
                 dashingIdle = false;
             }

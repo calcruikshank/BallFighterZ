@@ -67,12 +67,7 @@ public class Hammer : PlayerController
     public override void HandleThrowingHands()
     {
         returnSpeed = 4;
-        punchedRightTimer -= Time.deltaTime;
-        punchedLeftTimer -= Time.deltaTime;
-        if (punchedLeftTimer > 0 && leftHandTransform.localPosition.x <= 0) punchedLeft = true;
-        if (punchedRightTimer > 0 && rightHandTransform.localPosition.x <= 0) punchedRight = true;
-
-
+        
         //Debug.Log(returningRight); current problem is when i am thrown returning right is set to true and its not set back again 
         if (punchedRight && returningRight == false && returnHammerRight == false)
         {
@@ -101,7 +96,7 @@ public class Hammer : PlayerController
             if (thrownRightHammerRB.velocity.magnitude > 1f)
             {
 
-                Debug.Log("hammer velocity = " + thrownRightHammerRB.velocity);
+                //Debug.Log("hammer velocity = " + thrownRightHammerRB.velocity);
                 thrownRightHammerRB.AddForce(oppositeRightHammerForce * Time.deltaTime * 5, ForceMode2D.Impulse);
             }
             if (thrownRightHammerRB.velocity.magnitude <= 1f)
@@ -558,7 +553,8 @@ public class Hammer : PlayerController
 
     public override void OnReleasePunchRight()
     {
-        
+        pressedRight = false;
+        releasedRight = true;
         punchedRightTimer = 0;
         if (threwRight && returnHammerRight == false)
         {
@@ -577,10 +573,7 @@ public class Hammer : PlayerController
             threwRight = false;
         }
     }
-    public override void OnReleasePunchLeft()
-    {
-
-    }
+    
 
     public override void Throw(Vector2 direction)
     {
@@ -656,41 +649,6 @@ public class Hammer : PlayerController
 
 
 
-    public override void OnPunchRight()
-    {
-        if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
-        //if (state == State.Knockback) return;
-        if (state == State.FireGrabbed) return;
-        if (state == State.Grabbing) return;
-        if (state == State.Stunned) return;
-        if (state == State.Dashing) return;
-        if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
-        //if (state == State.Knockback) return;
-        
-        punchedRightTimer = inputBuffer;
-        if (returningRight)
-        {
-
-            return;
-        }
-        //punchedRight = true;
-        shieldingRight = false;
-    }
-    public override void OnPunchLeft()
-    {
-        if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
-        //if (state == State.Knockback) return;
-        if (state == State.FireGrabbed) return;
-        if (state == State.Grabbing) return;
-        if (state == State.Stunned) return;
-        if (state == State.Dashing) return;
-        if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
-        //if (state == State.Knockback) return;
-        punchedLeftTimer = inputBuffer;
-        if (returningLeft) return;
-        //punchedLeft = true;
-        shieldingLeft = false;
-    }
     public override void FaceJoystick()
     {
 
@@ -705,8 +663,9 @@ public class Hammer : PlayerController
             transform.right = lastLookedPosition;
         }
     }
-    void OnReleaseDash()
+    protected override void OnReleaseDash()
     {
+        pressedDash = false;
         if (punchedRight)
         {
             state = State.Normal;
@@ -738,4 +697,77 @@ public class Hammer : PlayerController
 
         //state = State.Normal;
     }
+
+
+    protected override void CheckForPunchLeft()
+    {
+
+        if (releasedLeft)
+        {
+            punchedLeftTimer -= Time.deltaTime;
+            //Debug.Log(punchedLeftTimer);
+        }
+        if (pressedLeft)
+        {
+            punchedLeftTimer = inputBuffer;
+            pressedLeft = false;
+            pummeledLeft = true;
+        }
+        if (instantiatedLightningBall != null)
+        {
+            return;
+        }
+        if (shieldingLeft || shieldingRight || isBlockingLeft || isBlockingRight) return;
+        if (state == State.Grabbing) return;
+        if (state == State.FireGrabbed) return;
+        if (state == State.Stunned) return;
+        if (state == State.Dashing) return;
+        if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
+        if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
+        if (returningLeft) return;
+
+        //punchedLeft = true;
+        shieldingLeft = false;
+
+
+
+        if (punchedLeftTimer > 0)
+        {
+            punchedLeft = true;
+            punchedLeftTimer = 0;
+            Vector2 joystickPosition = joystickLook.normalized;
+            if (joystickPosition.x != 0 || joystickPosition.y != 0)
+            {
+                Vector2 lastLookedPosition = joystickPosition;
+                //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+                transform.right = lastLookedPosition;
+            }
+        }
+
+
+    }
+
+
+
+    protected override void CheckForDash()
+    {
+        if (pressedDash)
+        {
+            if (state != State.Normal) return;
+            if (!punchedRight && !returningRight && !returnHammerRight && dashTimer < 0)
+            {
+                Vector2 joystickPosition = joystickLook.normalized;
+                if (joystickPosition.x != 0 || joystickPosition.y != 0)
+                {
+                    Vector2 lastLookedPosition = joystickPosition;
+                    //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+                    transform.right = lastLookedPosition;
+                }
+                Dash(transform.right.normalized);
+                pressedDash = false;
+            }
+            
+        }
+    }
+
 }

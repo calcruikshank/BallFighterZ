@@ -553,6 +553,17 @@
                 },
                 {
                     "name": "",
+                    "id": "f7210c5f-c0ee-4621-be91-98c3671d7de1",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard And Mouse",
+                    "action": "Dash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "61003917-3ddb-4db4-ba66-c729277b2d27",
                     "path": "<Gamepad>/select",
                     "interactions": "",

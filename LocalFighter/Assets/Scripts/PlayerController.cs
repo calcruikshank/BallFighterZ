@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
     protected bool airShielding, canAirShield, pressedAirShield, pressedAirShieldWhileInKnockback;
     protected float airShieldTimer, canAirShieldTimer, canAirShieldThreshold, airPowerShieldTimer;
     [SerializeField] protected GameObject airShieldAnimation, airShieldInstantiated, controlsMenu, controlsMenuInstantiated;
-    protected bool releaseShieldBuffer, pressedRight, pressedLeft, pressedShieldBoth, releasedShieldBoth, releasedRight, releasedLeft = false;
+    protected bool releaseShieldBuffer, pressedRight, pressedLeft, pressedShieldBoth, releasedShieldBoth, releasedRight, releasedLeft, pressedDash, releasedDash = false;
 
 
 
@@ -1220,7 +1220,6 @@ public class PlayerController : MonoBehaviour
     }
 
 
-
     protected virtual void OnMouseDash()
     {
         if (state != State.Normal) return;
@@ -1251,13 +1250,17 @@ public class PlayerController : MonoBehaviour
 
     protected virtual void OnDash()
     {
-        if (state != State.Normal) return;
-
-
-        Dash(inputMovement.normalized);
+        pressedDash = true;
 
 
     }
+
+
+    protected virtual void OnReleaseDash()
+    {
+        pressedDash = false;
+    }
+
     void OnRestart()
     {
         if (gameManager.gameIsOver)
@@ -1290,7 +1293,7 @@ public class PlayerController : MonoBehaviour
         CheckForPunchLeft();
         CheckForShieldBoth();
         CheckForReleaseShieldBoth();
-        
+        CheckForDash();
     }
 
     protected virtual void CheckForPunchRight()
@@ -1424,6 +1427,23 @@ public class PlayerController : MonoBehaviour
             shieldingRight = false;
 
             releasedShieldBoth = false;
+        }
+    }
+
+    protected virtual void CheckForDash()
+    {
+        if (pressedDash)
+        {
+            if (state != State.Normal) return;
+            Vector2 joystickPosition = joystickLook.normalized;
+            if (joystickPosition.x != 0 || joystickPosition.y != 0)
+            {
+                Vector2 lastLookedPosition = joystickPosition;
+                //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+                transform.right = lastLookedPosition;
+            }
+            Dash(transform.right.normalized);
+            pressedDash = false;
         }
     }
 }
