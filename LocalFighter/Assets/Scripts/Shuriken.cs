@@ -7,7 +7,7 @@ public class Shuriken : MonoBehaviour
     PlayerController opponent, thisPlayer;
     float destroyAfterSecondsTimer = 0f;
     float destroyThreshold = .25f;
-    int damage = 4;
+    int damage = 5;
     Vector3 knockTowards;
     Shuriken otherShuriken;
     // Start is called before the first frame update
@@ -51,6 +51,8 @@ public class Shuriken : MonoBehaviour
                     opponent.Knockback(grabbeddamage, releaseTowards);
                 }
                 Destroy(this.gameObject);
+
+                thisPlayer.HitImpact(this.transform);
                 return;
             }
 
@@ -61,6 +63,8 @@ public class Shuriken : MonoBehaviour
                     opponent.totalShieldRemaining += 20f / 255f;
                     opponent.PowerShield();
                     thisPlayer.PowerShieldStun();
+
+                    thisPlayer.HitImpact(this.transform);
                     Destroy(this.gameObject);
                     return;
 
@@ -71,6 +75,8 @@ public class Shuriken : MonoBehaviour
             }
             if (opponent != null && opponent != thisPlayer)
             {
+
+                thisPlayer.HitImpact(this.transform);
                 opponent.rb.velocity = Vector3.zero;
                 knockTowards = transform.right;
                 opponent.Knockback(damage, knockTowards);

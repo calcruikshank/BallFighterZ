@@ -567,7 +567,28 @@ public class Hammer : PlayerController
             threwRight = false;
         }
     }
-    
+    public override void OnAltReleaseRight()
+    {
+        pressedRight = false;
+        releasedRight = true;
+        punchedRightTimer = 0;
+        if (threwRight && returnHammerRight == false)
+        {
+
+            oppositeRightHammerForce = -thrownRightHammerRB.velocity;
+            returnHammerRightSpeed = 0f;
+            returnHammerRight = true;
+
+        }
+        if (punchedRight)
+        {
+
+            punchedRight = false;
+            returnSpeed = 4f;
+            returningRight = true;
+            threwRight = false;
+        }
+    }
 
     public override void Throw(Vector2 direction)
     {

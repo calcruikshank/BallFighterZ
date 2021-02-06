@@ -53,6 +53,8 @@ public class LeftHand : MonoBehaviour
                 opponent.Grabbed(player.grabPosition);
                 return;
             }
+
+
             if (opponent.isBlockingLeft || opponent.isBlockingRight)
             {
                 Instantiate(explosionPrefab, transform.position, transform.rotation);
@@ -65,10 +67,14 @@ public class LeftHand : MonoBehaviour
                     player.PowerShieldStun();
                     opponentTookDamage = true;
                     Debug.Log("Opponent is power shielding");
+
+                    player.HitImpact(this.transform);
                     return;
                 }
                 opponentTookDamage = true;
                 opponent.totalShieldRemaining -= 10f / 255f;
+
+                player.HitImpact(this.transform);
                 return;
             }
 
@@ -82,6 +88,8 @@ public class LeftHand : MonoBehaviour
             {
                 if (opponentTookDamage == false)
                 {
+
+                    player.HitImpact(this.transform);
                     Instantiate(explosionPrefab, transform.position, transform.rotation);
                     Debug.Log("Didnt grab");
                     float damage = 4 * transform.localScale.x;

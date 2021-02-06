@@ -54,6 +54,8 @@ public class ThrownHammer : MonoBehaviour
                     //Physics2D.IgnoreCollision(hammerCollider, other);
                     if (player.punchesToRelease >= 1)
                     {
+
+                        player.HitImpact(this.transform);
                         player.EndGrab();
                         opponent.EndGrab();
                         opponent.isGrabbing = false;
@@ -104,6 +106,8 @@ public class ThrownHammer : MonoBehaviour
                             //Debug.Log("returnRightHammer");
                             player.GetComponent<Hammer>().ReturnLeftHammer();
                         }
+
+                        player.HitImpact(this.transform);
                         return;
 
                     }
@@ -123,15 +127,23 @@ public class ThrownHammer : MonoBehaviour
                         //Debug.Log("returnRightHammer");
                         player.GetComponent<Hammer>().ReturnLeftHammer();
                     }
+
+                    player.HitImpact(this.transform);
                     return;
                 }
                 Instantiate(explosionPrefab, pointOfContact.position, transform.rotation);
                 float damage = 6;
+                if (this.GetComponent<Rigidbody2D>().velocity.magnitude > .2f)
+                {
+                    player.HitImpact(this.transform);
+                }
                 Vector2 punchTowards = transform.right;
                 if (this.GetComponent<Rigidbody2D>().velocity.magnitude <= .2f)
                 {
+
                     punchTowards = -punchTowards;
                 }
+
                 //Vector2 handLocation = transform.position;
                 opponent.rb.velocity = Vector3.zero;
                 opponent.Knockback(damage, punchTowards);

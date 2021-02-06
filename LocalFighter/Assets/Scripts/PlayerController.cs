@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour
     protected float airShieldTimer, canAirShieldTimer, canAirShieldThreshold, airPowerShieldTimer;
     [SerializeField] protected GameObject airShieldAnimation, airShieldInstantiated, controlsMenu, controlsMenuInstantiated;
     protected bool releaseShieldBuffer, pressedRight, pressedLeft, pressedShieldBoth, releasedShieldBoth, releasedRight, releasedLeft, pressedDash, releasedDash = false;
-
+    [SerializeField] ParticleSystem hitImpactParticle;
 
 
     public State state;
@@ -1072,6 +1072,13 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void HitImpact(Transform whereToImpact)
+    {
+        hitImpactParticle.transform.position = whereToImpact.position;
+        
+        hitImpactParticle.Play();
+    }
+
 
     #region InputRegion
     void OnMove(InputValue value)
@@ -1150,6 +1157,31 @@ public class PlayerController : MonoBehaviour
         releasedRight = true;
     }
     public virtual void OnReleasePunchLeft()
+    {
+        pressedLeft = false;
+        pummeledLeft = false;
+        releasedLeft = true;
+    }
+
+
+    public virtual void OnAltPunchRight()
+    {
+        pressedRight = true;
+        releasedRight = false;
+
+    }
+    public virtual void OnAltPunchLeft()
+    {
+        pressedLeft = true;
+        releasedLeft = false;
+    }
+    public virtual void OnAltReleaseRight()
+    {
+        pressedRight = false;
+        pummeledRight = false;
+        releasedRight = true;
+    }
+    public virtual void OnAltReleaseLeft()
     {
         pressedLeft = false;
         pummeledLeft = false;

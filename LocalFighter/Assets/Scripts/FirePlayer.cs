@@ -222,6 +222,19 @@ public class FirePlayer : PlayerController
         pummeledRight = false;
         releasedRight = true;
     }
+    public override void OnAltReleaseRight()
+    {
+
+        pressedRight = false;
+        pummeledRight = false;
+        releasedRight = true;
+    }
+    public override void OnAltReleaseLeft()
+    {
+        pressedLeft = false;
+        pummeledLeft = false;
+        releasedLeft = true;
+    }
     public override void OnReleasePunchLeft()
     {
         
