@@ -27,7 +27,7 @@ public class FirePlayer : PlayerController
     public override void Start()
     {
 
-        canAirShieldThreshold = .1f;
+        canAirShieldThreshold = .25f;
         if (playerAnimatorBase != null)
         {
             animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();

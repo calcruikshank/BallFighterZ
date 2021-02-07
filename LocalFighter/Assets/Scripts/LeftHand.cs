@@ -47,6 +47,19 @@ public class LeftHand : MonoBehaviour
                 }
 
             }
+
+            if (opponent.isPowerShielding)
+            {
+                opponent.totalShieldRemaining += 20f / 255f;
+                opponent.PowerShield();
+                thisCollider.enabled = false;
+                player.PowerShieldStun();
+                opponentTookDamage = true;
+                Debug.Log("Opponent is power shielding");
+
+                player.HitImpact(this.transform);
+                return;
+            }
             if (downTicker > 1 && player.punchedRight)
             {
                 player.Grab(opponent);
@@ -59,18 +72,7 @@ public class LeftHand : MonoBehaviour
             {
                 Instantiate(explosionPrefab, transform.position, transform.rotation);
                 //check if perfect shield
-                if (opponent.isPowerShielding)
-                {
-                    opponent.totalShieldRemaining += 20f / 255f;
-                    opponent.PowerShield();
-                    thisCollider.enabled = false;
-                    player.PowerShieldStun();
-                    opponentTookDamage = true;
-                    Debug.Log("Opponent is power shielding");
-
-                    player.HitImpact(this.transform);
-                    return;
-                }
+                
                 opponentTookDamage = true;
                 opponent.totalShieldRemaining -= 10f / 255f;
 
@@ -89,7 +91,6 @@ public class LeftHand : MonoBehaviour
                 if (opponentTookDamage == false)
                 {
 
-                    player.HitImpact(this.transform);
                     Instantiate(explosionPrefab, transform.position, transform.rotation);
                     Debug.Log("Didnt grab");
                     float damage = 4 * transform.localScale.x;
@@ -101,6 +102,8 @@ public class LeftHand : MonoBehaviour
                     Vector2 punchTowards = player.grabPosition.right.normalized;
                     //Vector2 handLocation = transform.position;
                     opponent.rb.velocity = Vector3.zero;
+
+                    player.HitImpact(this.transform);
                     opponent.Knockback(damage, punchTowards);
                     thisCollider.enabled = false;
                     //opponent.Knockback(damage, handLocation);

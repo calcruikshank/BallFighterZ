@@ -20,7 +20,7 @@ public class Hammer : PlayerController
     
     public override void Start()
     {
-        canAirShieldThreshold = .1f;
+        canAirShieldThreshold = .25f;
 
         animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
         animationTransformHandler.SetPlayer(this.gameObject);
@@ -740,7 +740,7 @@ public class Hammer : PlayerController
         if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
         if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
         if (returningLeft) return;
-
+        if (state == State.Knockback) return;
         //punchedLeft = true;
         shieldingLeft = false;
 

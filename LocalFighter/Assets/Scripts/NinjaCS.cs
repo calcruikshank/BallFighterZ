@@ -17,7 +17,7 @@ public class NinjaCS : PlayerController
     // Start is called before the first frame update
     public override void Start()
     {
-        canAirShieldThreshold = .1f;
+        canAirShieldThreshold = .25f;
         if (playerAnimatorBase != null)
         {
             animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
@@ -283,7 +283,7 @@ public class NinjaCS : PlayerController
         if (state == State.Knockback && canAirShieldTimer < canAirShieldThreshold) return;
         if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
         if (returningRight) return;
-
+        if (state == State.Knockback) return;
         //punchedRight = true;
         shieldingRight = false;
         if (punchedRightTimer > 0)
@@ -320,7 +320,7 @@ public class NinjaCS : PlayerController
         if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
         if (punchedRight || punchedLeft) return;
         if (returningRight) return;
-
+        if (state == State.Knockback) return;
 
         //punchedLeft = true;
         shieldingLeft = false;
