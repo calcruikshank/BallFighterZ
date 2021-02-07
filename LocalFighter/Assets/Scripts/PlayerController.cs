@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
 
     public float moveSpeed, punchRange, punchSpeed, returnSpeed, currentPercentage, brakeSpeed, stunnedTimer, shieldSpeed, grabTimer, powerStunnedTimer, punchedRightTimer, punchedLeftTimer, inputBuffer, shieldLeftTimer, shieldRightTimer, powerDashSpeed, powerShieldTimer;
 
-    public bool punchedRight, punchedLeft, returningRight, returningLeft, pummeledLeft, pummeledRight, isGrabbing, isGrabbed, shieldingRight, shieldingLeft, isBlockingRight, isBlockingLeft, readyToPummelRight, readyToPummelLeft, canDash, isPowerShielding, startedPunchRight, startedPunchLeft, instantiatedArrow, respawned = false;
+    public bool punchedRight, punchedLeft, returningRight, returningLeft, pummeledLeft, pummeledRight, isGrabbing, isGrabbed, shieldingRight, shieldingLeft, isBlockingRight, isBlockingLeft, readyToPummelRight, readyToPummelLeft, canDash, isPowerShielding, startedPunchRight, startedPunchLeft, instantiatedArrow, respawned, isInKnockback = false;
 
     public Transform rightHandTransform, leftHandTransform, grabPosition, grabbedPosition;
     public CircleCollider2D rightHandCollider, leftHandCollider;
@@ -43,7 +43,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] protected GameObject airShieldAnimation, airShieldInstantiated, controlsMenu, controlsMenuInstantiated;
     protected bool releaseShieldBuffer, pressedRight, pressedLeft, pressedShieldBoth, releasedShieldBoth, releasedRight, releasedLeft, pressedDash, releasedDash = false;
     [SerializeField] ParticleSystem hitImpactParticle;
-    State lastState;
+    protected int comboCounter = 0;
+    [SerializeField] private Transform comboTextPopup;
 
     public State state;
     public enum State
@@ -214,16 +215,17 @@ public class PlayerController : MonoBehaviour
 
     void HandleTimeScale()
     {
-        impactStunTimer -= Time.deltaTime * 10;
-        if (impactStunTimer > 0)
+        /*impactStunTimer -= Time.deltaTime / Time.timeScale;
+        if (impactStunTimer >= 0)
         {
-            Debug.Log("Time is great than 0");
+
+            //Debug.Log("Time is great than 0 " + Time.timeScale + " impact timer " + impactStunTimer);
             Time.timeScale = .1f;
         }
-        if (impactStunTimer <= 0)
+        if (impactStunTimer < 0)
         {
             Time.timeScale = 1f;
-        }
+        }*/
     }
 
     public virtual void HandleMovement()
@@ -243,7 +245,7 @@ public class PlayerController : MonoBehaviour
         dashedTimer = 0f;
         canDash = true;
 
-        
+
 
         if (animator != null)
         {
@@ -268,7 +270,7 @@ public class PlayerController : MonoBehaviour
         {
             animationTransformHandler.EnableEmitter();
         }
-        
+        isInKnockback = true;
         canAirShield = true;
         pressedAirShieldWhileInKnockback = false;
         canAirShieldTimer = 0f;
@@ -317,7 +319,7 @@ public class PlayerController : MonoBehaviour
         }
         if (rb.velocity.magnitude <= 5)
         {
-            
+            isInKnockback = false;
             rb.velocity = new Vector2(0, 0);
             state = State.Normal;
             if (releaseShieldBuffer)
@@ -329,7 +331,7 @@ public class PlayerController : MonoBehaviour
         }
         if (rb.velocity.magnitude > 0)
         {
-            
+
             oppositeForce = -rb.velocity;
             brakeSpeed = brakeSpeed + (100f * Time.deltaTime);
             rb.AddForce(oppositeForce * Time.deltaTime * brakeSpeed);
@@ -339,7 +341,7 @@ public class PlayerController : MonoBehaviour
 
     public virtual void HandleThrowingHands()
     {
-        
+
         if (punchedRight && returningRight == false)
         {
             punchedRightTimer = 0;
@@ -496,7 +498,7 @@ public class PlayerController : MonoBehaviour
     }
     public virtual void Grabbed(Transform player)
     {
-        
+
         punchesToRelease = 0;
         grabbedPosition = player; //the transform that grabbed you is equal to the player that grabbed you grab position
         returningLeft = true;
@@ -506,7 +508,7 @@ public class PlayerController : MonoBehaviour
 
     public void FireGrabbed(Transform player)
     {
-        
+
         punchesToRelease = 4;
         grabbedPosition = player; //the transform that grabbed you is equal to the player that grabbed you grab position
         returningLeft = true;
@@ -569,7 +571,7 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(currentPercentage + "current percentage");
         state = State.Knockback;
     }
-    
+
 
     public virtual void HandleShielding()
     {
@@ -728,7 +730,7 @@ public class PlayerController : MonoBehaviour
         }
         if (!isBlockingRight && !isBlockingLeft)
         {
-            
+
             perfectShieldTimer = 0f;
             isPowerShielding = false;
             shield.SetActive(false);
@@ -771,6 +773,7 @@ public class PlayerController : MonoBehaviour
     }
     public virtual void Respawn()
     {
+        isInKnockback = false;
         Time.timeScale = 1f;
         impactStunTimer = 0f;
         if (stocksLeft <= 0 && this.gameObject != null)
@@ -897,6 +900,7 @@ public class PlayerController : MonoBehaviour
 
     public void PowerShieldStun()
     {
+        isInKnockback = false;
         powerStunnedTimer = 0f;
         state = State.PowerShieldStunned;
     }
@@ -928,7 +932,7 @@ public class PlayerController : MonoBehaviour
     }
     public void HandlePowerShielding()
     {
-        
+
         Debug.Log("isPowerShielding");
         Time.timeScale = .2f;
         powerShieldTimer += Time.deltaTime;
@@ -953,6 +957,8 @@ public class PlayerController : MonoBehaviour
         }
         if (powerShieldTimer > .2f && inputMovement.magnitude > .8f)
         {
+
+            Time.timeScale = 1;
             shieldLeftTimer = 0;
             shieldRightTimer = 0;
             shieldingLeft = false;
@@ -965,6 +971,7 @@ public class PlayerController : MonoBehaviour
         }
         if (powerShieldTimer > .2f && inputMovement.magnitude <= .8f)
         {
+            Time.timeScale = 1;
             state = State.Normal;
         }
         if (inputMovement.magnitude > .8f && !shieldingLeft && !shieldingRight)
@@ -976,11 +983,14 @@ public class PlayerController : MonoBehaviour
         if (!shieldingLeft && !shieldingRight)
         {
 
+            Time.timeScale = 1;
             Destroy(arrowPointerInstantiated);
             state = State.Normal;
         }
         if (punchedRightTimer > 0 || punchedLeftTimer > 0)
         {
+
+            Time.timeScale = 1;
             shieldLeftTimer = 0;
             shieldRightTimer = 0;
             shieldingLeft = false;
@@ -998,7 +1008,7 @@ public class PlayerController : MonoBehaviour
     }
     public void PowerDash(Vector2 powerDashDirection)
     {
-        
+
         canShieldAgainTimer = shieldAgainThreshold;
         canShieldAgainTimerLeft = shieldAgainThreshold;
         powerDashSpeed = 50f;
@@ -1057,7 +1067,7 @@ public class PlayerController : MonoBehaviour
             airPowerShieldTimer = 0f;
             canAirShieldTimer = 0f;
         }
-        
+
         if (airShielding)
         {
             if (airShieldInstantiated != null)
@@ -1087,12 +1097,31 @@ public class PlayerController : MonoBehaviour
     public void HitImpact(Transform whereToImpact)
     {
         hitImpactParticle.transform.position = whereToImpact.position;
-        
+
         hitImpactParticle.Play();
         impactStunTimer = .1f;
+        StartCoroutine(FreezeFrames(.1f));
     }
 
+    private IEnumerator FreezeFrames(float freezeTime)
+    {
+        Time.timeScale = 0f;
+        yield return new WaitForSecondsRealtime(freezeTime);
+        Time.timeScale = 1f;
+    }
 
+    public void AddToComboCounter()
+    {
+        comboCounter++;
+        Transform comboPopup = Instantiate(comboTextPopup, new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z), Quaternion.identity);
+        ComboCounterBehavior comboCounterScript = comboPopup.GetComponent<ComboCounterBehavior>();
+        comboCounterScript.Setup(comboCounter);
+    }
+
+    public void RemoveFromComboCounter()
+    {
+        comboCounter = 0;
+    }
 
 
     #region InputRegion

@@ -424,6 +424,7 @@ MonoBehaviour:
   startedPunchLeft: 0
   instantiatedArrow: 0
   respawned: 0
+  isInKnockback: 0
   rightHandTransform: {fileID: 3999547214018492892}
   leftHandTransform: {fileID: 3999547215199272119}
   grabPosition: {fileID: 3999547214390731865}
@@ -454,7 +455,6 @@ MonoBehaviour:
   animator: {fileID: 0}
   canShieldAgainTimer: 0
   canShieldAgainTimerLeft: 0
-  shieldAgainThreshold: 0.3
   moveSpeedSetter: 8
   redHand: {fileID: 1150478361673233891, guid: 5d42599fbd0ccef438bbccf2265e91ae, type: 3}
   blueHand: {fileID: 1150478361673233891, guid: bb39926f569550d4cb50a394669c70c3, type: 3}
@@ -465,6 +465,7 @@ MonoBehaviour:
   controlsMenu: {fileID: 8521902700825389228, guid: 2e3f0ae21481a3741b64ce2d9739c8c5, type: 3}
   controlsMenuInstantiated: {fileID: 0}
   hitImpactParticle: {fileID: 153701379312701002}
+  comboTextPopup: {fileID: 6630030228142045961, guid: b18eb451df2f6794bbcca1edb19cddfc, type: 3}
   state: 0
   hammerLeft: {fileID: 0}
   hammerRight: {fileID: 4276827285794005317}

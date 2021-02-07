@@ -75,7 +75,14 @@ public class Shuriken : MonoBehaviour
             }
             if (opponent != null && opponent != thisPlayer)
             {
-
+                if (opponent.isInKnockback)
+                {
+                    thisPlayer.AddToComboCounter();
+                }
+                if (!opponent.isInKnockback)
+                {
+                    thisPlayer.RemoveFromComboCounter();
+                }
                 thisPlayer.HitImpact(this.transform);
                 opponent.rb.velocity = Vector3.zero;
                 knockTowards = transform.right;

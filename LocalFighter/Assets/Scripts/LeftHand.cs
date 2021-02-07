@@ -102,7 +102,14 @@ public class LeftHand : MonoBehaviour
                     Vector2 punchTowards = player.grabPosition.right.normalized;
                     //Vector2 handLocation = transform.position;
                     opponent.rb.velocity = Vector3.zero;
-
+                    if (opponent.isInKnockback)
+                    {
+                        player.AddToComboCounter();
+                    }
+                    if (!opponent.isInKnockback)
+                    {
+                        player.RemoveFromComboCounter();
+                    }
                     player.HitImpact(this.transform);
                     opponent.Knockback(damage, punchTowards);
                     thisCollider.enabled = false;

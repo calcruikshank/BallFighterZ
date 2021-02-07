@@ -80,6 +80,14 @@ public class ExplosionScript : MonoBehaviour
                 damage = 20;
                 Debug.Log("took dash damage " + damage);
             }
+            if (opponent.isInKnockback)
+            {
+                player.AddToComboCounter();
+            }
+            if (!opponent.isInKnockback)
+            {
+                player.RemoveFromComboCounter();
+            }
             Vector2 knockTowards = new Vector2(opponent.transform.position.x - this.transform.position.x, opponent.transform.position.y - this.transform.position.y).normalized;
             //Vector2 handLocation = transform.position;
             opponent.rb.velocity = Vector3.zero;

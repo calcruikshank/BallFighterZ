@@ -150,7 +150,6 @@ MonoBehaviour:
   animator: {fileID: 0}
   canShieldAgainTimer: 0
   canShieldAgainTimerLeft: 0
-  shieldAgainThreshold: 0.3
   moveSpeedSetter: 12
   redHand: {fileID: 1150478361673233891, guid: 5d42599fbd0ccef438bbccf2265e91ae, type: 3}
   blueHand: {fileID: 1150478361673233891, guid: bb39926f569550d4cb50a394669c70c3, type: 3}
@@ -161,6 +160,7 @@ MonoBehaviour:
   controlsMenu: {fileID: 8521902700825389228, guid: 2e3f0ae21481a3741b64ce2d9739c8c5, type: 3}
   controlsMenuInstantiated: {fileID: 0}
   hitImpactParticle: {fileID: 3828604311618045635}
+  comboTextPopup: {fileID: 6630030228142045961, guid: b18eb451df2f6794bbcca1edb19cddfc, type: 3}
   state: 0
 --- !u!114 &926449328659449652
 MonoBehaviour:

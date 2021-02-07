@@ -143,7 +143,14 @@ public class ThrownHammer : MonoBehaviour
 
                     punchTowards = -punchTowards;
                 }
-
+                if (opponent.isInKnockback)
+                {
+                    player.AddToComboCounter();
+                }
+                if (!opponent.isInKnockback)
+                {
+                    player.RemoveFromComboCounter();
+                }
                 //Vector2 handLocation = transform.position;
                 opponent.rb.velocity = Vector3.zero;
                 opponent.Knockback(damage, punchTowards);

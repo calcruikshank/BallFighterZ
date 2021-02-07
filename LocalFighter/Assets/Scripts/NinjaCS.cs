@@ -222,14 +222,7 @@ public class NinjaCS : PlayerController
         }
         if (rb.velocity.magnitude <= 5)
         {
-            if (releaseShieldBuffer)
-            {
-                releaseShieldBuffer = false;
-                shieldLeftTimer = 0;
-                shieldRightTimer = 0;
-                shieldingLeft = false;
-                shieldingRight = false;
-            }
+            isInKnockback = false;
             rb.velocity = new Vector2(0, 0);
             state = State.Normal;
         }

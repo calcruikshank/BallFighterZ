@@ -163,6 +163,7 @@ MonoBehaviour:
   startedPunchLeft: 0
   instantiatedArrow: 0
   respawned: 0
+  isInKnockback: 0
   rightHandTransform: {fileID: 926449330623663813}
   leftHandTransform: {fileID: 926449329438952366}
   grabPosition: {fileID: 926449329175581504}
@@ -193,7 +194,6 @@ MonoBehaviour:
   animator: {fileID: 0}
   canShieldAgainTimer: 0
   canShieldAgainTimerLeft: 0
-  shieldAgainThreshold: 0.25
   moveSpeedSetter: 11
   redHand: {fileID: 1150478361673233891, guid: 5d42599fbd0ccef438bbccf2265e91ae, type: 3}
   blueHand: {fileID: 1150478361673233891, guid: bb39926f569550d4cb50a394669c70c3, type: 3}
@@ -204,6 +204,7 @@ MonoBehaviour:
   controlsMenu: {fileID: 8521902700825389228, guid: 2e3f0ae21481a3741b64ce2d9739c8c5, type: 3}
   controlsMenuInstantiated: {fileID: 0}
   hitImpactParticle: {fileID: 5231566710485479554}
+  comboTextPopup: {fileID: 6630030228142045961, guid: b18eb451df2f6794bbcca1edb19cddfc, type: 3}
   state: 0
   shurikenPrefab: {fileID: 506329253092317510, guid: 2fa113dbf7060fe489441feaa11cf76c, type: 3}
   kunaiPrefab: {fileID: 1489977666597667631, guid: 348a491cef103a54eafc580adeacd5d4, type: 3}
