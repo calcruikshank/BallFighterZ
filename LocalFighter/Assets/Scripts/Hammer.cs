@@ -17,6 +17,8 @@ public class Hammer : PlayerController
     public float dashTimer;
     public GameObject lightningPrefab, lightningBallPrefab, instantiatedLightning, instantiatedLightningBall;
     public Rigidbody2D instantiatedLightningBallRB;
+    [SerializeField] GameObject lightningUltPrefab;
+    GameObject instantiatedUlt;
     
     public override void Start()
     {
@@ -164,6 +166,25 @@ public class Hammer : PlayerController
             if (leftHandTransform.localPosition.x <= 0f)
             {
                 returningLeft = false;
+            }
+        }
+
+        if (isUlting)
+        {
+            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(punchRange, -.7f), punchSpeed * Time.deltaTime);
+            if (leftHandTransform.localPosition.x >= punchRange && returningLeft == false)
+            {
+                instantiatedUlt = Instantiate(lightningUltPrefab, leftHandTransform.position, Quaternion.identity);
+                ParticleSystem lightningParticles = instantiatedUlt.GetComponent<ParticleSystem>();
+                //lightningParticles.transform.right = transform.right;
+                lightningParticles.transform.eulerAngles = transform.eulerAngles;
+                lightningParticles.startRotation = (Mathf.PI / 180) * -transform.eulerAngles.z;
+                Debug.Log(lightningParticles.startRotation + "start rotation");
+                lightningParticles.Play();
+                Debug.Log(transform.eulerAngles + "rotation");
+                instantiatedUlt.GetComponent<LightningUltimate>().SetPlayer(this);
+                isUlting = false;
+                returningLeft = true;
             }
         }
 
@@ -792,4 +813,29 @@ public class Hammer : PlayerController
         }
     }
 
+
+    protected override void UseUltimate()
+    {
+        isUlting = true;
+        Debug.Log("Succesfully used Ultimate!");
+        punchLeftDuringUlt = true;
+        canUltimate = false;
+
+    }
+
+    protected override void HandleUltimate()
+    {
+        
+    }
+
+    protected override void CheckForInputs()
+    {
+        CheckForPunchRight();
+        CheckForPunchLeft();
+        CheckForShieldBoth();
+        CheckForReleaseShieldBoth();
+        CheckForDash();
+        CheckForUltimate();
+        CheckForReleasedUltimate();
+    }
 }

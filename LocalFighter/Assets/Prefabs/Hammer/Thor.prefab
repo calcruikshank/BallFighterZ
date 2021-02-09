@@ -424,6 +424,8 @@ MonoBehaviour:
   instantiatedArrow: 0
   respawned: 0
   isInKnockback: 0
+  isUlting: 0
+  ultConnect: 0
   rightHandTransform: {fileID: 3999547214018492892}
   leftHandTransform: {fileID: 3999547215199272119}
   grabPosition: {fileID: 3999547214390731865}
@@ -464,6 +466,7 @@ MonoBehaviour:
   controlsMenu: {fileID: 8521902700825389228, guid: 2e3f0ae21481a3741b64ce2d9739c8c5, type: 3}
   controlsMenuInstantiated: {fileID: 0}
   hitImpactParticle: {fileID: 8439534664109783063, guid: 61c1c09eed6f22d44b4a9011b288dbce, type: 3}
+  ultPunchCounter: 0
   comboTextPopup: {fileID: 6630030228142045961, guid: b18eb451df2f6794bbcca1edb19cddfc, type: 3}
   state: 0
   hammerLeft: {fileID: 0}
@@ -488,6 +491,7 @@ MonoBehaviour:
   instantiatedLightning: {fileID: 0}
   instantiatedLightningBall: {fileID: 0}
   instantiatedLightningBallRB: {fileID: 0}
+  lightningUltPrefab: {fileID: 7799185799097079547, guid: 9834c8d10ae0c0d4d99854d1dc496398, type: 3}
 --- !u!114 &3999547214906273837
 MonoBehaviour:
   m_ObjectHideFlags: 0

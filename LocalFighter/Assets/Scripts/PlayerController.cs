@@ -1123,7 +1123,7 @@ public class PlayerController : MonoBehaviour
             return;
         }
         impactStunTimer = .1f;
-        StartCoroutine(FreezeFrames(.1f));
+        StartCoroutine(FreezeFrames(.075f));
     }
 
     private IEnumerator FreezeFrames(float freezeTime)
