@@ -13,7 +13,7 @@ public class PlayerController : MonoBehaviour
 
     public float moveSpeed, punchRange, punchSpeed, returnSpeed, currentPercentage, brakeSpeed, stunnedTimer, shieldSpeed, grabTimer, powerStunnedTimer, punchedRightTimer, punchedLeftTimer, inputBuffer, shieldLeftTimer, shieldRightTimer, powerDashSpeed, powerShieldTimer;
 
-    public bool punchedRight, punchedLeft, returningRight, returningLeft, pummeledLeft, pummeledRight, isGrabbing, isGrabbed, shieldingRight, shieldingLeft, isBlockingRight, isBlockingLeft, readyToPummelRight, readyToPummelLeft, canDash, isPowerShielding, startedPunchRight, startedPunchLeft, instantiatedArrow, respawned, isInKnockback = false;
+    public bool punchedRight, punchedLeft, returningRight, returningLeft, pummeledLeft, pummeledRight, isGrabbing, isGrabbed, shieldingRight, shieldingLeft, isBlockingRight, isBlockingLeft, readyToPummelRight, readyToPummelLeft, canDash, isPowerShielding, startedPunchRight, startedPunchLeft, instantiatedArrow, respawned, isInKnockback, isUlting, ultConnect = false;
 
     public Transform rightHandTransform, leftHandTransform, grabPosition, grabbedPosition;
     public CircleCollider2D rightHandCollider, leftHandCollider;
@@ -41,11 +41,11 @@ public class PlayerController : MonoBehaviour
     protected bool airShielding, canAirShield, pressedAirShield, pressedAirShieldWhileInKnockback;
     protected float airShieldTimer, canAirShieldTimer, canAirShieldThreshold, airPowerShieldTimer, impactStunTimer;
     [SerializeField] protected GameObject airShieldAnimation, airShieldInstantiated, controlsMenu, controlsMenuInstantiated;
-    protected bool releaseShieldBuffer, pressedRight, pressedLeft, pressedShieldBoth, releasedShieldBoth, releasedRight, releasedLeft, pressedDash, releasedDash = false;
+    protected bool releaseShieldBuffer, pressedRight, pressedLeft, pressedShieldBoth, releasedShieldBoth, releasedRight, releasedLeft, pressedDash, releasedDash, pressedUltimate, releasedUltimate, canUltimate, punchLeftDuringUlt, punchRightDuringUlt = false;
     [SerializeField] ParticleSystem hitImpactParticle;
-    protected int comboCounter = 0;
+    protected int comboCounter = 1;
+    public int ultPunchCounter = 0;
     [SerializeField] private Transform comboTextPopup;
-
     public State state;
     public enum State
     {
@@ -61,6 +61,8 @@ public class PlayerController : MonoBehaviour
         PowerDashing,
         ShockGrabbed,
         FireGrabbed,
+        UltimateState,
+        TakingUltimate
     }
 
     void Awake()
@@ -75,7 +77,7 @@ public class PlayerController : MonoBehaviour
 
     public virtual void Start()
     {
-        canAirShieldThreshold = .3f;
+        canAirShieldThreshold = .2f;
         animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
         animationTransformHandler.SetPlayer(this.gameObject);
         animator = animationTransformHandler.GetComponent<Animator>();
@@ -187,6 +189,12 @@ public class PlayerController : MonoBehaviour
                 HandleThrowingHands();
                 HandleTimeScale();
                 break;
+            case State.UltimateState:
+                HandleUltimate();
+                break;
+            case State.TakingUltimate:
+                HandleTakingUltimate();
+                break;
         }
         CheckForInputs();
     }
@@ -266,6 +274,11 @@ public class PlayerController : MonoBehaviour
 
     public virtual void Knockback(float damage, Vector2 direction)
     {
+        pressedAirShield = false;
+        pressedShieldBoth = false;
+        releasedShieldBoth = true;
+        shieldLeftTimer = 0f;
+        shieldRightTimer = 0f;
         if (respawned == false)
         {
             animationTransformHandler.EnableEmitter();
@@ -480,7 +493,6 @@ public class PlayerController : MonoBehaviour
             returningRight = true;
             isGrabbing = false;
             opponent.rb.velocity = Vector3.zero;
-            Debug.Log("grabtimer is greater");
             opponent.Throw(this.grabPosition.right);
             grabTimer = 0;
             state = State.Normal;
@@ -532,7 +544,6 @@ public class PlayerController : MonoBehaviour
             returningRight = true;
             isGrabbing = false;
             opponent.rb.velocity = Vector3.zero;
-            Debug.Log("grabtimer is greater");
             grabTimer = 0;
             state = State.Normal;
         }
@@ -546,6 +557,11 @@ public class PlayerController : MonoBehaviour
     }
     public virtual void Throw(Vector2 direction)
     {
+        pressedAirShield = false;
+        pressedShieldBoth = false;
+        releasedShieldBoth = true;
+        shieldLeftTimer = 0f;
+        shieldRightTimer = 0f;
         canAirShield = true;
         pressedAirShieldWhileInKnockback = false;
         canAirShieldTimer = 0f;
@@ -917,12 +933,13 @@ public class PlayerController : MonoBehaviour
         powerStunnedTimer += Time.deltaTime;
         if (powerStunnedTimer >= .5f)
         {
-            Debug.Log("change state to normal");
             state = State.Normal;
         }
     }
     public void PowerShield()
     {
+
+        isInKnockback = false;
         rb.velocity = Vector3.zero;
         instantiatedArrow = false;
         StartCoroutine(cameraShake.Shake(.03f, .3f));
@@ -933,7 +950,7 @@ public class PlayerController : MonoBehaviour
     public void HandlePowerShielding()
     {
 
-        Debug.Log("isPowerShielding");
+        isInKnockback = false;
         Time.timeScale = .2f;
         powerShieldTimer += Time.deltaTime;
         if (inputMovement.magnitude > .8f && instantiatedArrow == false)
@@ -1009,6 +1026,7 @@ public class PlayerController : MonoBehaviour
     public void PowerDash(Vector2 powerDashDirection)
     {
 
+        isInKnockback = false;
         canShieldAgainTimer = shieldAgainThreshold;
         canShieldAgainTimerLeft = shieldAgainThreshold;
         powerDashSpeed = 50f;
@@ -1096,9 +1114,14 @@ public class PlayerController : MonoBehaviour
 
     public void HitImpact(Transform whereToImpact)
     {
-        hitImpactParticle.transform.position = whereToImpact.position;
-
-        hitImpactParticle.Play();
+        ParticleSystem impactParticleInstantiated = Instantiate(hitImpactParticle, new Vector3(whereToImpact.position.x, whereToImpact.position.y, whereToImpact.position.z), Quaternion.identity);
+        impactParticleInstantiated.transform.eulerAngles = new Vector3(-whereToImpact.eulerAngles.z, 90, 90);
+        impactParticleInstantiated.Play();
+        if (isUlting)
+        {
+            StartCoroutine(cameraShake.Shake(.04f, .4f));
+            return;
+        }
         impactStunTimer = .1f;
         StartCoroutine(FreezeFrames(.1f));
     }
@@ -1116,12 +1139,89 @@ public class PlayerController : MonoBehaviour
         Transform comboPopup = Instantiate(comboTextPopup, new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z), Quaternion.identity);
         ComboCounterBehavior comboCounterScript = comboPopup.GetComponent<ComboCounterBehavior>();
         comboCounterScript.Setup(comboCounter);
+        if (comboCounter >= 4)
+        {
+            canUltimate = true;
+        }
     }
 
     public void RemoveFromComboCounter()
     {
-        comboCounter = 0;
+        comboCounter = 1;
     }
+
+    protected virtual void UseUltimate()
+    {
+        ultPunchCounter = 0;
+        ultConnect = false;
+        isUlting = true;
+        Debug.Log("Succesfully used Ultimate!");
+        punchRightDuringUlt = true;
+        punchLeftDuringUlt = false;
+        canUltimate = false;
+        state = State.UltimateState;
+        
+    }
+
+    protected virtual void HandleUltimate()
+    {
+        Debug.Log("Ulting");
+        rb.velocity = Vector3.zero;
+        returnSpeed = 40f;
+        if (punchRightDuringUlt)
+        {
+
+            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(0, 0), punchSpeed * Time.deltaTime);
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(punchRange, .4f), punchSpeed * Time.deltaTime);
+            rightHandCollider.enabled = true;
+            if (rightHandTransform.localPosition.x >= punchRange)
+            {
+                ultPunchCounter++;
+                punchRightDuringUlt = false;
+                punchLeftDuringUlt = true;
+            }
+        }
+
+        if (punchLeftDuringUlt)
+        {
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(0, 0), punchSpeed * Time.deltaTime);
+            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(punchRange, -.4f), punchSpeed * Time.deltaTime);
+            leftHandCollider.enabled = true;
+            if (leftHandTransform.localPosition.x >= punchRange)
+            {
+                ultPunchCounter++;
+                if (!ultConnect)
+                {
+                    EndUlt();
+                    return;
+                }
+                punchLeftDuringUlt = false;
+                punchRightDuringUlt = true;
+            }
+        }
+    }
+
+    public void TakeUltimate(Transform ultimatePosition)
+    {
+        rb.velocity = Vector3.zero;
+        rb.transform.position = ultimatePosition.position;
+        state = State.TakingUltimate;
+    }
+
+    protected void HandleTakingUltimate()
+    {
+
+    }
+
+    public void EndUlt()
+    {
+        state = State.Normal;
+        EndPunchLeft();
+        EndPunchRight();
+        isUlting = false;
+    }
+
+
 
 
     #region InputRegion
@@ -1161,6 +1261,7 @@ public class PlayerController : MonoBehaviour
     }
     public virtual void FaceMouse()
     {
+        if (state == State.UltimateState) return;
         if (state == State.Dashing) return;
         if (state == State.PowerShieldStunned) return;
         mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
@@ -1173,6 +1274,7 @@ public class PlayerController : MonoBehaviour
         if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft || rightHandTransform.localPosition.x > .1f && returningRight) return;
         if (state == State.Dashing) return;
         if (state == State.PowerShieldStunned) return;
+        if (state == State.UltimateState) return;
         Vector2 joystickPosition = joystickLook.normalized;
         if (joystickPosition.x != 0 || joystickPosition.y != 0)
         {
@@ -1318,7 +1420,8 @@ public class PlayerController : MonoBehaviour
 
     void OnReleaseShieldBoth()
     {
-        
+        shieldLeftTimer = 0f;
+        shieldRightTimer = 0f;
         releasedShieldBoth = true;
         if (isBlockingLeft || isBlockingRight)
         {
@@ -1365,15 +1468,32 @@ public class PlayerController : MonoBehaviour
             Destroy(controlsMenuInstantiated);
         }
     }
+
+    protected void OnUltimate()
+    {
+        pressedUltimate = true;
+        releasedUltimate = false;
+    }
+
+    protected void OnReleasedUltimate()
+    {
+        pressedUltimate = false;
+        releasedUltimate = true;
+    }
+
     #endregion
 
     protected virtual void CheckForInputs()
     {
+        if (state != State.UltimateState) isUlting = false;
+        if (isUlting) return;
         CheckForPunchRight();
         CheckForPunchLeft();
         CheckForShieldBoth();
         CheckForReleaseShieldBoth();
         CheckForDash();
+        CheckForUltimate();
+        CheckForReleasedUltimate();
     }
 
     protected virtual void CheckForPunchRight()
@@ -1484,7 +1604,6 @@ public class PlayerController : MonoBehaviour
             }
             shieldLeftTimer = .02f;
             shieldRightTimer = .02f;
-            Debug.Log("Pressed Shield");
         }
     }
 
@@ -1492,7 +1611,6 @@ public class PlayerController : MonoBehaviour
     {
         if (releasedShieldBoth)
         {
-            Debug.Log("release shield");
             if (state == State.Knockback && airPowerShieldTimer < .3f)
             {
                 return;
@@ -1524,4 +1642,28 @@ public class PlayerController : MonoBehaviour
             pressedDash = false;
         }
     }
+
+    protected void CheckForUltimate()
+    {
+        if (pressedUltimate)
+        {
+            if (state != State.Normal) return;
+            if (!canUltimate) return;
+            pressedUltimate = false;
+            UseUltimate();
+        }
+        
+    }
+
+    protected void CheckForReleasedUltimate()
+    {
+        if (releasedUltimate)
+        {
+            pressedUltimate = false;
+            
+
+
+        }
+    }
+
 }

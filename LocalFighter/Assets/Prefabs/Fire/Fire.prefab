@@ -127,7 +127,7 @@ MonoBehaviour:
   powerDashTowards: {x: 0, y: 0}
   moveSpeed: 8
   punchRange: 2
-  punchSpeed: 25
+  punchSpeed: 30
   returnSpeed: 1
   currentPercentage: 0
   brakeSpeed: 0
@@ -214,7 +214,7 @@ MonoBehaviour:
   explosionFireballPrefab: {fileID: 1632373782272434, guid: b893eaf50d1cb51488d0a6d18c19ac12, type: 3}
   threwRight: 0
   threwLeft: 0
-  fireBallSpeed: 25
+  fireBallSpeed: 30
   oppositeRightHammerForce: {x: 0, y: 0}
   oppositeLeftHammerForce: {x: 0, y: 0}
   dashTimer: 0

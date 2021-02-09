@@ -26,6 +26,24 @@ public class RightHand : MonoBehaviour
 
         if (opponent != null)
         {
+            if (player.isUlting)
+            {
+                player.HitImpact(this.transform);
+
+                opponent.AddDamage(5);
+                opponent.TakeUltimate(player.grabPosition);
+                player.ultConnect = true;
+                if (player.ultPunchCounter >= 14)
+                {
+                    player.EndUlt();
+
+                    Vector2 punchTowards = player.grabPosition.right.normalized;
+                    opponent.Knockback(10, punchTowards);
+                }
+                return;
+            }
+
+
             if (player.isGrabbed)
             {
                 if (opponentTookDamage == false)

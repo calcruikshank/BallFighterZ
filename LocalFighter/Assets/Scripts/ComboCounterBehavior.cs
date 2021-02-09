@@ -19,7 +19,7 @@ public class ComboCounterBehavior : MonoBehaviour
     public void Setup(int comboCount)
     {
         textMesh.sortingOrder = sortingOrder;
-        textMesh.SetText("COMBO " + comboCount.ToString());
+        textMesh.SetText("COMBO x" + comboCount.ToString());
         textColor = textMesh.color;
         dissapearTimer = dissapearTimerMax;
         moveVector = new Vector3(1, 1) * 30f;

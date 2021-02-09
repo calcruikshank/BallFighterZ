@@ -20,7 +20,7 @@ public class Hammer : PlayerController
     
     public override void Start()
     {
-        canAirShieldThreshold = .25f;
+        canAirShieldThreshold = .2f;
 
         animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
         animationTransformHandler.SetPlayer(this.gameObject);
@@ -624,6 +624,13 @@ public class Hammer : PlayerController
     }
     public virtual void Knockback(float damage, Vector2 direction)
     {
+        pressedAirShield = false;
+        pressedShieldBoth = false;
+        releasedShieldBoth = true;
+        shieldLeftTimer = 0f;
+        shieldRightTimer = 0f; //makes it so shielding doesnt accidentaly carry over to the next timne youre not backed
+
+
         if (thrownRightHammerRB != null)
         {
             thrownRightHammerRB.velocity = Vector3.zero;

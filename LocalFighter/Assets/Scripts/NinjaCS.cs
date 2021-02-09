@@ -17,7 +17,7 @@ public class NinjaCS : PlayerController
     // Start is called before the first frame update
     public override void Start()
     {
-        canAirShieldThreshold = .25f;
+        canAirShieldThreshold = .2f;
         if (playerAnimatorBase != null)
         {
             animationTransformHandler = Instantiate(playerAnimatorBase, transform.position, Quaternion.identity).GetComponent<AnimationTransformHandler>();
