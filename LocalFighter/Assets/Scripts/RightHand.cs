@@ -30,7 +30,7 @@ public class RightHand : MonoBehaviour
             {
                 player.HitImpact(this.transform);
 
-                opponent.AddDamage(5);
+                opponent.AddDamage(2);
                 opponent.TakeUltimate(player.grabPosition);
                 player.ultConnect = true;
                 if (player.ultPunchCounter >= 14)
@@ -38,7 +38,7 @@ public class RightHand : MonoBehaviour
                     player.EndUlt();
 
                     Vector2 punchTowards = player.grabPosition.right.normalized;
-                    opponent.Knockback(10, punchTowards);
+                    opponent.Knockback(15, punchTowards);
                 }
                 return;
             }

@@ -22,8 +22,10 @@ public class FirePlayer : PlayerController
     public bool firePlayerGrabbing;
     float dashingTimer;
     [SerializeField] GameObject fireFoxPrefab;
+    [SerializeField] CircleCollider2D bodyCollider;
     GameObject leftHandFire, rightHandFire;
     float beginDashTimer = .25f;
+    float ultTimer = 0f;
     public override void Start()
     {
 
@@ -76,14 +78,7 @@ public class FirePlayer : PlayerController
 
     public override void HandleMovement()
     {
-        if (rightHandFire != null)
-        {
-            Destroy(rightHandFire);
-        }
-        if (leftHandFire != null)
-        {
-            Destroy(leftHandFire);
-        }
+       
         movement.x = inputMovement.x;
         movement.y = inputMovement.y;
         movement = movement;
@@ -342,7 +337,64 @@ public class FirePlayer : PlayerController
         
     }
 
-    
+    protected override void UseUltimate()
+    {
+        isUlting = true;
+        canUltimate = false;
+        ultTimer = 3f;
+        moveSpeed = 25f;
+        meterCount = 0;
+        comboMeterScript.SetMeter(meterCount);
+        fireFoxPrefab.GetComponent<ParticleSystem>().Play();
+
+        state = State.UltimateState;
+    }
+    protected override void HandleUltimate()
+    {
+        threwLeft = false;
+        threwRight = false;
+        
+        
+        ultTimer -= Time.deltaTime;
+        if (ultTimer <= 0f)
+        {
+
+            fireFoxPrefab.GetComponent<ParticleSystem>().Stop();
+            isUlting = false;
+            state = State.Normal;
+        }
+        HandleMovement();
+    }
+    protected override void FixedHandleUltMovement()
+    {
+        FixedHandleMovement();
+    }
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (state != State.UltimateState) return;
+        opponent = other.transform.GetComponent<PlayerController>();
+        if (opponent != null)
+        {
+            if (opponent.isPowerShielding)
+            {
+                opponent.totalShieldRemaining += 20f / 255f;
+                opponent.PowerShield();
+                opponent.rb.velocity = Vector3.zero;
+                HitImpact(this.transform);
+                return;
+            }
+            HitImpact(transform);
+            Vector2 punchTowards = transform.right;
+            opponent.rb.velocity = Vector3.zero;
+            opponent.Knockback(10, punchTowards);
+
+            //Physics2D.IgnoreCollision(this.transform.GetComponent<Collider2D>(), other);
+        }
+
+    }
+
+
+
     void OnReleaseDash()
     {
 
@@ -425,7 +477,9 @@ public class FirePlayer : PlayerController
 
     public override void Respawn()
     {
-        
+        comboCounter = 1;
+        fireFoxPrefab.GetComponent<ParticleSystem>().Stop();
+        isUlting = false;
         animationTransformHandler.SetEmittingToFalse();
         animationTransformHandler.DisableEmitter();
         grabTimer = 0;

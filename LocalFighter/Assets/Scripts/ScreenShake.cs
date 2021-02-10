@@ -19,6 +19,6 @@ public class ScreenShake : MonoBehaviour
             yield return null;
         }
 
-        transform.localPosition = originalPosition;
+        transform.localPosition = Vector3.zero;
     }
 }

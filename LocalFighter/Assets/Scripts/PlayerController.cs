@@ -46,6 +46,10 @@ public class PlayerController : MonoBehaviour
     protected int comboCounter = 1;
     public int ultPunchCounter = 0;
     [SerializeField] private Transform comboTextPopup;
+    public GameObject comboMeter;
+    protected ComboMeter comboMeterScript;
+    protected int meterCount = 0;
+
     public State state;
     public enum State
     {
@@ -70,7 +74,7 @@ public class PlayerController : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         cameraShake = FindObjectOfType<ScreenShake>();
         rb = GetComponent<Rigidbody2D>();
-
+        
 
         state = State.Normal;
     }
@@ -121,6 +125,7 @@ public class PlayerController : MonoBehaviour
             canDash = true;
             stocksLeft = 4;
             stocksLeftText.text = (stocksLeft.ToString());
+            
         }
 
     }
@@ -217,6 +222,9 @@ public class PlayerController : MonoBehaviour
             case State.Dashing:
                 FixedHandleDash();
                 break;
+            case State.UltimateState:
+                FixedHandleUltMovement();
+                break;
         }
     }
 
@@ -274,6 +282,7 @@ public class PlayerController : MonoBehaviour
 
     public virtual void Knockback(float damage, Vector2 direction)
     {
+        if (state == State.UltimateState) return;
         pressedAirShield = false;
         pressedShieldBoth = false;
         releasedShieldBoth = true;
@@ -938,6 +947,19 @@ public class PlayerController : MonoBehaviour
     }
     public void PowerShield()
     {
+        
+        if (comboMeterScript == null)
+        {
+            comboMeterScript = comboMeter.GetComponent<ComboMeter>();
+        }
+        bool addedToMeter = false;
+        if (addedToMeter == false)
+        {
+            meterCount += 1;
+            comboMeterScript.SetMeter(meterCount);
+            if (meterCount >= 20) canUltimate = true;
+            addedToMeter = true;
+        }
 
         isInKnockback = false;
         rb.velocity = Vector3.zero;
@@ -1136,13 +1158,17 @@ public class PlayerController : MonoBehaviour
     public void AddToComboCounter()
     {
         comboCounter++;
+        if (comboMeterScript == null)
+        {
+            comboMeterScript = comboMeter.GetComponent<ComboMeter>();
+        }
+        meterCount += comboCounter;
+        comboMeterScript.SetMeter(meterCount);
+        if (meterCount >= 20) canUltimate = true;
         Transform comboPopup = Instantiate(comboTextPopup, new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z), Quaternion.identity);
         ComboCounterBehavior comboCounterScript = comboPopup.GetComponent<ComboCounterBehavior>();
         comboCounterScript.Setup(comboCounter);
-        if (comboCounter >= 4)
-        {
-            canUltimate = true;
-        }
+        
     }
 
     public void RemoveFromComboCounter()
@@ -1159,6 +1185,8 @@ public class PlayerController : MonoBehaviour
         punchRightDuringUlt = true;
         punchLeftDuringUlt = false;
         canUltimate = false;
+        meterCount = 0;
+        comboMeterScript.SetMeter(meterCount);
         state = State.UltimateState;
         
     }
@@ -1220,7 +1248,10 @@ public class PlayerController : MonoBehaviour
         EndPunchRight();
         isUlting = false;
     }
+    protected virtual void FixedHandleUltMovement()
+    {
 
+    }
 
 
 

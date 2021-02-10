@@ -18,11 +18,12 @@ public class GameManager : MonoBehaviour
     public Transform text4;
     public Transform text0Stock2;
     public Transform text1Stock2;
+    [SerializeField] Transform comboMeterSpawn0, comboMeterSpawn1, comboMeterSpawn2, comboMeterSpawn3;
     public bool gameIsOver;
     int numOfTeamsLeft = 0;
     int numOfBluePlayers;
     int numOfRedPlayers;
-    [SerializeField] GameObject textBlueWonPrefab, textRedWonPrefab, restartText;
+    [SerializeField] GameObject textBlueWonPrefab, textRedWonPrefab, restartText, comboMeter;
     // Start is called before the first frame update
     void Start()
     {
@@ -63,6 +64,11 @@ public class GameManager : MonoBehaviour
             GameObject stockText = Instantiate(team0StockPrefab, text0Stock.position, Quaternion.identity);
             stockText.transform.SetParent(text0Stock, false);
             player.stocksLeftText = stockText.GetComponent<TMP_Text>();
+
+
+            GameObject comboMeterSpawned = Instantiate(comboMeter, comboMeterSpawn0.position, Quaternion.identity);
+            comboMeterSpawned.transform.SetParent(comboMeterSpawn0, false);
+            player.comboMeter = comboMeterSpawned;
         }
         if (spawnLocation == 1)
         {
@@ -73,6 +79,11 @@ public class GameManager : MonoBehaviour
             GameObject stockText = Instantiate(team1StockPrefab, text1Stock.position, Quaternion.identity);
             stockText.transform.SetParent(text1Stock, false);
             player.stocksLeftText = stockText.GetComponent<TMP_Text>();
+
+
+            GameObject comboMeterSpawned1 = Instantiate(comboMeter, comboMeterSpawn1.position, Quaternion.identity);
+            comboMeterSpawned1.transform.SetParent(comboMeterSpawn1, false);
+            player.comboMeter = comboMeterSpawned1;
         }
         if (spawnLocation == 2)
         {
@@ -83,6 +94,12 @@ public class GameManager : MonoBehaviour
             GameObject stockText = Instantiate(team0StockPrefab, text0Stock2.position, Quaternion.identity);
             stockText.transform.SetParent(text0Stock2, false);
             player.stocksLeftText = stockText.GetComponent<TMP_Text>();
+
+
+
+            GameObject comboMeterSpawned2 = Instantiate(comboMeter, comboMeterSpawn2.position, Quaternion.identity);
+            comboMeterSpawned2.transform.SetParent(comboMeterSpawn2, false);
+            player.comboMeter = comboMeterSpawned2;
         }
         if (spawnLocation == 3)
         {
@@ -93,6 +110,12 @@ public class GameManager : MonoBehaviour
             GameObject stockText = Instantiate(team1StockPrefab, text1Stock2.position, Quaternion.identity);
             stockText.transform.SetParent(text1Stock2, false);
             player.stocksLeftText = stockText.GetComponent<TMP_Text>();
+
+
+
+            GameObject comboMeterSpawned3 = Instantiate(comboMeter, comboMeterSpawn3.position, Quaternion.identity);
+            comboMeterSpawned3.transform.SetParent(comboMeterSpawn3, false);
+            player.comboMeter = comboMeterSpawned3;
         }
 
 

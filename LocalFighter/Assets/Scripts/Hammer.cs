@@ -820,7 +820,8 @@ public class Hammer : PlayerController
         Debug.Log("Succesfully used Ultimate!");
         punchLeftDuringUlt = true;
         canUltimate = false;
-
+        meterCount = 0;
+        comboMeterScript.SetMeter(meterCount);
     }
 
     protected override void HandleUltimate()

@@ -23,6 +23,16 @@ public class LightningUltimate : MonoBehaviour
         opponent = other.transform.parent.GetComponent<PlayerController>();
         if (opponent != player && opponent != null)
         {
+            /*if (opponent.isPowerShielding)
+            {
+                opponent.totalShieldRemaining += 20f / 255f;
+                opponent.PowerShield();
+                player.PowerShieldStun();
+                Debug.Log("Opponent is power shielding");
+
+                player.HitImpact(this.transform);
+                return;
+            }*/
             Vector2 punchTowards = transform.right;
             opponent.rb.velocity = Vector3.zero;
             opponent.Knockback(30, punchTowards);

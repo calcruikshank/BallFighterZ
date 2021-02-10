@@ -37,6 +37,7 @@ Transform:
   - {fileID: 926449329175581504}
   - {fileID: 6992106457659332174}
   - {fileID: 1456185614755873525}
+  - {fileID: 8121020905344346564}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -163,6 +164,8 @@ MonoBehaviour:
   instantiatedArrow: 0
   respawned: 0
   isInKnockback: 0
+  isUlting: 0
+  ultConnect: 0
   rightHandTransform: {fileID: 926449330623663813}
   leftHandTransform: {fileID: 926449329438952366}
   grabPosition: {fileID: 926449329175581504}
@@ -202,8 +205,10 @@ MonoBehaviour:
   airShieldInstantiated: {fileID: 0}
   controlsMenu: {fileID: 8521902700825389228, guid: 2e3f0ae21481a3741b64ce2d9739c8c5, type: 3}
   controlsMenuInstantiated: {fileID: 0}
-  hitImpactParticle: {fileID: 0}
+  hitImpactParticle: {fileID: 8439534664109783063, guid: 61c1c09eed6f22d44b4a9011b288dbce, type: 3}
+  ultPunchCounter: 0
   comboTextPopup: {fileID: 6630030228142045961, guid: b18eb451df2f6794bbcca1edb19cddfc, type: 3}
+  comboMeter: {fileID: 2960256083726631806, guid: 5550c8dbfd99443469420cf79f9a6948, type: 3}
   state: 0
   rightStickLook: {x: 0, y: 0}
   thrownRightFireballRB: {fileID: 0}
@@ -219,7 +224,8 @@ MonoBehaviour:
   oppositeLeftHammerForce: {x: 0, y: 0}
   dashTimer: 0
   firePlayerGrabbing: 0
-  fireFoxPrefab: {fileID: 1654919534328920, guid: f514fb15c97dca144a6f7f8c521bae5a, type: 3}
+  fireFoxPrefab: {fileID: 8122913207772315458}
+  bodyCollider: {fileID: 926449330050574847}
 --- !u!1 &926449329175581567
 GameObject:
   m_ObjectHideFlags: 0
@@ -805,3 +811,70 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1001 &6700486570813613306
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 926449328659449654}
+    m_Modifications:
+    - target: {fileID: 3190390834768255928, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+      propertyPath: m_Name
+      value: FireBallUlt
+      objectReference: {fileID: 0}
+    - target: {fileID: 3192841534618520894, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3192841534618520894, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3192841534618520894, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3192841534618520894, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3192841534618520894, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3192841534618520894, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3192841534618520894, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3192841534618520894, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+      propertyPath: m_RootOrder
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3192841534618520894, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3192841534618520894, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3192841534618520894, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+--- !u!1 &8122913207772315458 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3190390834768255928, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+  m_PrefabInstance: {fileID: 6700486570813613306}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &8121020905344346564 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3192841534618520894, guid: 57314f00934fa7f43bd5ce5a0821a70d, type: 3}
+  m_PrefabInstance: {fileID: 6700486570813613306}
+  m_PrefabAsset: {fileID: 0}
