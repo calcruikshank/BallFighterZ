@@ -107,7 +107,6 @@ public class ThrownHammer : MonoBehaviour
                             player.GetComponent<Hammer>().ReturnLeftHammer();
                         }
 
-                        player.HitImpact(this.transform);
                         return;
 
                     }
@@ -128,7 +127,6 @@ public class ThrownHammer : MonoBehaviour
                         player.GetComponent<Hammer>().ReturnLeftHammer();
                     }
 
-                    player.HitImpact(this.transform);
                     return;
                 }
                 Instantiate(explosionPrefab, pointOfContact.position, transform.rotation);

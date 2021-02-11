@@ -48,6 +48,8 @@ public class RightHand : MonoBehaviour
             {
                 if (opponentTookDamage == false)
                 {
+
+                    player.HitImpact(this.transform);
                     player.punchesToRelease++;
                     opponent.AddDamage(2);
                     opponentTookDamage = true;
@@ -74,7 +76,6 @@ public class RightHand : MonoBehaviour
                 player.PowerShieldStun();
                 Debug.Log("Opponent is power shielding");
 
-                player.HitImpact(this.transform);
                 return;
             }
             if (downTicker > 1 && player.punchedLeft)
@@ -90,7 +91,6 @@ public class RightHand : MonoBehaviour
                 //check if perfect shield
                 
 
-                player.HitImpact(this.transform);
                 opponent.totalShieldRemaining -= 10f / 255f;
                 return;
             }

@@ -52,7 +52,6 @@ public class Shuriken : MonoBehaviour
                 }
                 Destroy(this.gameObject);
 
-                thisPlayer.HitImpact(this.transform);
                 return;
             }
 
@@ -64,7 +63,6 @@ public class Shuriken : MonoBehaviour
                     opponent.PowerShield();
                     thisPlayer.PowerShieldStun();
 
-                    thisPlayer.HitImpact(this.transform);
                     Destroy(this.gameObject);
                     return;
 
@@ -83,7 +81,6 @@ public class Shuriken : MonoBehaviour
                 {
                     thisPlayer.RemoveFromComboCounter();
                 }
-                thisPlayer.HitImpact(this.transform);
                 opponent.rb.velocity = Vector3.zero;
                 knockTowards = transform.right;
                 opponent.Knockback(damage, knockTowards);

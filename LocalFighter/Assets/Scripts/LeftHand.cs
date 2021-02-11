@@ -47,6 +47,8 @@ public class LeftHand : MonoBehaviour
             {
                 if (opponentTookDamage == false)
                 {
+
+                    player.HitImpact(this.transform);
                     player.punchesToRelease++;
                     opponent.AddDamage(2);
                     opponentTookDamage = true;
@@ -74,7 +76,6 @@ public class LeftHand : MonoBehaviour
                 opponentTookDamage = true;
                 Debug.Log("Opponent is power shielding");
 
-                player.HitImpact(this.transform);
                 return;
             }
             if (downTicker > 1 && player.punchedRight)
@@ -93,7 +94,6 @@ public class LeftHand : MonoBehaviour
                 opponentTookDamage = true;
                 opponent.totalShieldRemaining -= 10f / 255f;
 
-                player.HitImpact(this.transform);
                 return;
             }
 
