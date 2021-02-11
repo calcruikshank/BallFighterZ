@@ -55,6 +55,10 @@ public class NinjaCS : PlayerController
             playerBody.material.SetColor("_Color", blueColor);
             //shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", blueColor);
         }
+        if (comboMeterScript == null)
+        {
+            comboMeterScript = comboMeter.GetComponent<ComboMeter>();
+        }
         rightHandCollider = rightHandTransform.GetComponent<CircleCollider2D>();
         leftHandCollider = leftHandTransform.GetComponent<CircleCollider2D>();
         canDash = true;

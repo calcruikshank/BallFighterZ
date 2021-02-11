@@ -119,7 +119,10 @@ public class PlayerController : MonoBehaviour
                 playerBody.material.SetColor("_Color", blueColor);
                 //shield.GetComponent<SpriteRenderer>().material.SetColor("_Color", blueColor);
             }
-
+            if (comboMeterScript == null)
+            {
+                comboMeterScript = comboMeter.GetComponent<ComboMeter>();
+            }
             rightHandCollider = rightHandTransform.GetComponent<CircleCollider2D>();
             leftHandCollider = leftHandTransform.GetComponent<CircleCollider2D>();
             canDash = true;
@@ -947,18 +950,16 @@ public class PlayerController : MonoBehaviour
     }
     public void PowerShield()
     {
-        
-        if (comboMeterScript == null)
-        {
-            comboMeterScript = comboMeter.GetComponent<ComboMeter>();
-        }
-        bool addedToMeter = false;
-        if (addedToMeter == false)
+        bool didAddToCounter = false;
+        if (!didAddToCounter)
         {
             meterCount += 1;
             comboMeterScript.SetMeter(meterCount);
-            if (meterCount >= 20) canUltimate = true;
-            addedToMeter = true;
+            if (meterCount >= 20)
+            {
+                canUltimate = true;
+            }
+            didAddToCounter = true;
         }
 
         isInKnockback = false;
@@ -1158,10 +1159,6 @@ public class PlayerController : MonoBehaviour
     public void AddToComboCounter()
     {
         comboCounter++;
-        if (comboMeterScript == null)
-        {
-            comboMeterScript = comboMeter.GetComponent<ComboMeter>();
-        }
         meterCount += comboCounter;
         comboMeterScript.SetMeter(meterCount);
         if (meterCount >= 20) canUltimate = true;
@@ -1614,6 +1611,7 @@ public class PlayerController : MonoBehaviour
         if (pressedShieldBoth)
         {
             if (state == State.FireGrabbed) return;
+            if (state == State.TakingUltimate) return;
             if (state == State.ShockGrabbed) return;
             if (state == State.Grabbed) return;
             if (state == State.Dashing) return;
