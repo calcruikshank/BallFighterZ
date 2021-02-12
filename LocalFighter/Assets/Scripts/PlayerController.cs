@@ -49,6 +49,7 @@ public class PlayerController : MonoBehaviour
     public GameObject comboMeter;
     protected ComboMeter comboMeterScript;
     protected int meterCount = 0;
+    public bool canCombo = true;
 
     public State state;
     public enum State
@@ -509,6 +510,7 @@ public class PlayerController : MonoBehaviour
             grabTimer = 0;
             state = State.Normal;
         }
+        
         moveSpeed = 0f;
         returningLeft = false;
         returningRight = false;
@@ -516,6 +518,11 @@ public class PlayerController : MonoBehaviour
         punchedRight = false;
         isGrabbing = true;
         opponent = opponentCheck;
+
+        if (!opponent.isInKnockback)
+        {
+            RemoveFromComboCounter();
+        }
         leftHandTransform.localPosition = new Vector2(punchRange, -.4f);
         rightHandTransform.localPosition = new Vector2(punchRange, .4f);
         state = State.Grabbing;
@@ -597,6 +604,7 @@ public class PlayerController : MonoBehaviour
         //canAirShieldThreshold = knockbackValue * .01f;
         //canAirShieldThreshold = knockbackValue * .01f;
         //Debug.Log(currentPercentage + "current percentage");
+        isInKnockback = true;
         state = State.Knockback;
     }
 
@@ -953,9 +961,9 @@ public class PlayerController : MonoBehaviour
         bool didAddToCounter = false;
         if (!didAddToCounter)
         {
-            meterCount += 1;
-            comboMeterScript.SetMeter(meterCount);
-            if (meterCount >= 20)
+            this.meterCount += 1;
+            comboMeterScript.SetMeter(this.meterCount);
+            if (this.meterCount >= 20)
             {
                 canUltimate = true;
             }
@@ -1145,7 +1153,7 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(cameraShake.Shake(.04f, .4f));
             return;
         }
-        impactStunTimer = .1f;
+        impactStunTimer = .075f;
         StartCoroutine(FreezeFrames(.075f));
     }
 
@@ -1159,9 +1167,9 @@ public class PlayerController : MonoBehaviour
     public void AddToComboCounter()
     {
         comboCounter++;
-        meterCount += comboCounter;
-        comboMeterScript.SetMeter(meterCount);
-        if (meterCount >= 20) canUltimate = true;
+        this.meterCount += comboCounter;
+        comboMeterScript.SetMeter(this.meterCount);
+        if (this.meterCount >= 20) canUltimate = true;
         Transform comboPopup = Instantiate(comboTextPopup, new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z), Quaternion.identity);
         ComboCounterBehavior comboCounterScript = comboPopup.GetComponent<ComboCounterBehavior>();
         comboCounterScript.Setup(comboCounter);
@@ -1545,6 +1553,7 @@ public class PlayerController : MonoBehaviour
         if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
         if (returningRight) return;
         if (state == State.Knockback) return;
+        if (state == State.PowerShieldStunned) return;
         //punchedRight = true;
         shieldingRight = false;
 
@@ -1584,6 +1593,7 @@ public class PlayerController : MonoBehaviour
         if (shieldingLeft && state != State.PowerShielding || shieldingRight && state != State.PowerShielding) return;
         if (returningLeft) return;
         if (state == State.Knockback) return;
+        if (state == State.PowerShieldStunned) return;
         //punchedLeft = true;
         shieldingLeft = false;
 

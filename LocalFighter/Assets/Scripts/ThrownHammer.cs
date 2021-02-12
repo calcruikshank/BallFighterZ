@@ -55,7 +55,7 @@ public class ThrownHammer : MonoBehaviour
                     if (player.punchesToRelease >= 1)
                     {
 
-                        player.HitImpact(this.transform);
+                        //player.HitImpact(this.transform);
                         player.EndGrab();
                         opponent.EndGrab();
                         opponent.isGrabbing = false;
@@ -131,10 +131,10 @@ public class ThrownHammer : MonoBehaviour
                 }
                 Instantiate(explosionPrefab, pointOfContact.position, transform.rotation);
                 float damage = 6;
-                if (this.GetComponent<Rigidbody2D>().velocity.magnitude > .2f)
+                /*if (this.GetComponent<Rigidbody2D>().velocity.magnitude > .2f)
                 {
-                    player.HitImpact(this.transform);
-                }
+                    //player.HitImpact(this.transform);
+                }*/
                 Vector2 punchTowards = transform.right;
                 if (this.GetComponent<Rigidbody2D>().velocity.magnitude <= .2f)
                 {

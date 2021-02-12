@@ -6,16 +6,24 @@ public class LightningUltimate : MonoBehaviour
 {
     public PlayerController opponent;
     public PlayerController player;
+    Collider2D thisCollider;
+    float turnOffColliderAfterSeconds;
     // Start is called before the first frame update
     void Start()
     {
-        
+        thisCollider = this.transform.GetComponent<Collider2D>();
+        thisCollider.enabled = true;
+        turnOffColliderAfterSeconds = .1f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        turnOffColliderAfterSeconds -= Time.deltaTime;
+        if (turnOffColliderAfterSeconds <= 0f)
+        {
+            thisCollider.enabled = false;
+        }
     }
 
     void OnTriggerEnter2D(Collider2D other)

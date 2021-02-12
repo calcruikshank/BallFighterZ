@@ -5000,9 +5000,9 @@ ParticleSystem:
     enabled: 1
     startLifetime:
       serializedVersion: 2
-      minMaxState: 3
-      scalar: 0.4
-      minScalar: 0.2
+      minMaxState: 0
+      scalar: 0.3
+      minScalar: 0.3
       maxCurve:
         serializedVersion: 2
         m_Curve:
@@ -9769,7 +9769,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTimer: 0
-  destroyTarget: 0.5
+  destroyTarget: 0.3
 --- !u!61 &4516640146818407534
 BoxCollider2D:
   m_ObjectHideFlags: 0

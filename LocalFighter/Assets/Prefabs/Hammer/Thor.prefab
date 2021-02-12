@@ -387,7 +387,7 @@ MonoBehaviour:
   joystickLook: {x: 0, y: 0}
   powerDashTowards: {x: 0, y: 0}
   moveSpeed: 8
-  punchRange: 2
+  punchRange: 1
   punchSpeed: 45
   returnSpeed: 35
   currentPercentage: 0

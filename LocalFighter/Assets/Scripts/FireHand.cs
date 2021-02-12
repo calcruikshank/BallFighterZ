@@ -36,6 +36,11 @@ public class FireHand : MonoBehaviour
                     return;
                 }
             }
+
+            if (!opponent.isInKnockback)
+            {
+                player.RemoveFromComboCounter();
+            }
             player.Grab(opponent);
             opponent.FireGrabbed(player.grabPosition);
             return;

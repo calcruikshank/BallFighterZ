@@ -113,6 +113,11 @@ public class LightningBall : MonoBehaviour
         if (opponent != null && opponent != player)
         {
             this.transform.position = opponent.transform.position;
+
+            if (!opponent.isInKnockback)
+            {
+                player.RemoveFromComboCounter();
+            }
             opponent.ShockGrabbed();
             isStriking = true;
 

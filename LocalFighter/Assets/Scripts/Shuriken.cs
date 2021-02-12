@@ -73,8 +73,9 @@ public class Shuriken : MonoBehaviour
             }
             if (opponent != null && opponent != thisPlayer)
             {
-                if (opponent.isInKnockback)
+                if (opponent.isInKnockback && thisPlayer.canCombo)
                 {
+                    thisPlayer.canCombo = false;
                     thisPlayer.AddToComboCounter();
                 }
                 if (!opponent.isInKnockback)

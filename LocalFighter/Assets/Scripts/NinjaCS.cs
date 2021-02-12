@@ -90,6 +90,7 @@ public class NinjaCS : PlayerController
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(punchRange, -.7f), punchSpeed * Time.deltaTime);
             if (rightHandTransform.localPosition.x == punchRange)
             {
+                canCombo = true;
                 ThrowShuriken();
                 returningRight = true;
                 punchedRight = false;
@@ -371,6 +372,11 @@ public class NinjaCS : PlayerController
             }
             if (opponent != null && opponent != this)
             {
+                if (opponent.isInKnockback)
+                {
+                    this.canCombo = false;
+                    this.AddToComboCounter();
+                }
                 opponent.rb.velocity = Vector3.zero;
                 opponent.Knockback(5, -transform.right);
             }
