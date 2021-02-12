@@ -286,6 +286,12 @@ public class PlayerController : MonoBehaviour
 
     public virtual void Knockback(float damage, Vector2 direction)
     {
+        this.meterCount += 2;
+        comboMeterScript.SetMeter(this.meterCount);
+        if (this.meterCount >= 20)
+        {
+            canUltimate = true;
+        }
         if (state == State.UltimateState) return;
         pressedAirShield = false;
         pressedShieldBoth = false;
@@ -500,6 +506,8 @@ public class PlayerController : MonoBehaviour
     }
     public virtual void Grab(PlayerController opponentCheck)
     {
+
+        if (state == State.UltimateState) return;
         if (isGrabbed && opponent != null)
         {
             returningLeft = true;
@@ -530,6 +538,7 @@ public class PlayerController : MonoBehaviour
     public virtual void Grabbed(Transform player)
     {
 
+        if (state == State.UltimateState) return;
         punchesToRelease = 0;
         grabbedPosition = player; //the transform that grabbed you is equal to the player that grabbed you grab position
         returningLeft = true;
@@ -540,6 +549,7 @@ public class PlayerController : MonoBehaviour
     public void FireGrabbed(Transform player)
     {
 
+        if (state == State.UltimateState) return;
         punchesToRelease = 4;
         grabbedPosition = player; //the transform that grabbed you is equal to the player that grabbed you grab position
         returningLeft = true;
@@ -550,6 +560,8 @@ public class PlayerController : MonoBehaviour
 
     public void ShockGrabbed()
     {
+
+        if (state == State.UltimateState) return;
         isGrabbed = true;
         isBlockingLeft = false;
         isBlockingRight = false;
@@ -576,6 +588,8 @@ public class PlayerController : MonoBehaviour
     }
     public virtual void Throw(Vector2 direction)
     {
+
+        if (state == State.UltimateState) return;
         pressedAirShield = false;
         pressedShieldBoth = false;
         releasedShieldBoth = true;

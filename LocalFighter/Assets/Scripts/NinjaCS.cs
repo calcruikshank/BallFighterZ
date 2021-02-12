@@ -14,6 +14,8 @@ public class NinjaCS : PlayerController
     Vector3 dashDir;
     float dashSpeedNinja;
     float shurikenSpeed = 30f;
+    float invisTimer = 10f;
+    [SerializeField] GameObject dissapearAnimation;
     // Start is called before the first frame update
     public override void Start()
     {
@@ -387,5 +389,33 @@ public class NinjaCS : PlayerController
     }
 
 
+    protected override void UseUltimate()
+    {
+        StartCoroutine(startInvisTimer());
+        isUlting = true;
+        /*SpriteRenderer[] animatorArray = playerAnimatorBase.GetComponentsInChildren<SpriteRenderer>();
+        for (int i = 0; i < animatorArray.Length; i++)
+        {
+            Debug.Log(animatorArray[i]);
+            animatorArray[i].enabled = false;
+        }*/
+        this.animationTransformHandler.gameObject.SetActive(false);
+        rightHandCollider.gameObject.SetActive(false);
+        leftHandCollider.gameObject.SetActive(false);
+        canUltimate = false;
+        meterCount = 0;
+        Instantiate(dissapearAnimation, transform.position, Quaternion.identity);
+        Debug.Log("Succesfully used Ultimate!" + meterCount);
+        comboMeterScript.SetMeter(meterCount);
+    }
+
+
+    IEnumerator startInvisTimer()
+    {
+        yield return new WaitForSecondsRealtime(invisTimer);
+        this.animationTransformHandler.gameObject.SetActive(true);
+        rightHandCollider.gameObject.SetActive(true);
+        leftHandCollider.gameObject.SetActive(!false);
+    }
 
 }

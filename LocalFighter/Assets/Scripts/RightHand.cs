@@ -135,7 +135,6 @@ public class RightHand : MonoBehaviour
                 }
                 
             }
-            thisCollider.enabled = false;
         }
         
     }
@@ -167,7 +166,7 @@ public class RightHand : MonoBehaviour
         transform.localScale = new Vector2((transform.localPosition.x / 2) + 1, (transform.localPosition.x / 2) + 1);
 
 
-        if (player.returningRight == false && player.punchedRight == false)
+        if (transform.localPosition.x <= 0)
         {
             opponentTookDamage = false;
         }

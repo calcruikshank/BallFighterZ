@@ -238,7 +238,7 @@ MonoBehaviour:
   - {x: -0.57178915, y: -1.5700108, z: 0}
   m_ShapePathHash: -817397846
   m_Mesh: {fileID: 0}
-  m_InstanceId: 73414
+  m_InstanceId: 72066
 --- !u!96 &3022404880235389067
 TrailRenderer:
   serializedVersion: 2

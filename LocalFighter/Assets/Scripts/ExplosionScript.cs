@@ -16,10 +16,10 @@ public class ExplosionScript : MonoBehaviour
     {
         explosionCollider = this.gameObject.GetComponent<CircleCollider2D>();
         colliderTimer = 0f;
-        this.transform.localScale = new Vector2(1, 1);
+        this.transform.localScale = new Vector2(1.7f, 2);
         if (isLarge)
         {
-            this.transform.localScale = new Vector2(2, 2);
+            this.transform.localScale = new Vector2(2.7f, 3);
         }
     }
 

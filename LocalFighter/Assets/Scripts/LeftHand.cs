@@ -135,7 +135,6 @@ public class LeftHand : MonoBehaviour
                     opponentTookDamage = true;
                 }
             }
-            thisCollider.enabled = false;
         }
         
     }
@@ -168,7 +167,7 @@ public class LeftHand : MonoBehaviour
         transform.localScale = new Vector2((transform.localPosition.x / 2) + 1, (transform.localPosition.x / 2) + 1); //sets the local scale equal to the local position + 1. the further punched the larger the scale. if local position is 0 then scale is one
 
 
-        if (player.returningLeft == false && player.punchedLeft == false)
+        if (transform.localPosition.x <= 0)
         {
             opponentTookDamage = false;
         }

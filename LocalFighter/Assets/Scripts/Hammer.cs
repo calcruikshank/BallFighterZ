@@ -649,6 +649,12 @@ public class Hammer : PlayerController
     }
     public virtual void Knockback(float damage, Vector2 direction)
     {
+        this.meterCount += 2;
+        comboMeterScript.SetMeter(this.meterCount);
+        if (this.meterCount >= 20)
+        {
+            canUltimate = true;
+        }
         pressedAirShield = false;
         pressedShieldBoth = false;
         releasedShieldBoth = true;
