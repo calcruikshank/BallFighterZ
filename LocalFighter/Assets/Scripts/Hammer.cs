@@ -649,7 +649,7 @@ public class Hammer : PlayerController
     }
     public virtual void Knockback(float damage, Vector2 direction)
     {
-        this.meterCount += 2;
+        this.meterCount += 1;
         comboMeterScript.SetMeter(this.meterCount);
         if (this.meterCount >= 20)
         {

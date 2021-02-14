@@ -374,6 +374,10 @@ public class NinjaCS : PlayerController
             }
             if (opponent != null && opponent != this)
             {
+                if (!opponent.isInKnockback)
+                {
+                    RemoveFromComboCounter();
+                }
                 if (opponent.isInKnockback)
                 {
                     this.canCombo = false;

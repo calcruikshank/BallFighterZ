@@ -41,6 +41,13 @@ public class LightningUltimate : MonoBehaviour
                 player.HitImpact(this.transform);
                 return;
             }*/
+            if (opponent.isPowerShielding)
+            {
+                opponent.totalShieldRemaining += 20f / 255f;
+                opponent.PowerShield();
+                opponent.rb.velocity = Vector3.zero;
+                return;
+            }
             Vector2 punchTowards = transform.right;
             opponent.rb.velocity = Vector3.zero;
             opponent.Knockback(30, punchTowards);

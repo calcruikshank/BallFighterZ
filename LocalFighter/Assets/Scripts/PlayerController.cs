@@ -286,7 +286,7 @@ public class PlayerController : MonoBehaviour
 
     public virtual void Knockback(float damage, Vector2 direction)
     {
-        this.meterCount += 2;
+        this.meterCount += 1;
         comboMeterScript.SetMeter(this.meterCount);
         if (this.meterCount >= 20)
         {
@@ -972,10 +972,11 @@ public class PlayerController : MonoBehaviour
     }
     public void PowerShield()
     {
+        if (state == State.PowerShielding) return;
         bool didAddToCounter = false;
         if (!didAddToCounter)
         {
-            this.meterCount += 1;
+            this.meterCount += 3;
             comboMeterScript.SetMeter(this.meterCount);
             if (this.meterCount >= 20)
             {
