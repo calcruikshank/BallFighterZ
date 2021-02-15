@@ -50,6 +50,8 @@ public class PlayerController : MonoBehaviour
     protected ComboMeter comboMeterScript;
     protected int meterCount = 0;
     public bool canCombo = true;
+    public bool canSelectCharacter = false;
+
 
     public State state;
     public enum State
@@ -1346,6 +1348,12 @@ public class PlayerController : MonoBehaviour
     {
         pressedLeft = true;
         releasedLeft = false;
+
+        if (canSelectCharacter)
+        {
+            Debug.Log("Selected Character");
+            PlayerHandler.Instance.ChangeCharacter(0, this.gameObject);
+        }
     }
     public virtual void OnReleasePunchRight()
     {
