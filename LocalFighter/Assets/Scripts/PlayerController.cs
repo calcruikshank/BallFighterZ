@@ -255,7 +255,6 @@ public class PlayerController : MonoBehaviour
 
         movement.x = inputMovement.x;
         movement.y = inputMovement.y;
-        movement = movement;
         if (movement.x != 0 || movement.y != 0)
         {
             lastMoveDir = movement;
@@ -375,7 +374,15 @@ public class PlayerController : MonoBehaviour
 
     public virtual void HandleThrowingHands()
     {
-
+        if (animator != null)
+        {
+            animator.SetBool("punchedRight", (punchedRight));
+            animator.SetBool("punchedLeft", (punchedLeft));
+            animator.SetBool("returningRight", (returningRight));
+            animator.SetBool("returningLeft", (returningLeft));
+            animator.SetFloat("rightHandPosition", (rightHandTransform.localPosition.x));
+            animator.SetFloat("leftHandPosition", (leftHandTransform.localPosition.x));
+        }
         if (punchedRight && returningRight == false)
         {
             punchedRightTimer = 0;

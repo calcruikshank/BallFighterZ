@@ -417,7 +417,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinBehavior
@@ -481,7 +481,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.data[4].m_Id
-      value: ad935d3c-8776-4556-80e2-ddbb4200869b
+      value: cd8ce90e-5fba-4adf-9e37-d5f5d723e58a
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.data[4].m_Action
@@ -489,7 +489,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.data[4].m_Path
-      value: <Mouse>/backButton
+      value: <Keyboard>/1
       objectReference: {fileID: 0}
     - target: {fileID: 5974008920850429864, guid: bc67d3ce53a9e1e4686160d4e1c75baf, type: 3}
       propertyPath: m_JoinAction.m_Action.m_SingletonActionBindings.Array.data[5].m_Id

@@ -72,6 +72,15 @@ public class Hammer : PlayerController
 
     public override void HandleThrowingHands()
     {
+        if (animator != null)
+        {
+            animator.SetBool("punchedRight", (punchedRight));
+            animator.SetBool("punchedLeft", (punchedLeft));
+            animator.SetBool("returningRight", (returningRight));
+            animator.SetBool("returningLeft", (returningLeft));
+            animator.SetFloat("rightHandPosition", (rightHandTransform.localPosition.x));
+            animator.SetFloat("leftHandPosition", (leftHandTransform.localPosition.x));
+        }
         returnSpeed = 4;
         
         //Debug.Log(returningRight); current problem is when i am thrown returning right is set to true and its not set back again 
@@ -91,11 +100,14 @@ public class Hammer : PlayerController
             }
         }
 
+        if (thrownRightHammerRB == null)
+        {
+            returnHammerRight = false;
+        }
         if (returnHammerRight)
         {
             if (thrownRightHammerRB.velocity.magnitude > 1f)
             {
-
                 //Debug.Log("hammer velocity = " + thrownRightHammerRB.velocity);
                 thrownRightHammerRB.AddForce(oppositeRightHammerForce * Time.deltaTime * 5, ForceMode2D.Impulse);
             }
@@ -122,7 +134,6 @@ public class Hammer : PlayerController
                 returnHammerRight = false;
                 returningRight = false;
                 threwRight = false;
-                returnHammerRight = false;
             }
         }
 

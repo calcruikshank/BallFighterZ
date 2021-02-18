@@ -85,7 +85,6 @@ public class FirePlayer : PlayerController
        
         movement.x = inputMovement.x;
         movement.y = inputMovement.y;
-        movement = movement;
         if (movement.x != 0 || movement.y != 0)
         {
             lastMoveDir = movement;
@@ -107,7 +106,15 @@ public class FirePlayer : PlayerController
     }
     public override void HandleThrowingHands()
     {
-        
+        if (animator != null)
+        {
+            animator.SetBool("punchedRight", (punchedRight));
+            animator.SetBool("punchedLeft", (punchedLeft));
+            animator.SetBool("returningRight", (returningRight));
+            animator.SetBool("returningLeft", (returningLeft));
+            animator.SetFloat("rightHandPosition", (rightHandTransform.localPosition.x));
+            animator.SetFloat("leftHandPosition", (leftHandTransform.localPosition.x));
+        }
         if (!returningLeft || !returningRight) returnSpeed = 4f;
         if (returningLeft && leftHandTransform.localPosition.x <= 1.25f && returningRight && rightHandTransform.localPosition.x <= 1.25f && state != State.Dashing)
         {
