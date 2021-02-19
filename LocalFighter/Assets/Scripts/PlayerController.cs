@@ -94,10 +94,10 @@ public class PlayerController : MonoBehaviour
             gameManager.SetTeam(this);
             if (team % 2 == 0)
             {
-                GameObject redHandObject = Instantiate(redHand, Vector3.zero, Quaternion.identity);
-                redHandObject.transform.SetParent(rightHandTransform, false);
-                GameObject redHandObject1 = Instantiate(redHand, Vector3.zero, Quaternion.identity);
-                redHandObject1.transform.SetParent(leftHandTransform, false);
+                //GameObject redHandObject = Instantiate(redHand, Vector3.zero, Quaternion.identity);
+                //redHandObject.transform.SetParent(rightHandTransform, false);
+                //GameObject redHandObject1 = Instantiate(redHand, Vector3.zero, Quaternion.identity);
+                //redHandObject1.transform.SetParent(leftHandTransform, false);
 
                 shield = Instantiate(redShield, Vector3.zero, Quaternion.identity);
                 shield.transform.SetParent(this.transform, false);
@@ -110,10 +110,10 @@ public class PlayerController : MonoBehaviour
             }
             if (team % 2 == 1)
             {
-                GameObject blueHandObject = Instantiate(blueHand, Vector3.zero, Quaternion.identity);
-                blueHandObject.transform.SetParent(rightHandTransform, false);
-                GameObject blueHandObject1 = Instantiate(blueHand, Vector3.zero, Quaternion.identity);
-                blueHandObject1.transform.SetParent(leftHandTransform, false);
+                //GameObject blueHandObject = Instantiate(blueHand, Vector3.zero, Quaternion.identity);
+                //blueHandObject.transform.SetParent(rightHandTransform, false);
+                //GameObject blueHandObject1 = Instantiate(blueHand, Vector3.zero, Quaternion.identity);
+                //blueHandObject1.transform.SetParent(leftHandTransform, false);
 
                 shield = Instantiate(blueShield, Vector3.zero, Quaternion.identity);
                 shield.transform.SetParent(this.transform, false);
@@ -345,7 +345,6 @@ public class PlayerController : MonoBehaviour
         }
         movement.x = inputMovement.x;
         movement.y = inputMovement.y;
-        movement = movement;
         if (movement.x != 0 || movement.y != 0)
         {
             lastMoveDir = movement;
