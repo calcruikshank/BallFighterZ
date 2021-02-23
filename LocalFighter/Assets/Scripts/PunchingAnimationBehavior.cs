@@ -34,7 +34,7 @@ public class PunchingAnimationBehavior : MonoBehaviour
             right4.SetActive(false);
             return;
         }
-        if (rightHandTransform.localPosition.x < 1f && rightHandTransform.localPosition.x > .6f)
+        if (rightHandTransform.localPosition.x < 1.2f && rightHandTransform.localPosition.x > .8f)
         {
             right1.SetActive(false);
             right2.SetActive(true);
@@ -42,7 +42,7 @@ public class PunchingAnimationBehavior : MonoBehaviour
             right4.SetActive(false);
             return;
         }
-        if (rightHandTransform.localPosition.x >= 1f && rightHandTransform.localPosition.x < 1.2f)
+        if (rightHandTransform.localPosition.x >= 1.2f && rightHandTransform.localPosition.x < 1.6f)
         {
             right1.SetActive(false);
             right2.SetActive(false);
@@ -50,7 +50,7 @@ public class PunchingAnimationBehavior : MonoBehaviour
             right4.SetActive(false);
             return;
         }
-        if (rightHandTransform.localPosition.x >= 1.2f && rightHandTransform.localPosition.x < 2f)
+        if (rightHandTransform.localPosition.x >= 1.6f && rightHandTransform.localPosition.x < 2f)
         {
             right1.SetActive(false);
             right2.SetActive(false);
@@ -79,7 +79,7 @@ public class PunchingAnimationBehavior : MonoBehaviour
             left4.SetActive(false);
             return;
         }
-        if (leftHandTransform.localPosition.x < 1f && leftHandTransform.localPosition.x > .6f)
+        if (leftHandTransform.localPosition.x < 1.2f && leftHandTransform.localPosition.x > .8f)
         {
             left1.SetActive(false);
             left2.SetActive(true);
@@ -87,7 +87,7 @@ public class PunchingAnimationBehavior : MonoBehaviour
             left4.SetActive(false);
             return;
         }
-        if (leftHandTransform.localPosition.x >= 1f && leftHandTransform.localPosition.x < 1.2f)
+        if (leftHandTransform.localPosition.x >= 1.2f && leftHandTransform.localPosition.x < 1.6f)
         {
             left1.SetActive(false);
             left2.SetActive(false);
@@ -95,7 +95,7 @@ public class PunchingAnimationBehavior : MonoBehaviour
             left4.SetActive(false);
             return;
         }
-        if (leftHandTransform.localPosition.x >= 1.2f && leftHandTransform.localPosition.x < 2f)
+        if (leftHandTransform.localPosition.x >= 1.6f && leftHandTransform.localPosition.x < 2f)
         {
             left1.SetActive(false);
             left2.SetActive(false);
