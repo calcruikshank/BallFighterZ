@@ -163,7 +163,7 @@ public class RightHand : MonoBehaviour
                 startDownTicker = false;
             }
         }*/
-        transform.localScale = new Vector2((transform.localPosition.x / 2) + 1, (transform.localPosition.x / 2) + 1);
+        transform.localScale = new Vector2((transform.localPosition.x / 1.5f) + 1, (transform.localPosition.x / 1.5f) + 1);
 
 
         if (transform.localPosition.x <= 0)
