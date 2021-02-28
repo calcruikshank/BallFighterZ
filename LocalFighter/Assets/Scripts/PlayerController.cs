@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour
         gameManager = FindObjectOfType<GameManager>();
         cameraShake = FindObjectOfType<ScreenShake>();
         rb = GetComponent<Rigidbody2D>();
-        
+
 
         state = State.Normal;
     }
@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour
             canDash = true;
             stocksLeft = 4;
             stocksLeftText.text = (stocksLeft.ToString());
-            
+
         }
 
     }
@@ -528,7 +528,7 @@ public class PlayerController : MonoBehaviour
             grabTimer = 0;
             state = State.Normal;
         }
-        
+
         moveSpeed = 0f;
         returningLeft = false;
         returningRight = false;
@@ -1198,7 +1198,7 @@ public class PlayerController : MonoBehaviour
         Transform comboPopup = Instantiate(comboTextPopup, new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z), Quaternion.identity);
         ComboCounterBehavior comboCounterScript = comboPopup.GetComponent<ComboCounterBehavior>();
         comboCounterScript.Setup(comboCounter);
-        
+
     }
 
     public void RemoveFromComboCounter()
@@ -1218,7 +1218,7 @@ public class PlayerController : MonoBehaviour
         meterCount = 0;
         comboMeterScript.SetMeter(meterCount);
         state = State.UltimateState;
-        
+
     }
 
     protected virtual void HandleUltimate()
@@ -1314,7 +1314,7 @@ public class PlayerController : MonoBehaviour
 
         mousePosition = value.Get<Vector2>();
         //FaceMouse();
-        
+
         Vector2 mouseToWorldPoint = Camera.main.ScreenToWorldPoint(mousePosition);
         lookDirection = new Vector2(mouseToWorldPoint.x - transform.position.x, mouseToWorldPoint.y - transform.position.y);
     }
@@ -1324,7 +1324,7 @@ public class PlayerController : MonoBehaviour
         if (lookPositionRightStick.magnitude == 0)
         {
             joystickLook = value.Get<Vector2>();
-           
+
         }
         //FaceJoystick();
         if (!rightStickLooking)
@@ -1362,7 +1362,7 @@ public class PlayerController : MonoBehaviour
     {
         pressedRight = true;
         releasedRight = false;
-        
+
     }
     public virtual void OnPunchLeft()
     {
@@ -1484,7 +1484,7 @@ public class PlayerController : MonoBehaviour
         shieldingRight = false;
         isBlockingLeft = false;
         isBlockingRight = false;
-        Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+        Vector2 direction = lookDirection;
         //Vector2 direction = inputMovement.normalized;
         Dash(direction.normalized);
 
@@ -1494,7 +1494,7 @@ public class PlayerController : MonoBehaviour
     void OnShieldBoth()
     {
         pressedShieldBoth = true;
-        
+
     }
 
     void OnReleaseShieldBoth()
@@ -1507,7 +1507,7 @@ public class PlayerController : MonoBehaviour
             canShieldAgainTimerLeft = 0f;
             canShieldAgainTimer = 0f;
         }
-        
+
     }
 
     protected virtual void OnDash()
@@ -1604,12 +1604,11 @@ public class PlayerController : MonoBehaviour
         if (punchedRightTimer > 0)
         {
             Vector2 joystickPosition = joystickLook.normalized;
-            if (joystickPosition.x != 0 || joystickPosition.y != 0)
-            {
-                Vector2 lastLookedPosition = joystickPosition;
-                //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-                transform.right = lastLookedPosition;
-            }
+
+            Vector2 lastLookedPosition = lookDirection;
+            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+            transform.right = lastLookedPosition;
+
             punchedRight = true;
             punchedRightTimer = 0;
         }
@@ -1647,14 +1646,13 @@ public class PlayerController : MonoBehaviour
             punchedLeft = true;
             punchedLeftTimer = 0;
             Vector2 joystickPosition = joystickLook.normalized;
-            if (joystickPosition.x != 0 || joystickPosition.y != 0)
-            {
-                Vector2 lastLookedPosition = joystickPosition;
-                //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-                transform.right = lastLookedPosition;
-            }
+
+            Vector2 lastLookedPosition = lookDirection;
+            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+            transform.right = lastLookedPosition;
+
         }
-        
+
 
     }
 
@@ -1734,7 +1732,7 @@ public class PlayerController : MonoBehaviour
             pressedUltimate = false;
             UseUltimate();
         }
-        
+
     }
 
     protected void CheckForReleasedUltimate()
@@ -1742,7 +1740,7 @@ public class PlayerController : MonoBehaviour
         if (releasedUltimate)
         {
             pressedUltimate = false;
-            
+
 
 
         }
@@ -1762,6 +1760,11 @@ public class PlayerController : MonoBehaviour
             //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
         }
 
+        Look();
+    }
+
+    void Look()
+    {
         transform.right = lastLookedPosition;
     }
 
