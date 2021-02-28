@@ -415,15 +415,6 @@ public class FirePlayer : PlayerController
 
     }
 
-    public override void OnRightStick(InputValue value)
-    {
-        if (value != null)
-        {
-            lookPositionRightStick = value.Get<Vector2>();
-        }
-        joystickLook = lookPositionRightStick;
-        FaceJoystick();
-    }
     public override void Grab(PlayerController opponentCheck)
     {
         moveSpeed = 5f;

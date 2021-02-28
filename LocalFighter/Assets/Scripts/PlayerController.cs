@@ -51,8 +51,9 @@ public class PlayerController : MonoBehaviour
     protected int meterCount = 0;
     public bool canCombo = true;
     public bool canSelectCharacter = false;
-
-
+    Vector3 lookDirection;
+    Vector2 lastLookedPosition;
+    bool rightStickLooking = false;
     public State state;
     public enum State
     {
@@ -208,6 +209,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
         CheckForInputs();
+        FaceLookDirection();
     }
 
 
@@ -1297,17 +1299,24 @@ public class PlayerController : MonoBehaviour
         if (lookPositionRightStick.magnitude >= .5f)
         {
             joystickLook = lookPositionRightStick;
+            lookDirection = value.Get<Vector2>();
+            rightStickLooking = true;
         }
-        FaceJoystick();
-
-
+        else
+        {
+            rightStickLooking = false;
+        }
+        //FaceJoystick();
     }
 
     void OnMouseMove(InputValue value)
     {
 
         mousePosition = value.Get<Vector2>();
-        FaceMouse();
+        //FaceMouse();
+        
+        Vector2 mouseToWorldPoint = Camera.main.ScreenToWorldPoint(mousePosition);
+        lookDirection = new Vector2(mouseToWorldPoint.x - transform.position.x, mouseToWorldPoint.y - transform.position.y);
     }
     void OnLeftJoystickLook(InputValue value)
     {
@@ -1315,8 +1324,13 @@ public class PlayerController : MonoBehaviour
         if (lookPositionRightStick.magnitude == 0)
         {
             joystickLook = value.Get<Vector2>();
+           
         }
-        FaceJoystick();
+        //FaceJoystick();
+        if (!rightStickLooking)
+        {
+            lookDirection = value.Get<Vector2>();
+        }
     }
     public virtual void FaceMouse()
     {
@@ -1732,6 +1746,23 @@ public class PlayerController : MonoBehaviour
 
 
         }
+    }
+
+    void FaceLookDirection()
+    {
+        if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft || rightHandTransform.localPosition.x > .1f && returningRight) return;
+        if (state == State.Dashing) return;
+        if (state == State.PowerShieldStunned) return;
+        if (state == State.UltimateState) return;
+        Vector2 lookTowards = lookDirection.normalized;
+        if (lookTowards.x != 0 || lookTowards.y != 0)
+        {
+            lastLookedPosition = lookTowards;
+
+            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+        }
+
+        transform.right = lastLookedPosition;
     }
 
 }
