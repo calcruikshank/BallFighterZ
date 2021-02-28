@@ -1605,9 +1605,11 @@ public class PlayerController : MonoBehaviour
         {
             Vector2 joystickPosition = joystickLook.normalized;
 
-            Vector2 lastLookedPosition = lookDirection;
             //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-            transform.right = lastLookedPosition;
+            if (lookDirection.magnitude != 0)
+            {
+                transform.right = lookDirection;
+            }
 
             punchedRight = true;
             punchedRightTimer = 0;
@@ -1647,9 +1649,11 @@ public class PlayerController : MonoBehaviour
             punchedLeftTimer = 0;
             Vector2 joystickPosition = joystickLook.normalized;
 
-            Vector2 lastLookedPosition = lookDirection;
             //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-            transform.right = lastLookedPosition;
+            if (lookDirection.magnitude != 0)
+            {
+                transform.right = lookDirection;
+            }
 
         }
 
