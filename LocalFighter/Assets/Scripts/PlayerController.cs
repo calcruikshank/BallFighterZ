@@ -51,9 +51,9 @@ public class PlayerController : MonoBehaviour
     protected int meterCount = 0;
     public bool canCombo = true;
     public bool canSelectCharacter = false;
-    Vector3 lookDirection;
-    Vector2 lastLookedPosition;
-    bool rightStickLooking = false;
+    protected Vector3 lookDirection;
+    protected Vector2 lastLookedPosition;
+    protected bool rightStickLooking = false;
     public State state;
     public enum State
     {
@@ -1750,7 +1750,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void FaceLookDirection()
+    protected virtual void FaceLookDirection()
     {
         if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft || rightHandTransform.localPosition.x > .1f && returningRight) return;
         if (state == State.Dashing) return;
@@ -1767,7 +1767,7 @@ public class PlayerController : MonoBehaviour
         Look();
     }
 
-    void Look()
+    protected virtual void Look()
     {
         transform.right = lastLookedPosition;
     }

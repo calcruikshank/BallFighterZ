@@ -712,21 +712,6 @@ public class Hammer : PlayerController
     }
 
 
-
-    public override void FaceJoystick()
-    {
-
-        if (state == State.Dashing) return;
-        if (state == State.PowerShieldStunned) return;
-        if (punchedLeft || punchedRight) return;
-        Vector2 joystickPosition = joystickLook.normalized;
-        if (joystickPosition.x != 0 || joystickPosition.y != 0)
-        {
-            Vector2 lastLookedPosition = joystickPosition;
-            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-            transform.right = lastLookedPosition;
-        }
-    }
     protected override void OnReleaseDash()
     {
         pressedDash = false;

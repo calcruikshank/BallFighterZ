@@ -405,16 +405,6 @@ public class FirePlayer : PlayerController
     }
 
 
-
-    void OnReleaseDash()
-    {
-
-    }
-    void OnReleaseDashController()
-    {
-
-    }
-
     public override void Grab(PlayerController opponentCheck)
     {
         moveSpeed = 5f;
@@ -428,34 +418,6 @@ public class FirePlayer : PlayerController
         rightHandTransform.localPosition = new Vector2(punchRange, .4f);
     }
 
-    public override void FaceJoystick()
-    {
-        if (threwLeft || threwRight) return;
-        if (state == State.PowerShieldStunned) return;
-        if (rightStickLook.magnitude > .8f && state == State.Dashing) return;
-        if (state == State.Dashing) return;
-        Vector2 joystickPosition = joystickLook.normalized;
-        if (joystickPosition.x != 0 || joystickPosition.y != 0)
-        {
-            lastLookedPosition = joystickPosition;
-            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-            transform.right = lastLookedPosition;
-        }
-    }
-    public override void FaceMouse()
-    {
-
-        mousePosition = Camera.main.ScreenToWorldPoint(mousePosition);
-        if (dashingIdle)
-        {
-            return;
-        }
-        rightStickLook = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-        if (state == State.Dashing) return;
-        if (state == State.PowerShieldStunned) return;
-        Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
-        transform.right = direction;
-    }
     protected override void OnMouseDash()
     {
         if (punchedLeft || punchedRight) return;
@@ -497,8 +459,27 @@ public class FirePlayer : PlayerController
         respawned = true;
         state = State.Normal;
     }
+    protected override void FaceLookDirection()
+    {
+        if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft || rightHandTransform.localPosition.x > .1f && returningRight) return;
+        if (state == State.Dashing) return;
+        if (state == State.PowerShieldStunned) return;
+        Vector2 lookTowards = lookDirection.normalized;
+        if (lookTowards.x != 0 || lookTowards.y != 0)
+        {
+            lastLookedPosition = lookTowards;
 
+            //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
+        }
 
+        Look();
+    }
+
+    protected override void Look()
+    {
+        transform.right = lastLookedPosition;
+
+    }
     protected override void OnDash()
     {
         if (punchedLeft || punchedRight) return;
