@@ -6,6 +6,7 @@ public class ScreenShake : MonoBehaviour
 {
     public IEnumerator Shake(float duration, float magnitude)
     {
+        AudioManager._Main.PlayRumble();
         Vector3 originalPosition = transform.localPosition;
         float elapsed = 0f;
         while (elapsed < duration)

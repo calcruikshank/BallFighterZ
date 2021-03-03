@@ -331,6 +331,8 @@ public class PlayerController : MonoBehaviour
         isGrabbed = false;
         //Debug.Log(currentPercentage + "current percentage");
         state = State.Knockback;
+
+        AudioManager._Main.PlayTakeDamage();
     }
 
 
@@ -968,15 +970,24 @@ public class PlayerController : MonoBehaviour
     public void HandlePowerShieldStunned()
     {
         rb.velocity = Vector3.zero;
+        if (punchedRight)
+        {
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector2(punchRange, .4f), punchSpeed * Time.deltaTime);
+        }
+        if (punchedLeft)
+        {
+            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector2(punchRange, -.4f), punchSpeed * Time.deltaTime);
+        }
         leftHandTransform.localScale = new Vector2(1f, 1f);
         rightHandTransform.localScale = new Vector2(1f, 1f);
         rightHandCollider.enabled = false;
         leftHandCollider.enabled = false;
-        punchedLeft = false;
-        punchedRight = false;
+        
         powerStunnedTimer += Time.deltaTime;
         if (powerStunnedTimer >= .5f)
         {
+            punchedRight = false;
+            punchedLeft = false;
             state = State.Normal;
         }
     }
@@ -1198,7 +1209,7 @@ public class PlayerController : MonoBehaviour
         Transform comboPopup = Instantiate(comboTextPopup, new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z), Quaternion.identity);
         ComboCounterBehavior comboCounterScript = comboPopup.GetComponent<ComboCounterBehavior>();
         comboCounterScript.Setup(comboCounter);
-
+        AudioManager._Main.PlayCombo(comboCounter);
     }
 
     public void RemoveFromComboCounter()
@@ -1603,6 +1614,8 @@ public class PlayerController : MonoBehaviour
 
         if (punchedRightTimer > 0)
         {
+            AudioManager._Main.PlayAttackSwing();
+
             Vector2 joystickPosition = joystickLook.normalized;
 
             //Vector2 direction = new Vector2(mousePosition.x - transform.position.x, mousePosition.y - transform.position.y);
@@ -1645,6 +1658,8 @@ public class PlayerController : MonoBehaviour
 
         if (punchedLeftTimer > 0)
         {
+            AudioManager._Main.PlayAttackSwing();
+
             punchedLeft = true;
             punchedLeftTimer = 0;
             Vector2 joystickPosition = joystickLook.normalized;

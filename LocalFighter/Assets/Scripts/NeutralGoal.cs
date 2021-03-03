@@ -73,6 +73,8 @@ public class NeutralGoal : MonoBehaviour
                 Debug.Log("lost a stock");
             }
 
+            AudioManager._Main.PlayGoal();
+            AudioManager._Main.PlayAnnouncer(1);
         }
 
 
