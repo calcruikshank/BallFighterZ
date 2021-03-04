@@ -7,7 +7,15 @@ public class PlayerController : MonoBehaviour
 {
     Rigidbody rb;
     Vector3 inputMovement, movement, lastMoveDir, lastLookedPosition, lookDirection;
-    float moveSpeed = 10f;
+    bool pressedRight, pressedLeft, releasedRight, releasedLeft, punchedRight, punchedLeft, returningLeft, returningRight = false;
+    float moveSpeed = 12f;
+    float punchedLeftTimer, punchedRightTimer;
+    float inputBuffer = .15f;
+    [SerializeField] Transform leftHandTransform, rightHandTransform;
+    float punchRange = 2f;
+    float punchSpeed = 40f;
+    float returnSpeed = 4f;
+    SphereCollider leftHandCollider, rightHandCollider;
 
     public State state;
     public enum State
@@ -33,6 +41,8 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         state = State.Normal;
+        leftHandCollider = leftHandTransform.GetComponent<SphereCollider>();
+        rightHandCollider = rightHandTransform.GetComponent<SphereCollider>();
     }
     // Start is called before the first frame update
     void Start()
@@ -46,9 +56,11 @@ public class PlayerController : MonoBehaviour
         {
             case State.Normal:
                 HandleMovement();
+                HandleThrowingHands();
                 break;
         }
 
+        CheckForInputs();
         FaceLookDirection();
     }
 
@@ -73,10 +85,70 @@ public class PlayerController : MonoBehaviour
             lastMoveDir = movement;
         }
     }
-    public virtual void FixedHandleMovement()
+    protected virtual void FixedHandleMovement()
     {
         rb.velocity = movement * moveSpeed;
     }
+
+    void HandleThrowingHands()
+    {
+        if (punchedLeft && returningLeft == false)
+        {
+            punchedLeftTimer = 0;
+            leftHandCollider.enabled = true;
+            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector3(punchRange, 0, -.4f), punchSpeed * Time.deltaTime);
+            if (leftHandTransform.localPosition.x >= punchRange)
+            {
+                returningLeft = true;
+            }
+        }
+        if (returningLeft)
+        {
+            punchedLeft = false;
+            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector3(0, 0, 0), returnSpeed * Time.deltaTime);
+
+            if (leftHandTransform.localPosition.x <= 1f)
+            {
+                leftHandCollider.enabled = false;
+            }
+            if (leftHandTransform.localPosition.x <= 0f)
+            {
+                returningLeft = false;
+            }
+        }
+
+
+
+        if (punchedRight && returningRight == false)
+        {
+            punchedRightTimer = 0;
+            rightHandCollider.enabled = true;
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRange, 0, .4f), punchSpeed * Time.deltaTime);
+            if (rightHandTransform.localPosition.x >= punchRange)
+            {
+                returningRight = true;
+            }
+        }
+        if (returningRight)
+        {
+            punchedRight = false;
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(0, 0, 0), returnSpeed * Time.deltaTime);
+
+            if (rightHandTransform.localPosition.x <= 1f)
+            {
+                rightHandCollider.enabled = false;
+            }
+            if (rightHandTransform.localPosition.x <= 0f)
+            {
+                returningRight = false;
+            }
+        }
+
+    }
+
+
+
+
 
 
 
@@ -90,6 +162,18 @@ public class PlayerController : MonoBehaviour
     {
         Debug.Log("pressed a");
     }
+    void OnPunchRight()
+    {
+        pressedRight = true;
+        releasedRight = false;
+    }
+    void OnPunchLeft()
+    {
+        pressedLeft = true;
+        releasedLeft = false;
+    }
+
+
 
     protected virtual void FaceLookDirection()
     {
@@ -107,4 +191,48 @@ public class PlayerController : MonoBehaviour
         transform.right = lastLookedPosition;
     }
 
+    void CheckForInputs()
+    {
+        CheckForPunchRight();
+        CheckForPunchLeft();
+    }
+
+    void CheckForPunchLeft()
+    {
+        if (pressedLeft)
+        {
+            punchedLeftTimer = inputBuffer;
+            pressedLeft = false;
+        }
+
+        if (punchedLeftTimer > 0)
+        {
+            if (lookDirection.magnitude != 0)
+            {
+                transform.right = lookDirection;
+            }
+
+            punchedLeft = true;
+            punchedLeftTimer = 0;
+        }
+    }
+    void CheckForPunchRight()
+    {
+        if (pressedRight)
+        {
+            punchedRightTimer = inputBuffer;
+            pressedRight = false;
+        }
+
+        if (punchedRightTimer > 0)
+        {
+            if (lookDirection.magnitude != 0)
+            {
+                transform.right = lookDirection;
+            }
+
+            punchedRight = true;
+            punchedRightTimer = 0;
+        }
+    }
 }
