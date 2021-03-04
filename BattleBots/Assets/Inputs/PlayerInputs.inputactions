@@ -10,7 +10,7 @@
                     "type": "Value",
                     "id": "42c9f083-cb60-4f82-b927-b3c72fc404e8",
                     "expectedControlType": "Stick",
-                    "processors": "",
+                    "processors": "StickDeadzone(min=0.3)",
                     "interactions": ""
                 },
                 {
@@ -28,6 +28,22 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press"
+                },
+                {
+                    "name": "ReleaseRight",
+                    "type": "Button",
+                    "id": "d495c8fa-bd4e-4d46-9094-92ab5532f29d",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
+                },
+                {
+                    "name": "ReleaseLeft",
+                    "type": "Button",
+                    "id": "c89f949c-79f6-42d1-b175-aa108639c376",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
                 }
             ],
             "bindings": [
@@ -61,6 +77,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "PunchRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "f9287ca5-b138-47d3-a1fa-d79181e2354e",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReleaseRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "9136910f-be20-4097-91dc-4ccb506c6ebe",
+                    "path": "<Gamepad>/leftTrigger",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReleaseLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

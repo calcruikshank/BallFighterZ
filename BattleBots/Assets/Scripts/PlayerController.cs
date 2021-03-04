@@ -6,16 +6,18 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     Rigidbody rb;
-    Vector3 inputMovement, movement, lastMoveDir, lastLookedPosition, lookDirection;
+    Vector3 inputMovement, movement, lastMoveDir, lastLookedPosition, lookDirection, oppositeForce;
     bool pressedRight, pressedLeft, releasedRight, releasedLeft, punchedRight, punchedLeft, returningLeft, returningRight = false;
-    float moveSpeed = 12f;
-    float punchedLeftTimer, punchedRightTimer;
+    float moveSpeed = 16f;
+    float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed;
     float inputBuffer = .15f;
     [SerializeField] Transform leftHandTransform, rightHandTransform;
-    float punchRange = 2f;
+    float punchRange = 3f;
+    float punchRangeRight = 4f;
     float punchSpeed = 40f;
-    float returnSpeed = 4f;
+    float returnSpeed = 10f;
     SphereCollider leftHandCollider, rightHandCollider;
+    [SerializeField] Animator animator;
 
     public State state;
     public enum State
@@ -58,6 +60,10 @@ public class PlayerController : MonoBehaviour
                 HandleMovement();
                 HandleThrowingHands();
                 break;
+            case State.Knockback:
+                HandleKnockback();
+                HandleThrowingHands();
+                break;
         }
 
         CheckForInputs();
@@ -87,11 +93,24 @@ public class PlayerController : MonoBehaviour
     }
     protected virtual void FixedHandleMovement()
     {
-        rb.velocity = movement * moveSpeed;
+        Vector3 newVelocity = new Vector3(movement.x * moveSpeed, rb.velocity.y, movement.z * moveSpeed);
+        rb.velocity = newVelocity;
     }
 
     void HandleThrowingHands()
     {
+        if (animator != null)
+        {
+            animator.SetBool("PunchRightAnimation", (punchedRight));
+            if (returningRight == false && punchedRight == false)
+            {
+                animator.SetBool("RightHasReturned", (true));
+            }
+            else
+            {
+                animator.SetBool("RightHasReturned", (false));
+            }
+        }
         if (punchedLeft && returningLeft == false)
         {
             punchedLeftTimer = 0;
@@ -123,8 +142,8 @@ public class PlayerController : MonoBehaviour
         {
             punchedRightTimer = 0;
             rightHandCollider.enabled = true;
-            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRange, 0, .4f), punchSpeed * Time.deltaTime);
-            if (rightHandTransform.localPosition.x >= punchRange)
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRangeRight, 0, .4f), punchSpeed * Time.deltaTime);
+            if (rightHandTransform.localPosition.x >= punchRangeRight)
             {
                 returningRight = true;
             }
@@ -145,6 +164,34 @@ public class PlayerController : MonoBehaviour
         }
 
     }
+
+    public void Knockback(float damage, Vector3 direction)
+    {
+        currentPercentage += damage;
+        brakeSpeed = 20f;
+        // Debug.Log(damage + " damage");
+        //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
+        //direction = direction.normalized;
+        float knockbackValue = (14 * ((currentPercentage + damage) * (damage / 2)) / 150) + 7; //knockback that scales
+        rb.velocity = (direction * knockbackValue);
+        state = State.Knockback;
+    }
+    void HandleKnockback()
+    {
+        if (rb.velocity.magnitude <= 5)
+        {
+            rb.velocity = new Vector2(0, 0);
+            state = State.Normal;
+        }
+        if (rb.velocity.magnitude > 0)
+        {
+            oppositeForce = -rb.velocity;
+            brakeSpeed = brakeSpeed + (100f * Time.deltaTime);
+            rb.AddForce(oppositeForce * Time.deltaTime * brakeSpeed);
+            rb.AddForce(movement * .05f); //DI
+        }
+    }
+
 
 
 
@@ -172,11 +219,22 @@ public class PlayerController : MonoBehaviour
         pressedLeft = true;
         releasedLeft = false;
     }
+    void OnReleaseRight()
+    {
+        pressedRight = false;
+        releasedRight = true;
+    }
+    void OnReleaseLeft()
+    {
+        pressedLeft = false;
+        releasedLeft = true;
+    }
 
 
 
     protected virtual void FaceLookDirection()
     {
+        if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft || rightHandTransform.localPosition.x > .1f && returningRight) return;
         Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
         if (lookTowards.x != 0 || lookTowards.y != 0)
         {
@@ -199,17 +257,24 @@ public class PlayerController : MonoBehaviour
 
     void CheckForPunchLeft()
     {
+        if (releasedLeft)
+        {
+            punchedLeftTimer -= Time.deltaTime;
+        }
         if (pressedLeft)
         {
             punchedLeftTimer = inputBuffer;
             pressedLeft = false;
         }
 
+        if (returningLeft) return;
+
         if (punchedLeftTimer > 0)
         {
             if (lookDirection.magnitude != 0)
             {
-                transform.right = lookDirection;
+                Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
+                transform.right = lookTowards;
             }
 
             punchedLeft = true;
@@ -218,17 +283,24 @@ public class PlayerController : MonoBehaviour
     }
     void CheckForPunchRight()
     {
+        if (releasedRight)
+        {
+            punchedRightTimer -= Time.deltaTime;
+        }
         if (pressedRight)
         {
             punchedRightTimer = inputBuffer;
             pressedRight = false;
         }
 
+        if (returningRight) return;
+
         if (punchedRightTimer > 0)
         {
             if (lookDirection.magnitude != 0)
             {
-                transform.right = lookDirection;
+                Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
+                transform.right = lookTowards;
             }
 
             punchedRight = true;
