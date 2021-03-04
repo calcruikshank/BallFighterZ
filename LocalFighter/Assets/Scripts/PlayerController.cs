@@ -1371,6 +1371,7 @@ public class PlayerController : MonoBehaviour
     }
     public virtual void OnPunchRight()
     {
+        //b button / right trigger
         pressedRight = true;
         releasedRight = false;
 

@@ -352,6 +352,8 @@ MonoBehaviour:
   left2: {fileID: 3573896348506063147}
   left3: {fileID: 2463113212237398202}
   left4: {fileID: 4106689105217200625}
+  blueFist: {fileID: 1906429939894000411, guid: 2dd0bc69ccf226c40b1995fbcd093a6e, type: 3}
+  player: {fileID: 1371377126290189743}
 --- !u!1 &926449329175581567
 GameObject:
   m_ObjectHideFlags: 0
