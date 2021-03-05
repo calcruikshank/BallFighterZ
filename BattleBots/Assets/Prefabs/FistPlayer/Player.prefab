@@ -278,6 +278,7 @@ MonoBehaviour:
   isParrying: 0
   leftHandTransform: {fileID: 5136723789718946910}
   rightHandTransform: {fileID: 5136723790373468479}
+  splatterPrefab: {fileID: 3255811145793802901, guid: d5c431f2ca1a65f4784fda2c31a3e8fd, type: 3}
   animator: {fileID: 5136723790737660081}
   shield: {fileID: 193448067949134718}
   arrow: {fileID: 4312838961592934262}

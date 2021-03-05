@@ -986,6 +986,8 @@ public class PlayerController : MonoBehaviour
         powerStunnedTimer += Time.deltaTime;
         if (powerStunnedTimer >= .5f)
         {
+            punchedRight = false;
+            punchedLeft = false;
             state = State.Normal;
         }
     }

@@ -14,11 +14,14 @@ public class PlayerController : MonoBehaviour
     float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed;
     float inputBuffer = .15f;
     [SerializeField] Transform leftHandTransform, rightHandTransform;
+    [SerializeField] GameObject splatterPrefab;
     float punchRange = 3f;
     float punchRangeRight = 4f;
     float punchSpeed = 40f;
     float returnSpeed = 15f;
     int stocks = 4;
+
+    CameraShake cameraShake;
 
     SphereCollider leftHandCollider, rightHandCollider;
     [SerializeField] Animator animator;
@@ -51,11 +54,11 @@ public class PlayerController : MonoBehaviour
         state = State.Normal;
         leftHandCollider = leftHandTransform.GetComponent<SphereCollider>();
         rightHandCollider = rightHandTransform.GetComponent<SphereCollider>();
+        cameraShake = FindObjectOfType<CameraShake>();
     }
     // Start is called before the first frame update
     void Start()
     {
-
     }
 
     protected virtual void Update()
@@ -210,6 +213,7 @@ public class PlayerController : MonoBehaviour
         //direction = direction.normalized;
         float knockbackValue = (14 * ((currentPercentage + damage) * (damage / 2)) / 150) + 14; //knockback that scales
         rb.velocity = (direction * knockbackValue);
+        HitImpact(direction);
         state = State.Knockback;
     }
     void HandleKnockback()
@@ -388,6 +392,18 @@ public class PlayerController : MonoBehaviour
         state = State.Normal;
         transform.position = Vector3.zero;
         currentPercentage = 0f;
+    }
+    public void HitImpact(Vector3 impactDirection)
+    {
+        Instantiate(splatterPrefab, transform.position, transform.rotation);
+        StartCoroutine(cameraShake.Shake(.03f, .3f));
+        StartCoroutine(FreezeFrames(.075f));
+    }
+    private IEnumerator FreezeFrames(float freezeTime)
+    {
+        Time.timeScale = 0f;
+        yield return new WaitForSecondsRealtime(freezeTime);
+        Time.timeScale = 1f;
     }
 
 
