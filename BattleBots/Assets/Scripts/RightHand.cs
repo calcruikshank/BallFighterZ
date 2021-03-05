@@ -42,17 +42,19 @@ public class RightHand : MonoBehaviour
                     playerScript.ParryStun();
                     return;
                 }
+                if (playerScript.punchedLeft && playerScript.punchedRight || playerScript.returningLeft && playerScript.punchedRight && !playerScript.releasedLeft && !playerScript.releasedRight || playerScript.returningRight && playerScript.punchedLeft && !playerScript.releasedLeft && !playerScript.releasedRight || playerScript.returningLeft && playerScript.returningRight && !playerScript.releasedLeft && !playerScript.releasedRight)
+                {
+                    playerScript.Grab(opponent);
+                    Debug.Log("Grab");
+                    opponentTookDamage = true;
+                    return;
+                } 
                 if (opponent.shielding)
                 {
                     opponentTookDamage = true;
                     return;
                 }
-                if (playerScript.punchedLeft && playerScript.punchedRight)
-                {
-                    Debug.Log("Grab");
-                    opponentTookDamage = true;
-                    return;
-                }
+                
                 Vector3 punchTowards = new Vector3(player.right.normalized.x, 0, player.right.normalized.z);
                 float damage = transform.localScale.x * 3f;
                 opponent.Knockback(damage, punchTowards);

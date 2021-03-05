@@ -7,19 +7,20 @@ public class PlayerController : MonoBehaviour
 {
     Rigidbody rb;
     Vector3 inputMovement, movement, lastMoveDir, lastLookedPosition, lookDirection, oppositeForce, powerDashTowards;
-    bool pressedRight, pressedLeft, releasedRight, releasedLeft, returningLeft, returningRight, pressedShield, releasedShield = false;
-    public bool punchedRight, punchedLeft, shielding, isParrying = false;
+    bool pressedRight, pressedLeft, pressedShield, releasedShield, pressedDash, releasedDash, airDodged, releasedAirDodged = false;
+    public bool punchedRight, punchedLeft, shielding, isParrying, returningLeft, returningRight, releasedLeft, releasedRight = false;
     float parryTimerThreshold = .15f;
     float moveSpeed, moveSpeedSetter = 18f;
-    float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed;
+    float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed, dashBuffer, canAirDodgeTimer, airShieldTimer;
     float inputBuffer = .15f;
-    [SerializeField] Transform leftHandTransform, rightHandTransform;
+    [SerializeField] Transform leftHandTransform, rightHandTransform, GrabPosition, grabbedPositionTransform;
     [SerializeField] GameObject splatterPrefab;
     float punchRange = 3f;
     float punchRangeRight = 4f;
     float punchSpeed = 40f;
     float returnSpeed = 15f;
     int stocks = 4;
+    PlayerController opponent;
 
     CameraShake cameraShake;
 
@@ -44,7 +45,8 @@ public class PlayerController : MonoBehaviour
         TakingUltimate,
         ParryState,
         PowerDashing,
-        ParryStunned
+        ParryStunned,
+        AirDodging
     }
 
 
@@ -59,6 +61,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
     }
 
     protected virtual void Update()
@@ -86,6 +89,22 @@ public class PlayerController : MonoBehaviour
             case State.ParryStunned:
                 HandleShielding();
                 HandleParryStunned();
+                break;
+            case State.Dashing:
+                HandleDash();
+                HandleThrowingHands();
+                break;
+            case State.Grabbed:
+                HandleGrabbed();
+                HandleThrowingHands();
+                HandleShielding();
+                break;
+            case State.Grabbing:
+                HandleGrabbing();
+                break;
+            case State.AirDodging:
+                HandleAirDodge();
+                HandleKnockback();
                 break;
         }
 
@@ -141,7 +160,7 @@ public class PlayerController : MonoBehaviour
         {
             punchedLeftTimer = 0;
             leftHandCollider.enabled = true;
-            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector3(punchRange, 0, -.4f), punchSpeed * Time.deltaTime);
+            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector3(punchRange, -.4f, -.4f), punchSpeed * Time.deltaTime);
             if (leftHandTransform.localPosition.x >= punchRange)
             {
                 returningLeft = true;
@@ -168,7 +187,7 @@ public class PlayerController : MonoBehaviour
         {
             punchedRightTimer = 0;
             rightHandCollider.enabled = true;
-            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRangeRight, 0, .4f), punchSpeed * Time.deltaTime);
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRangeRight, -.4f, .4f), punchSpeed * Time.deltaTime);
             if (rightHandTransform.localPosition.x >= punchRangeRight)
             {
                 returningRight = true;
@@ -202,10 +221,42 @@ public class PlayerController : MonoBehaviour
             moveSpeed = 0;
         }
 
+        if (state == State.Normal)
+        {
+            returnSpeed = 15f;
+        }
+        if (returningLeft &&  returningRight)
+        {
+            if (animator != null)
+            {
+                animator.SetBool("PunchRightAnimation", (false));
+                animator.SetBool("RightHasReturned", (true));
+            }
+            returnSpeed = 6f;
+        }
+        if (state == State.Dashing)
+        {
+            if (animator != null)
+            {
+                animator.SetBool("PunchRightAnimation", (false));
+                animator.SetBool("RightHasReturned", (true));
+            }
+            returnSpeed = 6f;
+        }
     }
 
     public void Knockback(float damage, Vector3 direction)
     {
+        //this if is for if the opponent is grabbed
+        if (opponent != null)
+        {
+            if (state == State.Grabbing)
+            {
+                opponent.Throw(transform.right);
+            }
+        }
+        canAirDodgeTimer = 0f;
+
         currentPercentage += damage;
         brakeSpeed = 20f;
         // Debug.Log(damage + " damage");
@@ -218,7 +269,11 @@ public class PlayerController : MonoBehaviour
     }
     void HandleKnockback()
     {
-        if (rb.velocity.magnitude <= 8)
+        EndPunchRight();
+        EndPunchLeft();
+
+        
+            if (rb.velocity.magnitude <= 8)
         {
             rb.velocity = new Vector2(0, 0);
             state = State.Normal;
@@ -233,6 +288,24 @@ public class PlayerController : MonoBehaviour
 
         Vector3 lookTowards = new Vector3(oppositeForce.x, 0, oppositeForce.z);
         transform.right = lookTowards;
+    }
+    void EndPunchRight()
+    {
+        if (animator != null)
+        {
+            animator.SetBool("PunchRightAnimation", (false));
+            animator.SetBool("RightHasReturned", (true));
+        }
+        punchedRight = false;
+        returningRight = true;
+        rightHandCollider.enabled = false;
+
+    }
+    void EndPunchLeft()
+    {
+        punchedLeft = false;
+        returningLeft = true;
+        leftHandCollider.enabled = false;
     }
 
     void HandleShielding()
@@ -250,7 +323,7 @@ public class PlayerController : MonoBehaviour
             }
             shield.gameObject.SetActive(true);
         }
-        if (!shielding)
+        if (!shielding && state != State.ParryState)
         {
             isParrying = false;
             shield.gameObject.SetActive(false);
@@ -265,6 +338,7 @@ public class PlayerController : MonoBehaviour
     }
     void HandleParry()
     {
+        shield.gameObject.SetActive(true);
         Time.timeScale = .2f;
         isParryingTimer += Time.deltaTime;
 
@@ -395,7 +469,8 @@ public class PlayerController : MonoBehaviour
     }
     public void HitImpact(Vector3 impactDirection)
     {
-        Instantiate(splatterPrefab, transform.position, transform.rotation);
+        GameObject splatter = Instantiate(splatterPrefab, transform.position, Quaternion.identity);
+        splatter.transform.right = impactDirection;
         StartCoroutine(cameraShake.Shake(.03f, .3f));
         StartCoroutine(FreezeFrames(.075f));
     }
@@ -405,8 +480,127 @@ public class PlayerController : MonoBehaviour
         yield return new WaitForSecondsRealtime(freezeTime);
         Time.timeScale = 1f;
     }
+    void Dash(Vector3 dashDirection)
+    {
+        Debug.Log("Dash");
+        shielding = false;
+        punchedRight = true;
+        returningRight = false;
+        float dashDistance = 8f;
+        transform.position += dashDirection * dashDistance;
+        state = State.Dashing;
+        
+    }
+    void HandleDash()
+    {
+        rb.velocity = Vector3.zero;
+        if (returningRight && rightHandTransform.localPosition.x <= 2f)
+        {
+            rightHandCollider.enabled = false;
+        }
+        if (rightHandTransform.localPosition.x <= 0 && punchedRight == false)
+        {
+            state = State.Normal;
+        }
+    }
+
+    public void Grab(PlayerController opponent)
+    {
+        opponent.Grabbed(this);
+        this.state = State.Grabbing;
+        this.opponent = opponent;
+    }
+
+    void Grabbed(PlayerController playerGrabbing)
+    {
+        shielding = false;
+        EndPunchLeft();
+        EndPunchRight();
+        grabbedPositionTransform = playerGrabbing.GrabPosition;
+        this.transform.position = grabbedPositionTransform.position;
+        this.state = State.Grabbed;
+    }
+    void HandleGrabbed()
+    {
+        shielding = false;
+        rb.velocity = Vector3.zero;
+        this.transform.position = grabbedPositionTransform.position;
+    }
+    void HandleGrabbing()
+    {
+        if (animator != null)
+        {
+            animator.SetBool("PunchRightAnimation", (false));
+            animator.SetBool("RightHasReturned", (true));
+        }
+        returnSpeed = 15f;
+        
+        returningLeft = false;
+        returningRight = false;
+        rightHandCollider.enabled = false;
+        leftHandCollider.enabled = false;
+        rb.velocity = Vector3.zero;
+        if (punchedLeft && !releasedLeft)
+        {
+            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector3(punchRange, -.4f, -.4f), punchSpeed * Time.deltaTime);
+        }
+        if (punchedRight && !releasedRight)
+        {
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRange, -.4f, -.4f), punchSpeed * Time.deltaTime);
+        }
+        if (releasedLeft)
+        {
+            punchedLeft = false;
+            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector3(0, 0, 0), returnSpeed * Time.deltaTime);
+        }
+        if (releasedRight)
+        {
+            punchedLeft = false;
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(0, 0, 0), returnSpeed * Time.deltaTime);
+        }
+        if (releasedLeft && releasedRight)
+        {
+            returningLeft = true;
+            returningRight = true;
+            state = State.Normal;
+            opponent.Throw(GrabPosition.right.normalized);
+        }
+
+    }
+    public void Throw(Vector3 direction)
+    {
+        brakeSpeed = 20f;
+        // Debug.Log(damage + " damage");
+        //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
+        //direction = direction.normalized;
+        float throwValue = (14 * ((120) * (3 / 2)) / 150) + 14; 
+        rb.velocity = (direction * throwValue);
+        HitImpact(direction);
+        state = State.Knockback;
+    }
+
+    void AirDodge()
+    {
+        isParrying = true;
+        shield.gameObject.SetActive(true);
+        parryTimer = 0f;
+        state = State.AirDodging;
+    }
+    void HandleAirDodge()
+    {
+
+        parryTimer += Time.deltaTime;
+        if (parryTimer > parryTimerThreshold)
+        {
+            isParrying = false;
+            shield.gameObject.SetActive(false);
+        }
+    }
 
 
+
+
+    #region inputRegion
     void OnMove(InputValue value)
     {
         inputMovement = value.Get<Vector2>();
@@ -441,19 +635,30 @@ public class PlayerController : MonoBehaviour
     {
         pressedShield = true;
         releasedShield = false;
+        airDodged = true;
+        releasedAirDodged = false;
     }
     void OnReleaseShield()
     {
         releasedShield = true;
         pressedShield = false;
-        
+        airDodged = false;
+        releasedAirDodged = true;
     }
-
-
+    void OnDash()
+    {
+        pressedDash = true;
+        releasedDash = false;
+    }
+    void OnReleaseDash()
+    {
+        pressedDash = false;
+        releasedDash = true;
+    }
 
     protected virtual void FaceLookDirection()
     {
-        if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft || rightHandTransform.localPosition.x > .1f && returningRight) return;
+        if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft || rightHandTransform.localPosition.x > .1f && returningRight) if(state != State.Grabbing)return;
         if (state == State.Knockback) return;
         Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
         if (lookTowards.x != 0 || lookTowards.y != 0)
@@ -474,6 +679,8 @@ public class PlayerController : MonoBehaviour
         CheckForPunchRight();
         CheckForPunchLeft();
         CheckForShield();
+        CheckForDash();
+        CheckForAirDodge();
     }
 
     void CheckForPunchLeft()
@@ -519,6 +726,7 @@ public class PlayerController : MonoBehaviour
         if (returningRight) return;
         if (shielding) return;
         if (state == State.Knockback) return;
+        if (state == State.Dashing) return;
 
         if (punchedRightTimer > 0)
         {
@@ -565,4 +773,47 @@ public class PlayerController : MonoBehaviour
             shielding = true;
         }
     }
+    void CheckForDash()
+    {
+
+        //if you press dash set dash buffer = to input buffer
+        if (pressedDash)
+        {
+            dashBuffer = inputBuffer;
+            pressedDash = false;
+        }
+
+        //when dash button is released subtract time from dashbuffer so it only goes down when youre not pressing dash
+        if (releasedDash)
+        {
+            dashBuffer -= Time.deltaTime;
+        }
+
+        //return area
+        if (state != State.Normal) return;
+        if (state == State.Dashing) return;
+        //check if hasdashedtimer is good to go if not return
+
+        //then if dash buffer is greater than 0 dash
+        if (dashBuffer > 0)
+        {
+            dashBuffer = 0;
+            Dash(transform.right.normalized);
+        }
+    }
+
+    void CheckForAirDodge()
+    {
+        if (state == State.Knockback)
+        {
+            canAirDodgeTimer += Time.deltaTime;
+            if (canAirDodgeTimer < .25f) return; //if the player has only been in knockback for x seconds return
+            if (airDodged)
+            {
+                airDodged = false;
+                AirDodge();
+            }
+        }
+    }
+    #endregion
 }
