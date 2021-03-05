@@ -6,18 +6,22 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     Rigidbody rb;
-    Vector3 inputMovement, movement, lastMoveDir, lastLookedPosition, lookDirection, oppositeForce;
-    bool pressedRight, pressedLeft, releasedRight, releasedLeft, punchedRight, punchedLeft, returningLeft, returningRight = false;
-    float moveSpeed = 16f;
-    float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed;
+    Vector3 inputMovement, movement, lastMoveDir, lastLookedPosition, lookDirection, oppositeForce, powerDashTowards;
+    bool pressedRight, pressedLeft, releasedRight, releasedLeft, returningLeft, returningRight, pressedShield, releasedShield = false;
+    public bool punchedRight, punchedLeft, shielding, isParrying = false;
+    float parryTimerThreshold = .15f;
+    float moveSpeed, moveSpeedSetter = 18f;
+    float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed;
     float inputBuffer = .15f;
     [SerializeField] Transform leftHandTransform, rightHandTransform;
     float punchRange = 3f;
     float punchRangeRight = 4f;
     float punchSpeed = 40f;
-    float returnSpeed = 10f;
+    float returnSpeed = 15f;
     SphereCollider leftHandCollider, rightHandCollider;
     [SerializeField] Animator animator;
+    [SerializeField] Transform shield;
+    [SerializeField] GameObject arrow;
 
     public State state;
     public enum State
@@ -29,13 +33,12 @@ public class PlayerController : MonoBehaviour
         Grabbing,
         Stunned,
         Dashing,
-        PowerShieldStunned,
-        PowerShielding,
-        PowerDashing,
         ShockGrabbed,
         FireGrabbed,
         UltimateState,
-        TakingUltimate
+        TakingUltimate,
+        ParryState,
+        PowerDashing
     }
 
 
@@ -59,9 +62,19 @@ public class PlayerController : MonoBehaviour
             case State.Normal:
                 HandleMovement();
                 HandleThrowingHands();
+                HandleShielding();
                 break;
             case State.Knockback:
                 HandleKnockback();
+                HandleThrowingHands();
+                break;
+            case State.ParryState:
+                HandleParry();
+                HandleShielding();
+                break;
+            case State.PowerDashing:
+                HandlePowerDashing();
+                HandleShielding();
                 HandleThrowingHands();
                 break;
         }
@@ -77,6 +90,9 @@ public class PlayerController : MonoBehaviour
         {
             case State.Normal:
                 FixedHandleMovement();
+                break;
+            case State.PowerDashing:
+                FixedHandlePowerDashing();
                 break;
         }
     }
@@ -163,6 +179,19 @@ public class PlayerController : MonoBehaviour
             }
         }
 
+        if (punchedLeft || punchedRight || returningLeft || returningRight)
+        {
+            moveSpeed = moveSpeedSetter - 8f;
+        }
+        if (!punchedLeft && !punchedRight && !returningLeft && !returningRight)
+        {
+            moveSpeed = moveSpeedSetter;
+        }
+        if (shielding)
+        {
+            moveSpeed = 0;
+        }
+
     }
 
     public void Knockback(float damage, Vector3 direction)
@@ -192,11 +221,115 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void HandleShielding()
+    {
+        if (shielding)
+        {
+            parryTimer += Time.deltaTime;
+            if (parryTimer <= parryTimerThreshold)
+            {
+                isParrying = true;
+            }
+            if (parryTimer > parryTimerThreshold)
+            {
+                isParrying = false;
+            }
+            shield.gameObject.SetActive(true);
+        }
+        if (!shielding)
+        {
+            isParrying = false;
+            shield.gameObject.SetActive(false);
+        }
+    }
+    public void Parry()
+    {
+        if (state == State.ParryState) return;
+        rb.velocity = Vector3.zero;
+        isParryingTimer = 0;
+        state = State.ParryState;
+    }
+    void HandleParry()
+    {
+        Time.timeScale = .2f;
+        isParryingTimer += Time.deltaTime;
 
+        if (inputMovement.magnitude > .8f)
+        {
+            arrow.SetActive(true);
+        }
+        if (inputMovement.magnitude <= .8f)
+        {
+            arrow.SetActive(false);
+        }
+        if (isParryingTimer > .2f && inputMovement.magnitude > .8f)
+        {
+            shielding = false;
+            Time.timeScale = 1;
 
+            arrow.SetActive(false);
+            PowerDash(inputMovement);
+            return;
+        }
+        if (isParryingTimer > .2f && inputMovement.magnitude <= .8f)
+        {
+            Time.timeScale = 1;
 
+            arrow.SetActive(false);
+            state = State.Normal;
+        }
+        if (inputMovement.magnitude > .8f && releasedShield)
+        {
 
+            Time.timeScale = 1;
+            PowerDash(inputMovement);
 
+            arrow.SetActive(false);
+            return;
+        }
+        if (releasedShield)
+        {
+
+            Time.timeScale = 1;
+            arrow.SetActive(false);
+            state = State.Normal;
+        }
+
+        if (punchedLeft || punchedRight)
+        {
+            Time.timeScale = 1;
+            shielding = false;
+            arrow.SetActive(false);
+            PowerDash(inputMovement);
+            return;
+        }
+    }
+
+    void PowerDash(Vector3 powerDashDirection)
+    {
+        shielding = false;
+        canShieldAgainTimer = 0f;
+        powerDashSpeed = 50f;
+        powerDashTowards = new Vector3(powerDashDirection.normalized.x, rb.velocity.y, powerDashDirection.normalized.y);
+        state = State.PowerDashing;
+    }
+
+    void HandlePowerDashing()
+    {
+        Time.timeScale = 1;
+        float powerDashSpeedMulti = 5f;
+        powerDashSpeed -= powerDashSpeed * powerDashSpeedMulti * Time.deltaTime;
+        
+        float powerDashMinSpeed = 10f;
+        if (powerDashSpeed < powerDashMinSpeed)
+        {
+            state = State.Normal;
+        }
+    }
+    public void FixedHandlePowerDashing()
+    {
+        rb.velocity = powerDashTowards * powerDashSpeed;
+    }
 
 
     void OnMove(InputValue value)
@@ -229,6 +362,17 @@ public class PlayerController : MonoBehaviour
         pressedLeft = false;
         releasedLeft = true;
     }
+    void OnShield()
+    {
+        pressedShield = true;
+        releasedShield = false;
+    }
+    void OnReleaseShield()
+    {
+        releasedShield = true;
+        pressedShield = false;
+        
+    }
 
 
 
@@ -253,6 +397,7 @@ public class PlayerController : MonoBehaviour
     {
         CheckForPunchRight();
         CheckForPunchLeft();
+        CheckForShield();
     }
 
     void CheckForPunchLeft()
@@ -268,6 +413,7 @@ public class PlayerController : MonoBehaviour
         }
 
         if (returningLeft) return;
+        if (shielding) return;
 
         if (punchedLeftTimer > 0)
         {
@@ -294,6 +440,7 @@ public class PlayerController : MonoBehaviour
         }
 
         if (returningRight) return;
+        if (shielding) return;
 
         if (punchedRightTimer > 0)
         {
@@ -305,6 +452,39 @@ public class PlayerController : MonoBehaviour
 
             punchedRight = true;
             punchedRightTimer = 0;
+        }
+    }
+
+    void CheckForShield()
+    {
+        if (!shielding)
+        {
+            canShieldAgainTimer -= Time.deltaTime;
+        }
+        if (releasedShield)
+        {
+            if (shielding)
+            {
+                canShieldAgainTimer = inputBuffer;
+            }
+
+
+            
+            shielding = false;
+            
+        }
+        if (punchedRight && punchedLeft || returningLeft && returningRight || punchedRight && returningLeft || punchedLeft && returningRight)
+        {
+            shielding = false;
+            return;
+        }
+        
+        if (pressedShield)
+        {
+            pressedShield = false;
+            if (canShieldAgainTimer > 0f) return;
+            parryTimer = 0;
+            shielding = true;
         }
     }
 }

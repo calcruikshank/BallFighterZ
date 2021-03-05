@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class RightHand : MonoBehaviour
 {
-    public PlayerController opponent;
+    PlayerController opponent;
     [SerializeField] Transform player;
+    PlayerController playerScript;
     SphereCollider thisCollider;
     bool opponentTookDamage = false;
 
@@ -14,6 +15,7 @@ public class RightHand : MonoBehaviour
     void Awake()
     {
         thisCollider = this.transform.GetComponent<SphereCollider>();
+        playerScript = player.GetComponent<PlayerController>();
     }
     void Update()
     {
@@ -33,8 +35,19 @@ public class RightHand : MonoBehaviour
         {
             if (!opponentTookDamage)
             {
-                Debug.Log("Connected");
-                Vector3 punchTowards = new Vector3(player.right.normalized.x, .1f, player.right.normalized.z);
+                if (opponent.isParrying)
+                {
+                    opponent.Parry();
+                    opponentTookDamage = true;
+                    return;
+                }
+                if (playerScript.punchedLeft && playerScript.punchedRight)
+                {
+                    Debug.Log("Grab");
+                    opponentTookDamage = true;
+                    return;
+                }
+                Vector3 punchTowards = new Vector3(player.right.normalized.x, 0, player.right.normalized.z);
                 float damage = transform.localScale.x * 3f;
                 opponent.Knockback(damage, punchTowards);
                 Debug.Log(damage);
