@@ -39,6 +39,12 @@ public class RightHand : MonoBehaviour
                 {
                     opponent.Parry();
                     opponentTookDamage = true;
+                    playerScript.ParryStun();
+                    return;
+                }
+                if (opponent.shielding)
+                {
+                    opponentTookDamage = true;
                     return;
                 }
                 if (playerScript.punchedLeft && playerScript.punchedRight)

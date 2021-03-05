@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     float punchRangeRight = 4f;
     float punchSpeed = 40f;
     float returnSpeed = 15f;
+    int stocks = 4;
+
     SphereCollider leftHandCollider, rightHandCollider;
     [SerializeField] Animator animator;
     [SerializeField] Transform shield;
@@ -38,7 +40,8 @@ public class PlayerController : MonoBehaviour
         UltimateState,
         TakingUltimate,
         ParryState,
-        PowerDashing
+        PowerDashing,
+        ParryStunned
     }
 
 
@@ -76,6 +79,10 @@ public class PlayerController : MonoBehaviour
                 HandlePowerDashing();
                 HandleShielding();
                 HandleThrowingHands();
+                break;
+            case State.ParryStunned:
+                HandleShielding();
+                HandleParryStunned();
                 break;
         }
 
@@ -201,13 +208,13 @@ public class PlayerController : MonoBehaviour
         // Debug.Log(damage + " damage");
         //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
         //direction = direction.normalized;
-        float knockbackValue = (14 * ((currentPercentage + damage) * (damage / 2)) / 150) + 7; //knockback that scales
+        float knockbackValue = (14 * ((currentPercentage + damage) * (damage / 2)) / 150) + 14; //knockback that scales
         rb.velocity = (direction * knockbackValue);
         state = State.Knockback;
     }
     void HandleKnockback()
     {
-        if (rb.velocity.magnitude <= 5)
+        if (rb.velocity.magnitude <= 8)
         {
             rb.velocity = new Vector2(0, 0);
             state = State.Normal;
@@ -219,6 +226,9 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(oppositeForce * Time.deltaTime * brakeSpeed);
             rb.AddForce(movement * .05f); //DI
         }
+
+        Vector3 lookTowards = new Vector3(oppositeForce.x, 0, oppositeForce.z);
+        transform.right = lookTowards;
     }
 
     void HandleShielding()
@@ -309,7 +319,7 @@ public class PlayerController : MonoBehaviour
     {
         shielding = false;
         canShieldAgainTimer = 0f;
-        powerDashSpeed = 50f;
+        powerDashSpeed = 80f;
         powerDashTowards = new Vector3(powerDashDirection.normalized.x, rb.velocity.y, powerDashDirection.normalized.y);
         state = State.PowerDashing;
     }
@@ -317,7 +327,7 @@ public class PlayerController : MonoBehaviour
     void HandlePowerDashing()
     {
         Time.timeScale = 1;
-        float powerDashSpeedMulti = 5f;
+        float powerDashSpeedMulti = 6f;
         powerDashSpeed -= powerDashSpeed * powerDashSpeedMulti * Time.deltaTime;
         
         float powerDashMinSpeed = 10f;
@@ -326,9 +336,58 @@ public class PlayerController : MonoBehaviour
             state = State.Normal;
         }
     }
-    public void FixedHandlePowerDashing()
+    void FixedHandlePowerDashing()
     {
         rb.velocity = powerDashTowards * powerDashSpeed;
+    }
+
+    public void ParryStun()
+    {
+        parryStunnedTimer = 0f;
+        state = State.ParryStunned;
+    }
+
+    void HandleParryStunned()
+    {
+        rb.velocity = Vector3.zero;
+        if (punchedRight)
+        {
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRange, 0, .4f), punchSpeed * Time.deltaTime);
+        }
+        if (punchedLeft)
+        {
+            leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector3(punchRange, 0, -.4f), punchSpeed * Time.deltaTime);
+        }
+        rightHandCollider.enabled = false;
+        leftHandCollider.enabled = false;
+        parryStunnedTimer += Time.deltaTime / Time.timeScale;
+        if (parryStunnedTimer >= .5f)
+        {
+            returningLeft = true;
+            returningRight = true;
+            punchedRight = false;
+            punchedLeft = false;
+            state = State.Normal;
+        }
+    }
+
+    public void LoseStock()
+    {
+        stocks--;
+        if (stocks >= 1)
+        {
+            Respawn();
+        }
+        else
+        {
+            //FinishGame(this); //pass it player controller to see who lost
+        }
+    }
+    void Respawn()
+    {
+        state = State.Normal;
+        transform.position = Vector3.zero;
+        currentPercentage = 0f;
     }
 
 
@@ -379,6 +438,7 @@ public class PlayerController : MonoBehaviour
     protected virtual void FaceLookDirection()
     {
         if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft || rightHandTransform.localPosition.x > .1f && returningRight) return;
+        if (state == State.Knockback) return;
         Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
         if (lookTowards.x != 0 || lookTowards.y != 0)
         {
@@ -414,6 +474,7 @@ public class PlayerController : MonoBehaviour
 
         if (returningLeft) return;
         if (shielding) return;
+        if (state == State.Knockback) return;
 
         if (punchedLeftTimer > 0)
         {
@@ -441,6 +502,7 @@ public class PlayerController : MonoBehaviour
 
         if (returningRight) return;
         if (shielding) return;
+        if (state == State.Knockback) return;
 
         if (punchedRightTimer > 0)
         {
