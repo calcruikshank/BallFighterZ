@@ -172,11 +172,15 @@ public class PlayerController : MonoBehaviour
         }
         if (punchedLeft && returningLeft == false)
         {
+            
             punchedLeftTimer = 0;
             leftHandCollider.enabled = true;
             leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector3(punchRange, -.4f, -.4f), punchSpeed * Time.deltaTime);
             if (leftHandTransform.localPosition.x >= punchRange)
             {
+
+                GameObject splatter = Instantiate(splatterPrefab, leftHandTransform.position, Quaternion.identity);
+                splatter.transform.right = transform.right;
                 returningLeft = true;
             }
         }
@@ -204,6 +208,7 @@ public class PlayerController : MonoBehaviour
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRangeRight, -.4f, .4f), punchSpeed * Time.deltaTime);
             if (rightHandTransform.localPosition.x >= punchRangeRight)
             {
+                
                 returningRight = true;
             }
         }
@@ -484,8 +489,7 @@ public class PlayerController : MonoBehaviour
     }
     public void HitImpact(Vector3 impactDirection)
     {
-        GameObject splatter = Instantiate(splatterPrefab, transform.position, Quaternion.identity);
-        splatter.transform.right = impactDirection;
+        
         StartCoroutine(cameraShake.Shake(.03f, .3f));
         StartCoroutine(FreezeFrames(.075f));
     }
@@ -727,7 +731,8 @@ public class PlayerController : MonoBehaviour
                 Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
                 transform.right = lookTowards;
             }
-
+            GameObject splatter = Instantiate(splatterPrefab, leftHandTransform.position, Quaternion.identity);
+            splatter.transform.right = transform.right;
             punchedLeft = true;
             punchedLeftTimer = 0;
         }
@@ -756,7 +761,8 @@ public class PlayerController : MonoBehaviour
                 Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
                 transform.right = lookTowards;
             }
-
+            GameObject splatter = Instantiate(splatterPrefab, rightHandTransform.position, Quaternion.identity);
+            splatter.transform.right = transform.right;
             punchedRight = true;
             punchedRightTimer = 0;
         }
@@ -779,7 +785,7 @@ public class PlayerController : MonoBehaviour
 
 
         }
-        if (punchedRight && punchedLeft || returningLeft && returningRight || punchedRight && returningLeft || punchedLeft && returningRight)
+        if (punchedRight && punchedLeft)
         {
             shielding = false;
             return;

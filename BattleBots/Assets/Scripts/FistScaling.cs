@@ -13,6 +13,6 @@ public class FistScaling : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.localScale = new Vector3((transform.localPosition.x / 2f) + 1, (transform.localPosition.x / 2f) + 1, (transform.localPosition.x / 2f) + 1);
+        transform.localScale = new Vector3((transform.localPosition.x) + 2, (transform.localPosition.x) + 1, (transform.localPosition.x) + 2);
     }
 }
