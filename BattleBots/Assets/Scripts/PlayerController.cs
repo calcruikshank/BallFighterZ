@@ -8,7 +8,7 @@ public class PlayerController : MonoBehaviour
     Rigidbody rb;
     Vector3 inputMovement, movement, lastMoveDir, lastLookedPosition, lookDirection, oppositeForce, powerDashTowards;
     bool pressedRight, pressedLeft, pressedShield, releasedShield, pressedDash, releasedDash, airDodged, releasedAirDodged = false;
-    public bool punchedRight, punchedLeft, shielding, isParrying, returningLeft, returningRight, releasedLeft, releasedRight = false;
+    public bool punchedRight, punchedLeft, shielding, isParrying, returningLeft, returningRight, releasedLeft, releasedRight, isDashing = false;
     float parryTimerThreshold = .15f;
     float moveSpeed, moveSpeedSetter = 18f;
     float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed, dashBuffer, canAirDodgeTimer, airShieldTimer;
@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
 
     SphereCollider leftHandCollider, rightHandCollider;
     [SerializeField] Animator animator;
+    [SerializeField] Animator animatorUpdated;
     [SerializeField] Transform shield;
     [SerializeField] GameObject arrow;
 
@@ -135,6 +136,17 @@ public class PlayerController : MonoBehaviour
         {
             lastMoveDir = movement;
         }
+        if (animatorUpdated != null)
+        {
+            if (!shielding && state == State.Normal)
+            {
+                animatorUpdated.SetFloat("MoveSpeed", (movement.magnitude));
+            }
+            else
+            {
+                animatorUpdated.SetFloat("MoveSpeed", (0));
+            }
+        }
     }
     protected virtual void FixedHandleMovement()
     {
@@ -147,6 +159,8 @@ public class PlayerController : MonoBehaviour
         if (animator != null)
         {
             animator.SetBool("PunchRightAnimation", (punchedRight));
+            animatorUpdated.SetBool("punchingRight", (punchedRight));
+            animatorUpdated.SetBool("punchingLeft", (punchedLeft));
             if (returningRight == false && punchedRight == false)
             {
                 animator.SetBool("RightHasReturned", (true));
@@ -263,7 +277,8 @@ public class PlayerController : MonoBehaviour
         //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
         //direction = direction.normalized;
         float knockbackValue = (14 * ((currentPercentage + damage) * (damage / 2)) / 150) + 14; //knockback that scales
-        rb.velocity = (direction * knockbackValue);
+        rb.velocity = new Vector3(direction.x * knockbackValue, 5f, direction.z * knockbackValue);
+
         HitImpact(direction);
         state = State.Knockback;
     }
@@ -482,6 +497,7 @@ public class PlayerController : MonoBehaviour
     }
     void Dash(Vector3 dashDirection)
     {
+        isDashing = true;
         Debug.Log("Dash");
         shielding = false;
         punchedRight = true;
@@ -493,13 +509,18 @@ public class PlayerController : MonoBehaviour
     }
     void HandleDash()
     {
+        if (rightHandTransform.localPosition.x > 1f)
+        {
+            rightHandCollider.enabled = true;
+        }
         rb.velocity = Vector3.zero;
-        if (returningRight && rightHandTransform.localPosition.x <= 2f)
+        if (returningRight && rightHandTransform.localPosition.x <= 1f)
         {
             rightHandCollider.enabled = false;
         }
         if (rightHandTransform.localPosition.x <= 0 && punchedRight == false)
         {
+            isDashing = false;
             state = State.Normal;
         }
     }
@@ -752,12 +773,11 @@ public class PlayerController : MonoBehaviour
             if (shielding)
             {
                 canShieldAgainTimer = inputBuffer;
+
             }
-
-
-            
             shielding = false;
-            
+
+
         }
         if (punchedRight && punchedLeft || returningLeft && returningRight || punchedRight && returningLeft || punchedLeft && returningRight)
         {
@@ -767,15 +787,18 @@ public class PlayerController : MonoBehaviour
         
         if (pressedShield)
         {
-            pressedShield = false;
             if (canShieldAgainTimer > 0f) return;
+            pressedShield = false;
             parryTimer = 0;
             shielding = true;
         }
     }
     void CheckForDash()
     {
-
+        if (state != State.Dashing && isDashing)
+        {
+            isDashing = false;
+        }
         //if you press dash set dash buffer = to input buffer
         if (pressedDash)
         {

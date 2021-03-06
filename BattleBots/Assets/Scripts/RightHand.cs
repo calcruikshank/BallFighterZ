@@ -9,7 +9,7 @@ public class RightHand : MonoBehaviour
     PlayerController playerScript;
     SphereCollider thisCollider;
     bool opponentTookDamage = false;
-
+    
     // Start is called before the first frame update
 
     void Awake()
@@ -57,6 +57,10 @@ public class RightHand : MonoBehaviour
                 
                 Vector3 punchTowards = new Vector3(player.right.normalized.x, 0, player.right.normalized.z);
                 float damage = transform.localScale.x * 3f;
+                if (playerScript.isDashing)
+                {
+                    damage = 15f;
+                }
                 opponent.Knockback(damage, punchTowards);
                 Debug.Log(damage);
                 opponentTookDamage = true;
