@@ -8,7 +8,7 @@ public class RightHand : MonoBehaviour
     [SerializeField] Transform player;
     PlayerController playerScript;
     SphereCollider thisCollider;
-    bool opponentTookDamage = false;
+    public bool opponentTookDamage = false;
     
     // Start is called before the first frame update
 
@@ -61,8 +61,8 @@ public class RightHand : MonoBehaviour
                 {
                     damage = 15f;
                 }
-                opponent.Knockback(damage, punchTowards);
-                Debug.Log(damage);
+                opponent.Knockback(damage, punchTowards, playerScript);
+
                 opponentTookDamage = true;
             }
             
