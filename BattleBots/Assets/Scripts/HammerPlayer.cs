@@ -64,7 +64,8 @@ public class HammerPlayer : PlayerController
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRangeRight, -.4f, .4f), punchSpeed * Time.deltaTime);
             if (rightHandTransform.localPosition.x >= punchRangeRight)
             {
-                ThrownHammer = Instantiate(HammerPrefab, HammerInHand.transform.position, transform.rotation);
+                ThrownHammer = Instantiate(HammerPrefab, GrabPosition.position, transform.rotation);
+                
                 ThrownHammer.GetComponent<ThrownHammer>().SetPlayer(this);
                 ThrownHammerRB = ThrownHammer.GetComponent<Rigidbody>();
 

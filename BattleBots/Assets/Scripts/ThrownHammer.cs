@@ -34,7 +34,7 @@ public class ThrownHammer : MonoBehaviour
         if (lightningBall!= null)
         {
             lightningBall.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            lightningBall.gameObject.GetComponent<Rigidbody>().AddForce((this.transform.right) * (36f), ForceMode.Impulse);
+            lightningBall.gameObject.GetComponent<Rigidbody>().AddForce((this.transform.right) * (80f), ForceMode.Impulse);
             Physics.IgnoreCollision(this.transform.GetComponent<Collider>(), other);
             player.EndPunchRight();
             return;
