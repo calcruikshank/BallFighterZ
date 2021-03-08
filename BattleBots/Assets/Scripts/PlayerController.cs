@@ -272,7 +272,7 @@ public class PlayerController : MonoBehaviour
         // Debug.Log(damage + " damage");
         //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
         //direction = direction.normalized;
-        float knockbackValue = (14 * ((currentPercentage + damage) * (damage / 2)) / 150) + 14; //knockback that scales
+        float knockbackValue = (20 * ((currentPercentage + damage) * (damage / 2)) / 150) + 14; //knockback that scales
         rb.velocity = new Vector3(direction.x * knockbackValue, 0, direction.z * knockbackValue);
 
         HitImpact(direction);
@@ -689,7 +689,7 @@ public class PlayerController : MonoBehaviour
 
     protected virtual void Look()
     {
-        transform.right = lastLookedPosition;
+        transform.right = Vector3.MoveTowards(transform.right, lastLookedPosition, 50 * Time.deltaTime);
     }
 
     void CheckForInputs()

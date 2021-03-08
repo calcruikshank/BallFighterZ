@@ -27,6 +27,8 @@ public class HammerPlayer : PlayerController
         {
             animatorUpdated.SetBool("punchingRight", (false));
         }
+        animatorUpdated.SetBool("punchingLeft", (punchedLeft));
+        animatorUpdated.SetBool("returningLeft", (returningLeft));
 
         if (punchedLeft && returningLeft == false)
         {

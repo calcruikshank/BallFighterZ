@@ -68,5 +68,10 @@ public class ThrownHammer : MonoBehaviour
             Instantiate(lightning, new Vector3(opponent.transform.position.x, 0, opponent.transform.position.z), Quaternion.identity);
             player.EndPunchRight();
         }
+        if (other.transform.parent.GetComponent<PlayerController>() == null && other.transform.GetComponent<Floor>() == null)
+        {
+            Debug.Log(other);
+            player.EndPunchRight();
+        }
     }
 }

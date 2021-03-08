@@ -5,7 +5,7 @@ using UnityEngine;
 public class LightningBall : MonoBehaviour
 {
     float lifeTimer;
-    float speed = 18f;
+    float speed = 20f;
     PlayerController opponent;
     PlayerController player;
     private void Awake()
