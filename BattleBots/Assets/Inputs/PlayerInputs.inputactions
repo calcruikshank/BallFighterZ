@@ -76,6 +76,22 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=1)"
+                },
+                {
+                    "name": "Jump",
+                    "type": "Button",
+                    "id": "e459e448-509d-4405-b270-7fa1822a1e3b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "ReleaseJump",
+                    "type": "Button",
+                    "id": "1c2031f5-9d60-47b1-a8b7-c640c864a9fc",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
                 }
             ],
             "bindings": [
@@ -175,6 +191,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "ReleaseDash",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7b7e6b1d-69cc-4de1-bc8a-192e473a60a1",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Jump",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d6889d5b-80f0-4be8-b2ad-366369200add",
+                    "path": "<Gamepad>/buttonSouth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ReleaseJump",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

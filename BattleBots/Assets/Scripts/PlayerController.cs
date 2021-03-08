@@ -7,11 +7,11 @@ public class PlayerController : MonoBehaviour
 {
     protected Rigidbody rb;
     protected Vector3 inputMovement, movement, lastMoveDir, lastLookedPosition, lookDirection, oppositeForce, powerDashTowards;
-    protected bool pressedRight, pressedLeft, pressedShield, releasedShield, pressedDash, releasedDash, airDodged, releasedAirDodged = false;
+    protected bool pressedRight, pressedLeft, pressedShield, releasedShield, pressedDash, releasedDash, airDodged, releasedAirDodged, pressedJump, releasedJump, jump, hasWaveDashed = false;
     public bool punchedRight, punchedLeft, shielding, isParrying, returningLeft, returningRight, releasedLeft, releasedRight, isDashing = false;
     float parryTimerThreshold = .15f;
     [SerializeField] protected float moveSpeed, moveSpeedSetter = 18f;
-    protected float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed, dashBuffer, canAirDodgeTimer, airShieldTimer;
+    protected float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed, dashBuffer, canAirDodgeTimer, airShieldTimer, jumpTimer;
     protected float inputBuffer = .15f;
     [SerializeField] protected Transform leftHandTransform, rightHandTransform, GrabPosition, grabbedPositionTransform;
     [SerializeField] GameObject splatterPrefab;
@@ -19,7 +19,11 @@ public class PlayerController : MonoBehaviour
     protected float punchRangeRight = 4f;
     protected float punchSpeed = 40f;
     protected float returnSpeed = 15f;
+
+    [SerializeField] private LayerMask layerMask;
     int stocks = 4;
+    int numOfJumps = 0;
+    int maxNumOfJumps = 2;
     PlayerController opponent;
 
     protected CameraShake cameraShake;
@@ -29,6 +33,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] protected Animator animatorUpdated;
     [SerializeField] Transform shield;
     [SerializeField] GameObject arrow;
+    IsGrounded isGroundedScript;
 
     public State state;
     public enum State
@@ -46,6 +51,7 @@ public class PlayerController : MonoBehaviour
         TakingUltimate,
         ParryState,
         PowerDashing,
+        WaveDahsing,
         ParryStunned,
         AirDodging
     }
@@ -58,6 +64,7 @@ public class PlayerController : MonoBehaviour
         leftHandCollider = leftHandTransform.GetComponent<SphereCollider>();
         rightHandCollider = rightHandTransform.GetComponent<SphereCollider>();
         cameraShake = FindObjectOfType<CameraShake>();
+        isGroundedScript = this.gameObject.GetComponentInChildren<IsGrounded>();
     }
     // Start is called before the first frame update
     void Start()
@@ -73,6 +80,7 @@ public class PlayerController : MonoBehaviour
                 HandleMovement();
                 HandleThrowingHands();
                 HandleShielding();
+                HandleJumping();
                 break;
             case State.Knockback:
                 HandleKnockback();
@@ -81,11 +89,19 @@ public class PlayerController : MonoBehaviour
             case State.ParryState:
                 HandleParry();
                 HandleShielding();
+                HandleJumping();
                 break;
             case State.PowerDashing:
                 HandlePowerDashing();
                 HandleShielding();
                 HandleThrowingHands();
+                HandleJumping();
+                break;
+            case State.WaveDahsing:
+                HandleWaveDashing();
+                HandleShielding();
+                HandleThrowingHands();
+                HandleJumping();
                 break;
             case State.ParryStunned:
                 HandleShielding();
@@ -125,6 +141,9 @@ public class PlayerController : MonoBehaviour
             case State.PowerDashing:
                 FixedHandlePowerDashing();
                 break;
+            case State.WaveDahsing:
+                FixedHandleWaveDashing();
+                break;
         }
     }
 
@@ -137,6 +156,7 @@ public class PlayerController : MonoBehaviour
         {
             lastMoveDir = movement;
         }
+        
         if (animatorUpdated != null)
         {
             if (!shielding && state == State.Normal)
@@ -151,6 +171,21 @@ public class PlayerController : MonoBehaviour
     }
     protected virtual void FixedHandleMovement()
     {
+        /*if (isGroundedScript.isGrounded)
+        {
+            Vector3 newVelocity = new Vector3(movement.x * moveSpeed, rb.velocity.y, movement.z * moveSpeed);
+            rb.velocity = newVelocity;
+        }
+        else
+        {
+            rb.AddForce(movement * moveSpeed * 3);
+            if (rb.velocity.magnitude >= new Vector3(movement.x * moveSpeed, rb.velocity.y, movement.z * moveSpeed).magnitude)
+            {
+                Vector3 newVelocity = new Vector3(movement.x * moveSpeed, rb.velocity.y, movement.z * moveSpeed);
+                rb.velocity = newVelocity;
+            }
+        }*/ //air control kinda
+
         Vector3 newVelocity = new Vector3(movement.x * moveSpeed, rb.velocity.y, movement.z * moveSpeed);
         rb.velocity = newVelocity;
     }
@@ -254,6 +289,25 @@ public class PlayerController : MonoBehaviour
             returnSpeed = 6f;
         }
     }
+
+    void HandleJumping()
+    {
+        if (jump)
+        {
+            isGroundedScript.isGrounded = false;
+            numOfJumps++;
+            float jumpVelocity = 30f;
+
+            rb.velocity = new Vector3(movement.x * moveSpeed, 0, movement.z * moveSpeed);
+            rb.AddForce(Vector3.up * jumpVelocity, ForceMode.Impulse);
+
+            if (shielding) shielding = false;
+            
+            jump = false; 
+        }
+
+    }
+
 
     public virtual void Knockback(float damage, Vector3 direction, PlayerController playerSent)
     {
@@ -367,7 +421,7 @@ public class PlayerController : MonoBehaviour
             Time.timeScale = 1;
 
             arrow.SetActive(false);
-            PowerDash(inputMovement);
+            PowerDash(inputMovement, 80f);
             return;
         }
         if (isParryingTimer > .2f && inputMovement.magnitude <= .8f)
@@ -381,7 +435,7 @@ public class PlayerController : MonoBehaviour
         {
 
             Time.timeScale = 1;
-            PowerDash(inputMovement);
+            PowerDash(inputMovement, 80f);
 
             arrow.SetActive(false);
             return;
@@ -399,18 +453,19 @@ public class PlayerController : MonoBehaviour
             Time.timeScale = 1;
             shielding = false;
             arrow.SetActive(false);
-            PowerDash(inputMovement);
+            PowerDash(inputMovement, 80f);
             return;
         }
     }
 
-    void PowerDash(Vector3 powerDashDirection)
+    void PowerDash(Vector3 powerDashDirection, float sentSpeed)
     {
         shielding = false;
         canShieldAgainTimer = 0f;
-        powerDashSpeed = 80f;
+        powerDashSpeed = sentSpeed;
         powerDashTowards = new Vector3(powerDashDirection.normalized.x, rb.velocity.y, powerDashDirection.normalized.y);
         state = State.PowerDashing;
+        Debug.Log("powerdashing");
     }
 
     void HandlePowerDashing()
@@ -427,7 +482,32 @@ public class PlayerController : MonoBehaviour
     }
     void FixedHandlePowerDashing()
     {
-        rb.velocity = powerDashTowards * powerDashSpeed;
+        rb.velocity = new Vector3(powerDashTowards.x * powerDashSpeed, 0f, powerDashTowards.z * powerDashSpeed); 
+    }
+
+    void WaveDash(Vector3 powerDashDirection, float sentSpeed)
+    {
+        shielding = false;
+        canShieldAgainTimer = 0f;
+        powerDashSpeed = sentSpeed;
+        powerDashTowards = new Vector3(powerDashDirection.normalized.x, rb.velocity.y, powerDashDirection.normalized.y);
+        state = State.WaveDahsing;
+    }
+    void HandleWaveDashing()
+    {
+        Time.timeScale = 1;
+        float powerDashSpeedMulti = 6f;
+        powerDashSpeed -= powerDashSpeed * powerDashSpeedMulti * Time.deltaTime;
+
+        float powerDashMinSpeed = 10f;
+        if (powerDashSpeed < powerDashMinSpeed)
+        {
+            state = State.Normal;
+        }
+    }
+    void FixedHandleWaveDashing()
+    {
+        rb.velocity = new Vector3(powerDashTowards.x * powerDashSpeed, -10f, powerDashTowards.z * powerDashSpeed);
     }
 
     public void ParryStun()
@@ -674,10 +754,22 @@ public class PlayerController : MonoBehaviour
         releasedDash = true;
     }
 
+    void OnJump()
+    {
+        pressedJump = true;
+        releasedJump = false;
+    }
+    void OnReleaseJump()
+    {
+        releasedJump = true;
+        pressedJump = false;
+    }
+
     protected virtual void FaceLookDirection()
     {
         if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft || rightHandTransform.localPosition.x > .1f && returningRight) if(state != State.Grabbing)return;
-       
+        
+
         Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
         if (lookTowards.x != 0 || lookTowards.y != 0)
         {
@@ -699,6 +791,7 @@ public class PlayerController : MonoBehaviour
         CheckForShield();
         CheckForDash();
         CheckForAirDodge();
+        CheckForJump();
     }
 
     protected virtual void CheckForPunchLeft()
@@ -793,6 +886,18 @@ public class PlayerController : MonoBehaviour
         
         if (pressedShield)
         {
+            if (!isGroundedScript.isGrounded && state == State.Normal || !releasedJump && state == State.Normal)
+            {
+                if (!hasWaveDashed)
+                {
+                    WaveDash(inputMovement, 60f);
+                    hasWaveDashed = true;
+                    pressedShield = false;
+                    return;
+                }
+                
+            }
+            
             if (canShieldAgainTimer > 0f) return;
             pressedShield = false;
             parryTimer = 0;
@@ -842,6 +947,41 @@ public class PlayerController : MonoBehaviour
                 airDodged = false;
                 AirDodge();
             }
+        }
+    }
+
+
+    void CheckForJump()
+    {
+        if (isGroundedScript.isGrounded) numOfJumps = 0;
+        if (releasedJump)
+        {
+            jumpTimer -= Time.deltaTime;
+        }
+
+        if (pressedJump)
+        {
+            if (!isGroundedScript.isGrounded && numOfJumps < 1)
+            {
+                numOfJumps = 1;//num of jumps is number of times jumped 
+            }
+            else
+            {
+
+                hasWaveDashed = false;
+            }
+            jumpTimer = inputBuffer;
+            pressedJump = false;
+        }
+        
+        if (numOfJumps >= maxNumOfJumps) return;
+
+
+        if (jumpTimer > 0)
+        {
+            jump = true;
+            jumpTimer = 0;
+            isGroundedScript.isGrounded = false;
         }
     }
     #endregion

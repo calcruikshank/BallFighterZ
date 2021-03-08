@@ -56,7 +56,7 @@ public class RightHand : MonoBehaviour
                 }
                 
                 Vector3 punchTowards = new Vector3(player.right.normalized.x, 0, player.right.normalized.z);
-                float damage = transform.localScale.x;
+                float damage = transform.localScale.x * 2;
                 if (playerScript.isDashing)
                 {
                     damage = 15f;
