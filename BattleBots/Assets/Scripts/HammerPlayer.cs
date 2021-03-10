@@ -12,7 +12,7 @@ public class HammerPlayer : PlayerController
     Rigidbody ThrownHammerRB;
     float hammerSpeed = 90f;
     float returnRightHammerSpeed;
-    bool returnHammer = false;
+    public bool returnHammer = false;
     Vector3 oppositeHammerForce;
     
     protected override void HandleThrowingHands()
@@ -182,6 +182,7 @@ public class HammerPlayer : PlayerController
             pressedRight = false;
         }
 
+        if (punchedLeft) return;
         if (returnHammer) return;
         if (returningRight) return;
         if (shielding) return;

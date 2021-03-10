@@ -58,6 +58,10 @@ public class ThrownHammer : MonoBehaviour
             }
 
             Vector3 punchTowards = new Vector3(this.transform.right.normalized.x, 0, this.transform.right.normalized.z);
+            if (this.transform.GetComponentInChildren<Rigidbody>().velocity.magnitude == 0f)
+            {
+                punchTowards = -punchTowards;
+            }
             float damage = 9;
             if (player.isDashing)
             {
@@ -68,9 +72,8 @@ public class ThrownHammer : MonoBehaviour
             Instantiate(lightning, new Vector3(opponent.transform.position.x, 0, opponent.transform.position.z), Quaternion.identity);
             player.EndPunchRight();
         }
-        if (other.transform.parent.GetComponent<PlayerController>() == null && other.transform.GetComponent<Floor>() == null)
+        if (other.transform.GetComponent<Environment>() != null && this.gameObject.GetComponentInChildren<Rigidbody>().velocity.magnitude != 0f)
         {
-            Debug.Log(other);
             player.EndPunchRight();
         }
     }
