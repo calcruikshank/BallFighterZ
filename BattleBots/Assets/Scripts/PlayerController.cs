@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     protected float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed, dashBuffer, canAirDodgeTimer, airShieldTimer, waveDashTimer;
     protected float inputBuffer = .15f;
     [SerializeField] protected Transform leftHandTransform, rightHandTransform, GrabPosition, grabbedPositionTransform;
-    [SerializeField] GameObject splatterPrefab;
+    [SerializeField] GameObject splatterPrefab, fistIndicator;
     protected float punchRange = 3f;
     protected float punchRangeRight = 4f;
     protected float punchSpeed = 40f;
@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     PlayerController opponent;
 
     protected CameraShake cameraShake;
-
+    protected Transform rightHandParent, leftHandParent;
     protected SphereCollider leftHandCollider, rightHandCollider;
     [SerializeField] protected Animator animatorUpdated;
     [SerializeField] Transform shield;
@@ -60,6 +60,8 @@ public class PlayerController : MonoBehaviour
         leftHandCollider = leftHandTransform.GetComponent<SphereCollider>();
         rightHandCollider = rightHandTransform.GetComponent<SphereCollider>();
         cameraShake = FindObjectOfType<CameraShake>();
+        leftHandParent = leftHandTransform.parent.transform;
+        rightHandParent = rightHandTransform.parent.transform;
     }
     // Start is called before the first frame update
     void Start()
@@ -183,11 +185,17 @@ public class PlayerController : MonoBehaviour
         {
             animatorUpdated.SetBool("Rolling", false);
             punchedLeftTimer = 0;
-            leftHandCollider.enabled = true;
+            //leftHandCollider.enabled = true;
             leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector3(punchRange, -.4f, -.4f), punchSpeed * Time.deltaTime);
             if (leftHandTransform.localPosition.x >= punchRange)
             {
-
+                if (splatterPrefab != null)
+                {
+                    GameObject splatter = Instantiate(splatterPrefab, leftHandParent.position, Quaternion.identity);
+                    splatter.transform.right = transform.right;
+                    PunchExplosion punchExplosion = splatter.GetComponent<PunchExplosion>();
+                    punchExplosion.SetPlayer(this, leftHandParent);
+                }
                 returningLeft = true;
             }
         }
@@ -198,7 +206,7 @@ public class PlayerController : MonoBehaviour
 
             if (leftHandTransform.localPosition.x <= 1f)
             {
-                leftHandCollider.enabled = false;
+                //leftHandCollider.enabled = false;
             }
             if (leftHandTransform.localPosition.x <= 0f)
             {
@@ -210,13 +218,22 @@ public class PlayerController : MonoBehaviour
 
         if (punchedRight && returningRight == false)
         {
+            
+
             animatorUpdated.SetBool("Rolling", false);
             punchedRightTimer = 0;
-            rightHandCollider.enabled = true;
-            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRangeRight, -.4f, .4f), punchSpeed * Time.deltaTime);
-            if (rightHandTransform.localPosition.x >= punchRangeRight)
+            //rightHandCollider.enabled = true;
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRange, -.4f, .4f), punchSpeed * Time.deltaTime);
+            if (rightHandTransform.localPosition.x >= punchRange)
             {
-
+                if (splatterPrefab != null)
+                {
+                    GameObject splatter = Instantiate(splatterPrefab, rightHandParent.position, Quaternion.identity);
+                    splatter.transform.right = transform.right;
+                    PunchExplosion punchExplosion = splatter.GetComponent<PunchExplosion>();
+                    punchExplosion.SetPlayer(this, rightHandParent);
+                }
+                
                 returningRight = true;
             }
         }
@@ -227,7 +244,7 @@ public class PlayerController : MonoBehaviour
 
             if (rightHandTransform.localPosition.x <= 1f)
             {
-                rightHandCollider.enabled = false;
+                //rightHandCollider.enabled = false;
             }
             if (rightHandTransform.localPosition.x <= 0f)
             {
@@ -250,17 +267,17 @@ public class PlayerController : MonoBehaviour
 
         if (state == State.Normal)
         {
-            returnSpeed = 15f;
+            returnSpeed = 10f;
         }
         if (returningLeft && returningRight)
         {
 
-            returnSpeed = 6f;
+            returnSpeed = 4f;
         }
         if (state == State.Dashing)
         {
 
-            returnSpeed = 6f;
+            returnSpeed = 4f;
         }
     }
 
@@ -283,7 +300,7 @@ public class PlayerController : MonoBehaviour
 
     public virtual void Knockback(float damage, Vector3 direction, PlayerController playerSent)
     {
-        if (state == State.WaveDahsing && rb.velocity.magnitude > 20f) return;
+        //if (state == State.WaveDahsing && rb.velocity.magnitude > 20f) return;
         if (animatorUpdated != null)
         {
             SetAnimatorToKnockback();
@@ -314,7 +331,6 @@ public class PlayerController : MonoBehaviour
     {
         EndPunchRight();
         EndPunchLeft();
-        Debug.Log(rb.velocity.magnitude);
         if (rb.velocity.magnitude < 30f && !hasChangedFromKnockbackToFallingAnimation)
         {
             if (animatorUpdated != null)
@@ -454,7 +470,6 @@ public class PlayerController : MonoBehaviour
         powerDashSpeed = sentSpeed;
         powerDashTowards = new Vector3(powerDashDirection.normalized.x, rb.velocity.y, powerDashDirection.normalized.y);
         state = State.PowerDashing;
-        Debug.Log("powerdashing");
         if (animatorUpdated != null)
         {
             SetAnimatorToIdle();
@@ -492,7 +507,7 @@ public class PlayerController : MonoBehaviour
         float powerDashSpeedMulti = 4f;
         powerDashSpeed -= powerDashSpeed * powerDashSpeedMulti * Time.deltaTime;
 
-        float powerDashMinSpeed = 5f;
+        float powerDashMinSpeed = 10f;
         if (powerDashSpeed < powerDashMinSpeed)
         {
             if (animatorUpdated != null)
@@ -558,7 +573,7 @@ public class PlayerController : MonoBehaviour
     }
     public void HitImpact(Vector3 impactDirection)
     {
-
+        Debug.Log("HitImpact");
         StartCoroutine(cameraShake.Shake(.1f, .3f));
         StartCoroutine(FreezeFrames(.1f));
     }
@@ -572,15 +587,13 @@ public class PlayerController : MonoBehaviour
     {
         rightHandTransform.GetComponent<RightHand>().opponentTookDamage = false;
         isDashing = true;
-        Debug.Log("Dash");
         shielding = false;
         punchedRight = true;
         returningRight = false;
         float dashDistance = 8f;
         transform.position += dashDirection * dashDistance;
         state = State.Dashing;
-        GameObject splatter = Instantiate(splatterPrefab, rightHandTransform.position, Quaternion.identity);
-        splatter.transform.right = transform.right;
+        
     }
     void HandleDash()
     {
@@ -780,7 +793,7 @@ public class PlayerController : MonoBehaviour
 
     protected virtual void FaceLookDirection()
     {
-        if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft || rightHandTransform.localPosition.x > .1f && returningRight) if (state != State.Grabbing) return;
+        if (leftHandTransform.localPosition.x > 2f && returningLeft || rightHandTransform.localPosition.x > 2f && returningRight) if (state != State.Grabbing) return;
         if (state == State.WaveDahsing) return;
 
         Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
@@ -832,11 +845,7 @@ public class PlayerController : MonoBehaviour
                 Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
                 transform.right = lookTowards;
             }
-            if (splatterPrefab != null)
-            {
-                GameObject splatter = Instantiate(splatterPrefab, leftHandTransform.position, Quaternion.identity);
-                splatter.transform.right = transform.right;
-            }
+            
 
             punchedLeft = true;
             punchedLeftTimer = 0;
@@ -867,11 +876,7 @@ public class PlayerController : MonoBehaviour
                 Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
                 transform.right = lookTowards;
             }
-            if (splatterPrefab != null)
-            {
-                GameObject splatter = Instantiate(splatterPrefab, rightHandTransform.position, Quaternion.identity);
-                splatter.transform.right = transform.right;
-            }
+            
             punchedRight = true;
             punchedRightTimer = 0;
         }
