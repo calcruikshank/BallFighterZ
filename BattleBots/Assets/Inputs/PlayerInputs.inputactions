@@ -78,7 +78,7 @@
                     "interactions": "Press(behavior=1)"
                 },
                 {
-                    "name": "Jump",
+                    "name": "AButtonDown",
                     "type": "Button",
                     "id": "e459e448-509d-4405-b270-7fa1822a1e3b",
                     "expectedControlType": "Button",
@@ -86,7 +86,7 @@
                     "interactions": "Press"
                 },
                 {
-                    "name": "ReleaseJump",
+                    "name": "AButtonUp",
                     "type": "Button",
                     "id": "1c2031f5-9d60-47b1-a8b7-c640c864a9fc",
                     "expectedControlType": "Button",
@@ -201,7 +201,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Jump",
+                    "action": "AButtonDown",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -212,7 +212,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ReleaseJump",
+                    "action": "AButtonUp",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

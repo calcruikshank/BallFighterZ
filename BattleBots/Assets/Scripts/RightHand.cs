@@ -59,7 +59,7 @@ public class RightHand : MonoBehaviour
                 float damage = transform.localScale.x * 2;
                 if (playerScript.isDashing)
                 {
-                    damage = 15f;
+                    damage = 20f;
                 }
                 opponent.Knockback(damage, punchTowards, playerScript);
 

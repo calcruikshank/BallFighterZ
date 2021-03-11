@@ -7,11 +7,11 @@ public class PlayerController : MonoBehaviour
 {
     protected Rigidbody rb;
     protected Vector3 inputMovement, movement, lastMoveDir, lastLookedPosition, lookDirection, oppositeForce, powerDashTowards;
-    protected bool pressedRight, pressedLeft, pressedShield, releasedShield, pressedDash, releasedDash, airDodged, releasedAirDodged, pressedJump, releasedJump, jump, hasWaveDashed, isJumping, hasLeftTheGround = false;
-    public bool punchedRight, punchedLeft, shielding, isParrying, returningLeft, returningRight, releasedLeft, releasedRight, isDashing = false;
+    protected bool pressedRight, pressedLeft, pressedShield, releasedShield, pressedDash, releasedDash, airDodged, releasedAirDodged, pressedWaveDash, releasedWaveDash, waveDashBool = false;
+    public bool punchedRight, punchedLeft, shielding, isParrying, returningLeft, returningRight, releasedLeft, releasedRight, isDashing, hasChangedFromKnockbackToFallingAnimation = false;
     float parryTimerThreshold = .15f;
     [SerializeField] protected float moveSpeed, moveSpeedSetter = 18f;
-    protected float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed, dashBuffer, canAirDodgeTimer, airShieldTimer, jumpTimer;
+    protected float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed, dashBuffer, canAirDodgeTimer, airShieldTimer, waveDashTimer;
     protected float inputBuffer = .15f;
     [SerializeField] protected Transform leftHandTransform, rightHandTransform, GrabPosition, grabbedPositionTransform;
     [SerializeField] GameObject splatterPrefab;
@@ -22,8 +22,6 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private LayerMask layerMask;
     int stocks = 4;
-    int numOfJumps = 0;
-    int maxNumOfJumps = 1;
     PlayerController opponent;
 
     protected CameraShake cameraShake;
@@ -32,7 +30,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] protected Animator animatorUpdated;
     [SerializeField] Transform shield;
     [SerializeField] GameObject arrow;
-    IsGrounded isGroundedScript;
 
     public State state;
     public enum State
@@ -63,7 +60,6 @@ public class PlayerController : MonoBehaviour
         leftHandCollider = leftHandTransform.GetComponent<SphereCollider>();
         rightHandCollider = rightHandTransform.GetComponent<SphereCollider>();
         cameraShake = FindObjectOfType<CameraShake>();
-        isGroundedScript = this.gameObject.GetComponentInChildren<IsGrounded>();
     }
     // Start is called before the first frame update
     void Start()
@@ -79,7 +75,7 @@ public class PlayerController : MonoBehaviour
                 HandleMovement();
                 HandleThrowingHands();
                 HandleShielding();
-                HandleJumping();
+                HandleAButton();
                 break;
             case State.Knockback:
                 HandleKnockback();
@@ -94,13 +90,12 @@ public class PlayerController : MonoBehaviour
                 HandlePowerDashing();
                 HandleShielding();
                 HandleThrowingHands();
-                HandleJumping();
+                HandleAButton();
                 break;
             case State.WaveDahsing:
                 HandleWaveDashing();
                 HandleShielding();
                 HandleThrowingHands();
-                HandleJumping();
                 break;
             case State.ParryStunned:
                 HandleShielding();
@@ -151,7 +146,7 @@ public class PlayerController : MonoBehaviour
     {
         movement.x = inputMovement.x;
         movement.z = inputMovement.y;
-        if (movement.x != 0 || movement.y != 0)
+        if (movement.x != 0 || movement.z != 0)
         {
             lastMoveDir = movement;
         }
@@ -170,26 +165,10 @@ public class PlayerController : MonoBehaviour
     }
     protected virtual void FixedHandleMovement()
     {
-        /*if (isGroundedScript.isGrounded)
-        {
-            Vector3 newVelocity = new Vector3(movement.x * moveSpeed, rb.velocity.y, movement.z * moveSpeed);
-            rb.velocity = newVelocity;
-        }
-        else
-        {
-            rb.AddForce(movement * moveSpeed * 3);
-            if (rb.velocity.magnitude >= new Vector3(movement.x * moveSpeed, rb.velocity.y, movement.z * moveSpeed).magnitude)
-            {
-                Vector3 newVelocity = new Vector3(movement.x * moveSpeed, rb.velocity.y, movement.z * moveSpeed);
-                rb.velocity = newVelocity;
-            }
-        }*/ //air control kinda
 
-        if (isGroundedScript.isGrounded)
-        {
-            Vector3 newVelocity = new Vector3(movement.x * moveSpeed, rb.velocity.y, movement.z * moveSpeed);
-            rb.velocity = newVelocity;
-        }
+        Vector3 newVelocity = new Vector3(movement.x * moveSpeed, rb.velocity.y, movement.z * moveSpeed);
+        rb.velocity = newVelocity;
+
     }
 
     protected virtual void HandleThrowingHands()
@@ -202,7 +181,7 @@ public class PlayerController : MonoBehaviour
         }
         if (punchedLeft && returningLeft == false)
         {
-
+            animatorUpdated.SetBool("Rolling", false);
             punchedLeftTimer = 0;
             leftHandCollider.enabled = true;
             leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector3(punchRange, -.4f, -.4f), punchSpeed * Time.deltaTime);
@@ -231,6 +210,7 @@ public class PlayerController : MonoBehaviour
 
         if (punchedRight && returningRight == false)
         {
+            animatorUpdated.SetBool("Rolling", false);
             punchedRightTimer = 0;
             rightHandCollider.enabled = true;
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRangeRight, -.4f, .4f), punchSpeed * Time.deltaTime);
@@ -274,57 +254,41 @@ public class PlayerController : MonoBehaviour
         }
         if (returningLeft && returningRight)
         {
-            
+
             returnSpeed = 6f;
         }
         if (state == State.Dashing)
         {
-            
+
             returnSpeed = 6f;
         }
     }
 
-    void HandleJumping()
+
+    void HandleAButton()
     {
-        if (jump)
+        if (waveDashBool)
         {
-            state = State.Normal;
-            isJumping = true;
-            numOfJumps++;
-            float jumpVelocity = 30f;
-
-            //rb.velocity = new Vector3(rb.velocity.x, 0, rb.velocity.z); //wavejump
-            rb.velocity = new Vector3(movement.x * moveSpeed, 0, movement.z * moveSpeed);
-            rb.AddForce(Vector3.up * jumpVelocity, ForceMode.Impulse);
-
-            if (shielding) shielding = false;
+            WaveDash(lastMoveDir, 60f);
             if (animatorUpdated != null)
             {
-                animatorUpdated.SetBool("Jumping", (true));
+                animatorUpdated.SetBool("Rolling", true);
             }
-            jump = false;
-        }
-
-        if (isGroundedScript.isGrounded == false)
-        {
-            hasLeftTheGround = true;
-        }
-        
-        if (hasLeftTheGround && isJumping && isGroundedScript.isGrounded)
-        {
-            Debug.Log("is not jumping");
-            isJumping = false;
-            hasLeftTheGround = false;
-            if (animatorUpdated != null)
-            {
-                animatorUpdated.SetBool("Jumping", (false));
-            }
+            EndPunchLeft();
+            EndPunchRight();
+            waveDashBool = false;
+            
         }
     }
 
-
     public virtual void Knockback(float damage, Vector3 direction, PlayerController playerSent)
     {
+        if (state == State.WaveDahsing && rb.velocity.magnitude > 20f) return;
+        if (animatorUpdated != null)
+        {
+            SetAnimatorToKnockback();
+        }
+
         //this if is for if the opponent is grabbed
         if (opponent != null)
         {
@@ -350,15 +314,28 @@ public class PlayerController : MonoBehaviour
     {
         EndPunchRight();
         EndPunchLeft();
-
+        Debug.Log(rb.velocity.magnitude);
+        if (rb.velocity.magnitude < 30f && !hasChangedFromKnockbackToFallingAnimation)
+        {
+            if (animatorUpdated != null)
+            {
+                animatorUpdated.SetBool("Landing", true);
+            }
+        }
+       
 
         shielding = false;
         if (Mathf.Abs(rb.velocity.x) <= 8 && Mathf.Abs(rb.velocity.z) <= 8)
         {
+            if (animatorUpdated != null)
+            {
+                animatorUpdated.SetBool("Knockback", false);
+                animatorUpdated.SetBool("Landing", false);
+            }
             rb.velocity = new Vector2(0, 0);
             state = State.Normal;
         }
-        
+
         if (rb.velocity.magnitude > 0)
         {
             oppositeForce = -rb.velocity;
@@ -367,12 +344,12 @@ public class PlayerController : MonoBehaviour
             rb.AddForce(movement * .05f); //DI
         }
 
-        /*Vector3 lookTowards = new Vector3(oppositeForce.x, 0, oppositeForce.z);
-        transform.right = lookTowards;*/
+        Vector3 lookTowards = new Vector3(oppositeForce.x, 0, oppositeForce.z);
+        transform.right = lookTowards;
     }
     public virtual void EndPunchRight()
     {
-        
+
         punchedRight = false;
         returningRight = true;
         rightHandCollider.enabled = false;
@@ -478,6 +455,10 @@ public class PlayerController : MonoBehaviour
         powerDashTowards = new Vector3(powerDashDirection.normalized.x, rb.velocity.y, powerDashDirection.normalized.y);
         state = State.PowerDashing;
         Debug.Log("powerdashing");
+        if (animatorUpdated != null)
+        {
+            SetAnimatorToIdle();
+        }
     }
 
     void HandlePowerDashing()
@@ -502,24 +483,28 @@ public class PlayerController : MonoBehaviour
         shielding = false;
         canShieldAgainTimer = 0f;
         powerDashSpeed = sentSpeed;
-        powerDashTowards = new Vector3(powerDashDirection.normalized.x, rb.velocity.y, powerDashDirection.normalized.y);
+        powerDashTowards = new Vector3(powerDashDirection.normalized.x, rb.velocity.y, powerDashDirection.normalized.z);
         state = State.WaveDahsing;
     }
     void HandleWaveDashing()
     {
         Time.timeScale = 1;
-        float powerDashSpeedMulti = 6f;
+        float powerDashSpeedMulti = 4f;
         powerDashSpeed -= powerDashSpeed * powerDashSpeedMulti * Time.deltaTime;
 
-        float powerDashMinSpeed = 10f;
+        float powerDashMinSpeed = 5f;
         if (powerDashSpeed < powerDashMinSpeed)
         {
+            if (animatorUpdated != null)
+            {
+                animatorUpdated.SetBool("Rolling", false);
+            }
             state = State.Normal;
         }
     }
     void FixedHandleWaveDashing()
     {
-        rb.velocity = new Vector3(powerDashTowards.x * powerDashSpeed, -10f, powerDashTowards.z * powerDashSpeed);
+        rb.velocity = new Vector3(powerDashTowards.x * powerDashSpeed, rb.velocity.y, powerDashTowards.z * powerDashSpeed);
     }
 
     public void ParryStun()
@@ -566,6 +551,7 @@ public class PlayerController : MonoBehaviour
     }
     void Respawn()
     {
+        SetAnimatorToIdle();
         state = State.Normal;
         transform.position = Vector3.zero;
         currentPercentage = 0f;
@@ -638,7 +624,7 @@ public class PlayerController : MonoBehaviour
     }
     void HandleGrabbing()
     {
-        
+
         returnSpeed = 15f;
 
         returningLeft = false;
@@ -703,8 +689,26 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-
+    void SetAnimatorToKnockback()
+    {
+        animatorUpdated.SetBool("punchingLeft", false);
+        animatorUpdated.SetBool("punchingRight", false);
+        animatorUpdated.SetBool("Rolling", false);
+        animatorUpdated.SetFloat("MoveSpeed", 0f);
+        animatorUpdated.SetBool("Landing", false);
+        animatorUpdated.SetBool("Knockback", true);
+        hasChangedFromKnockbackToFallingAnimation = false;
+    }
+    void SetAnimatorToIdle()
+    {
+        animatorUpdated.SetBool("punchingLeft", false);
+        animatorUpdated.SetBool("punchingRight", false);
+        animatorUpdated.SetBool("Rolling", false);
+        animatorUpdated.SetFloat("MoveSpeed", 0f);
+        animatorUpdated.SetBool("Knockback", false);
+        animatorUpdated.SetBool("Landing", false);
+        hasChangedFromKnockbackToFallingAnimation = false;
+    }
 
     #region inputRegion
     void OnMove(InputValue value)
@@ -761,22 +765,23 @@ public class PlayerController : MonoBehaviour
         pressedDash = false;
         releasedDash = true;
     }
-
-    void OnJump()
+    void OnAButtonDown()
     {
-        pressedJump = true;
-        releasedJump = false;
+        pressedWaveDash = true;
+        releasedWaveDash = false;
     }
-    void OnReleaseJump()
+
+    void OnAButtonUp()
     {
-        releasedJump = true;
-        pressedJump = false;
+        Debug.Log("A button up");
+        pressedWaveDash = false;
+        releasedWaveDash = true;
     }
 
     protected virtual void FaceLookDirection()
     {
         if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > .1f && returningLeft || rightHandTransform.localPosition.x > .1f && returningRight) if (state != State.Grabbing) return;
-
+        if (state == State.WaveDahsing) return;
 
         Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
         if (lookTowards.x != 0 || lookTowards.y != 0)
@@ -799,7 +804,8 @@ public class PlayerController : MonoBehaviour
         CheckForShield();
         CheckForDash();
         CheckForAirDodge();
-        CheckForJump();
+        CheckForWaveDash();
+
     }
 
     protected virtual void CheckForPunchLeft()
@@ -815,6 +821,7 @@ public class PlayerController : MonoBehaviour
         }
 
         if (returningLeft) return;
+        if (state == State.WaveDahsing && rb.velocity.magnitude > 10f) return;
         if (shielding) return;
         if (state == State.Knockback) return;
 
@@ -848,6 +855,7 @@ public class PlayerController : MonoBehaviour
         }
 
         if (returningRight) return;
+        if (state == State.WaveDahsing && rb.velocity.magnitude > 10f) return;
         if (shielding) return;
         if (state == State.Knockback) return;
         if (state == State.Dashing) return;
@@ -891,26 +899,10 @@ public class PlayerController : MonoBehaviour
             shielding = false;
             return;
         }
-        
+
 
         if (pressedShield)
         {
-            if (!isGroundedScript.isGrounded && state == State.Normal || !releasedJump && state == State.Normal)
-            {
-                if (!hasWaveDashed)
-                {
-                    WaveDash(inputMovement, 60f);
-                    hasWaveDashed = true;
-                    pressedShield = false;
-                    return;
-                }
-
-            }
-
-            if (!isGroundedScript.isGrounded && state != State.Knockback)
-            {
-                return;
-            }
             if (canShieldAgainTimer > 0f) return;
             pressedShield = false;
             parryTimer = 0;
@@ -944,6 +936,11 @@ public class PlayerController : MonoBehaviour
         //then if dash buffer is greater than 0 dash
         if (dashBuffer > 0)
         {
+            if (lookDirection.magnitude != 0)
+            {
+                Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
+                transform.right = lookTowards;
+            }
             dashBuffer = 0;
             Dash(transform.right.normalized);
         }
@@ -963,39 +960,28 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
-    void CheckForJump()
+    void CheckForWaveDash()
     {
-        if (isGroundedScript.isGrounded) numOfJumps = 0;
-        if (releasedJump)
+        if (releasedWaveDash)
         {
-            jumpTimer -= Time.deltaTime;
+            waveDashTimer -= Time.deltaTime;
         }
-
-        if (pressedJump)
+        if (pressedWaveDash)
         {
-            if (!isGroundedScript.isGrounded && numOfJumps < 1)
-            {
-                numOfJumps = 1;//num of jumps is number of times jumped 
-            }
-            else
-            {
-
-                hasWaveDashed = false;
-            }
-            jumpTimer = inputBuffer;
-            pressedJump = false;
+            waveDashTimer = inputBuffer;
+            pressedWaveDash = false;
         }
-
-        if (numOfJumps >= maxNumOfJumps) return;
+        if (lastMoveDir.magnitude == 0f) return;
         if (state == State.WaveDahsing) return;
-
-
-        if (jumpTimer > 0)
+        if (waveDashTimer > 0)
         {
-            jump = true;
-            jumpTimer = 0;
-            isGroundedScript.isGrounded = false;
+            if (lookDirection.magnitude != 0)
+            {
+                Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
+                transform.right = lookTowards;
+            }
+            waveDashBool = true;
+            waveDashTimer = 0f;
         }
     }
     #endregion
