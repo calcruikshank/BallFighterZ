@@ -5,7 +5,7 @@ using UnityEngine;
 public class RockPlayer : PlayerController
 {
 
-    [SerializeField] GameObject rockPrefab, dustPrefab;
+    [SerializeField] GameObject rockPrefab, dustPrefab, rockExplosion;
     Rigidbody rockRB;
     RockLaunch rockLaunch;
     GameObject kickDust;
@@ -31,7 +31,7 @@ public class RockPlayer : PlayerController
                 HandleCollider handleCollider = kickDust.GetComponent<HandleCollider>();
                 handleCollider.SetPlayer(this, leftHandParent);
                 rockRB = kickDust.GetComponent<Rigidbody>();
-                rockRB.gameObject.GetComponent<Rigidbody>().AddForce((rockRB.transform.up) * (40f), ForceMode.Impulse);
+                rockRB.gameObject.GetComponent<Rigidbody>().AddForce((rockRB.transform.up) * (30f), ForceMode.Impulse);
                 rockLaunch = kickDust.GetComponent<RockLaunch>();
                 rockLaunch.SetPlayer(this);
                 returningLeft = true;

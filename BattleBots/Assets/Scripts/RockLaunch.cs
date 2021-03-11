@@ -6,14 +6,22 @@ public class RockLaunch : MonoBehaviour
 {
     PlayerController player;
     PlayerController opponent;
+    [SerializeField] GameObject rockExplosion;
+    Vector3 direction;
+    Quaternion startRotation;
     int hitID = 0;
     int damage = 11;
     // Start is called before the first frame update
     void Start()
     {
         this.transform.GetComponent<HandleCollider>().SetKnockbackDirection(this.transform.right);
+        direction = this.transform.right;
     }
 
+    private void OnDestroy()
+    {
+        GameObject rockExplode = Instantiate(rockExplosion, this.transform.position, Quaternion.identity);
+    }
     // Update is called once per frame
     void Update()
     {
