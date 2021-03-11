@@ -47,10 +47,7 @@ public class HammerPlayer : PlayerController
             punchedLeft = false;
             leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector3(0, 0, 0), returnSpeed * Time.deltaTime);
 
-            if (leftHandTransform.localPosition.x <= 1f)
-            {
-                leftHandCollider.enabled = false;
-            }
+            
             if (leftHandTransform.localPosition.x <= 0f)
             {
                 returningLeft = false;
@@ -82,10 +79,6 @@ public class HammerPlayer : PlayerController
             punchedRight = false;
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(0, 0, 0), returnSpeed * Time.deltaTime);
 
-            if (rightHandTransform.localPosition.x <= 1f)
-            {
-                rightHandCollider.enabled = false;
-            }
             if (rightHandTransform.localPosition.x <= 0f)
             {
                 

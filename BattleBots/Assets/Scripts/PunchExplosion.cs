@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PunchExplosion : MonoBehaviour
+public class PunchExplosion: MonoBehaviour
 {
     PlayerController player;
     PlayerController opponent;

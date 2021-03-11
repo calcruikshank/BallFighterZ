@@ -17,7 +17,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject splatterPrefab, fistIndicator;
     protected float punchRange = 3f;
     protected float punchRangeRight = 4f;
-    protected float punchSpeed = 40f;
+    [SerializeField]protected float punchSpeed = 40f;
     protected float returnSpeed = 15f;
 
     [SerializeField] private LayerMask layerMask;
@@ -26,7 +26,6 @@ public class PlayerController : MonoBehaviour
 
     protected CameraShake cameraShake;
     protected Transform rightHandParent, leftHandParent;
-    protected SphereCollider leftHandCollider, rightHandCollider;
     [SerializeField] protected Animator animatorUpdated;
     [SerializeField] Transform shield;
     [SerializeField] GameObject arrow;
@@ -57,8 +56,6 @@ public class PlayerController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         state = State.Normal;
-        leftHandCollider = leftHandTransform.GetComponent<SphereCollider>();
-        rightHandCollider = rightHandTransform.GetComponent<SphereCollider>();
         cameraShake = FindObjectOfType<CameraShake>();
         leftHandParent = leftHandTransform.parent.transform;
         rightHandParent = rightHandTransform.parent.transform;
@@ -193,8 +190,8 @@ public class PlayerController : MonoBehaviour
                 {
                     GameObject splatter = Instantiate(splatterPrefab, leftHandParent.position, Quaternion.identity);
                     splatter.transform.right = transform.right;
-                    PunchExplosion punchExplosion = splatter.GetComponent<PunchExplosion>();
-                    punchExplosion.SetPlayer(this, leftHandParent);
+                    HandleCollider handleCollider = splatter.GetComponent<HandleCollider>();
+                    handleCollider.SetPlayer(this, leftHandParent);
                 }
                 returningLeft = true;
             }
@@ -230,8 +227,8 @@ public class PlayerController : MonoBehaviour
                 {
                     GameObject splatter = Instantiate(splatterPrefab, rightHandParent.position, Quaternion.identity);
                     splatter.transform.right = transform.right;
-                    PunchExplosion punchExplosion = splatter.GetComponent<PunchExplosion>();
-                    punchExplosion.SetPlayer(this, rightHandParent);
+                    HandleCollider handleCollider = splatter.GetComponent<HandleCollider>();
+                    handleCollider.SetPlayer(this, leftHandParent);
                 }
                 
                 returningRight = true;
@@ -368,14 +365,12 @@ public class PlayerController : MonoBehaviour
 
         punchedRight = false;
         returningRight = true;
-        rightHandCollider.enabled = false;
 
     }
     void EndPunchLeft()
     {
         punchedLeft = false;
         returningLeft = true;
-        leftHandCollider.enabled = false;
     }
 
     void HandleShielding()
@@ -539,8 +534,6 @@ public class PlayerController : MonoBehaviour
         {
             leftHandTransform.localPosition = Vector3.MoveTowards(leftHandTransform.localPosition, new Vector3(punchRange, 0, -.4f), punchSpeed * Time.deltaTime);
         }
-        rightHandCollider.enabled = false;
-        leftHandCollider.enabled = false;
         parryStunnedTimer += Time.deltaTime / Time.timeScale;
         if (parryStunnedTimer >= .5f)
         {
@@ -597,15 +590,7 @@ public class PlayerController : MonoBehaviour
     }
     void HandleDash()
     {
-        if (rightHandTransform.localPosition.x > 1f)
-        {
-            rightHandCollider.enabled = true;
-        }
         rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
-        if (returningRight && rightHandTransform.localPosition.x <= 1f)
-        {
-            rightHandCollider.enabled = false;
-        }
         if (rightHandTransform.localPosition.x <= 0 && punchedRight == false)
         {
             isDashing = false;
@@ -642,8 +627,6 @@ public class PlayerController : MonoBehaviour
 
         returningLeft = false;
         returningRight = false;
-        rightHandCollider.enabled = false;
-        leftHandCollider.enabled = false;
         rb.velocity = Vector3.zero;
         if (punchedLeft && !releasedLeft)
         {
@@ -793,7 +776,7 @@ public class PlayerController : MonoBehaviour
 
     protected virtual void FaceLookDirection()
     {
-        if (leftHandTransform.localPosition.x > 2f && returningLeft || rightHandTransform.localPosition.x > 2f && returningRight) if (state != State.Grabbing) return;
+        if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > 2f && returningLeft || rightHandTransform.localPosition.x > 2f && returningRight) if (state != State.Grabbing) return;
         if (state == State.WaveDahsing) return;
 
         Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
@@ -833,7 +816,7 @@ public class PlayerController : MonoBehaviour
             pressedLeft = false;
         }
 
-        if (returningLeft) return;
+        if (returningLeft || punchedLeft) return;
         if (state == State.WaveDahsing && rb.velocity.magnitude > 10f) return;
         if (shielding) return;
         if (state == State.Knockback) return;
@@ -863,7 +846,7 @@ public class PlayerController : MonoBehaviour
             pressedRight = false;
         }
 
-        if (returningRight) return;
+        if (returningRight || punchedRight) return;
         if (state == State.WaveDahsing && rb.velocity.magnitude > 10f) return;
         if (shielding) return;
         if (state == State.Knockback) return;
