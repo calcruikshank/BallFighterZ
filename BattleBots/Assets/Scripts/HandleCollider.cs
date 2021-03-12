@@ -20,6 +20,7 @@ public class HandleCollider : MonoBehaviour
     
     public void SetPlayer(PlayerController player, Transform handSent)
     {
+        
         this.player = player;
     }
 
