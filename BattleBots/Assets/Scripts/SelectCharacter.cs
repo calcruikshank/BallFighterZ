@@ -11,11 +11,22 @@ public class SelectCharacter : PlayerController
     {
         playerInputManager.joinBehavior = PlayerJoinBehavior.JoinPlayersManually;
         PlayerInput pi = playerSent.gameObject.GetComponent<PlayerInput>();
-        playerInputManager.playerPrefab = PrefabToSpawn;
-        var p1 = PlayerInput.Instantiate(PrefabToSpawn, pi.playerIndex, pi.currentControlScheme, pi.splitScreenIndex, Gamepad.current);
-        p1.transform.position = playerSent.transform.position;
-        p1.transform.right = playerSent.transform.right;
-        PlayerInput p1I = p1.GetComponent<PlayerInput>();
+        if (pi.currentControlScheme == "Gamepad")
+        {
+            playerInputManager.playerPrefab = PrefabToSpawn;
+            var p1 = PlayerInput.Instantiate(PrefabToSpawn, pi.playerIndex, pi.currentControlScheme, pi.splitScreenIndex, Gamepad.current);
+            p1.transform.position = playerSent.transform.position;
+            p1.transform.right = playerSent.transform.right;
+            PlayerInput p1I = p1.GetComponent<PlayerInput>();
+        }
+        if (pi.currentControlScheme == "Keyboard and Mouse")
+        {
+            playerInputManager.playerPrefab = PrefabToSpawn;
+            var p1 = PlayerInput.Instantiate(PrefabToSpawn, pi.playerIndex, pi.currentControlScheme, pi.splitScreenIndex, Keyboard.current, Mouse.current);
+            p1.transform.position = playerSent.transform.position;
+            p1.transform.right = playerSent.transform.right;
+            PlayerInput p1I = p1.GetComponent<PlayerInput>();
+        }
 
         Destroy(playerSent.gameObject);
         playerInputManager.joinBehavior = PlayerJoinBehavior.JoinPlayersWhenButtonIsPressed;

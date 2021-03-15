@@ -705,12 +705,11 @@ public class PlayerController : MonoBehaviour
         hasChangedFromKnockbackToFallingAnimation = false;
     }
 
-    public string currentControlScheme { get; }
     #region inputRegion
     void OnMove(InputValue value)
     {
         inputMovement = value.Get<Vector2>();
-        if (currentControlScheme == "Keyboard and Mouse") return;
+        
         lookDirection = value.Get<Vector2>();
     }
 

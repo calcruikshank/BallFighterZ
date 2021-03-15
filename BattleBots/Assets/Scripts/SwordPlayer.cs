@@ -52,10 +52,12 @@ public class SwordPlayer : PlayerController
             }
             if (leftHandTransform.localPosition.x <= 0f)
             {
-
+                returningLeft = false;
+            }
+            if (leftHandTransform.localPosition.x <= 2f)
+            {
                 swordThrustSword.SetActive(false);
                 swordSlashSword.SetActive(true);
-                returningLeft = false;
             }
         }
 
