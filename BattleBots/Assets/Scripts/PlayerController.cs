@@ -566,7 +566,6 @@ public class PlayerController : MonoBehaviour
     }
     public void HitImpact(Vector3 impactDirection)
     {
-        Debug.Log("HitImpact");
         StartCoroutine(cameraShake.Shake(.1f, .3f));
         StartCoroutine(FreezeFrames(.1f));
     }
@@ -706,16 +705,17 @@ public class PlayerController : MonoBehaviour
         hasChangedFromKnockbackToFallingAnimation = false;
     }
 
+    public string currentControlScheme { get; }
     #region inputRegion
     void OnMove(InputValue value)
     {
         inputMovement = value.Get<Vector2>();
+        if (currentControlScheme == "Keyboard and Mouse") return;
         lookDirection = value.Get<Vector2>();
     }
 
     private void OnButtonSouth()
     {
-        Debug.Log("pressed a");
     }
     void OnPunchRight()
     {
@@ -769,16 +769,28 @@ public class PlayerController : MonoBehaviour
 
     void OnAButtonUp()
     {
-        Debug.Log("A button up");
         pressedWaveDash = false;
         releasedWaveDash = true;
+    }
+    void OnMouseMove(InputValue value)
+    {
+        Vector2 mousePosition;
+        mousePosition = value.Get<Vector2>();
+        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit, 1000))
+        {
+            lookDirection = new Vector2(hit.point.x - transform.position.x, hit.point.z - transform.position.z);
+        }
+
     }
 
     protected virtual void FaceLookDirection()
     {
         if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > 2f && returningLeft || rightHandTransform.localPosition.x > 2f && returningRight) if (state != State.Grabbing) return;
         if (state == State.WaveDahsing) return;
-
+        if (state == State.Dashing) return;
+        
         Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
         if (lookTowards.x != 0 || lookTowards.y != 0)
         {

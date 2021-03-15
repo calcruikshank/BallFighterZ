@@ -790,6 +790,10 @@ public class PlayerControllerWithJump : MonoBehaviour
     protected virtual void Look()
     {
         transform.right = Vector3.MoveTowards(transform.right, lastLookedPosition, 50 * Time.deltaTime);
+        if (state == State.ParryState)
+        {
+            transform.right = lastLookedPosition;
+        }
     }
 
     void CheckForInputs()

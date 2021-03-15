@@ -60,7 +60,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hitID: 0
   damage: 10
-  colliderThreshold: 10
+  colliderThreshold: 0.3
 --- !u!1 &5857963806893673483
 GameObject:
   m_ObjectHideFlags: 0
