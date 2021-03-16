@@ -243,7 +243,7 @@ MonoBehaviour:
   isDashing: 0
   hasChangedFromKnockbackToFallingAnimation: 0
   moveSpeed: 0
-  moveSpeedSetter: 18
+  moveSpeedSetter: 20
   leftHandTransform: {fileID: 5136723789718946910}
   rightHandTransform: {fileID: 5136723790373468479}
   GrabPosition: {fileID: 1041960695179328073}

@@ -22,7 +22,16 @@ public class ColliderScript : MonoBehaviour
         {
             
             this.transform.parent.transform.parent.GetComponent<HandleCollider>().HandleCollision(hitID, damage, opponent);
-            Physics.IgnoreCollision(other, this.transform.GetComponent<Collider>());
+            Collider[] colliders = opponent.transform.GetComponentsInChildren<Collider>();
+            Collider[] collidersInColliderParents = this.transform.parent.GetComponentsInChildren<Collider>();
+            foreach (Collider collider in colliders)
+            {
+                foreach (Collider collidersInParent in collidersInColliderParents)
+                {
+                    Physics.IgnoreCollision(collider, collidersInParent);
+                }
+            }
+           
         }
     }
 }
