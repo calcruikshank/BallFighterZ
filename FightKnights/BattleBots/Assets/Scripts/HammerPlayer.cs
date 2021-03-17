@@ -93,6 +93,10 @@ public class HammerPlayer : PlayerController
         }
         if (returnHammer && ThrownHammer != null)
         {
+            if (state == State.Knockback)
+            {
+                Debug.Log("True");
+            }
             if (oppositeHammerForce == Vector3.zero)
             {
                 oppositeHammerForce = -ThrownHammerRB.velocity;
@@ -174,7 +178,7 @@ public class HammerPlayer : PlayerController
             punchedRightTimer = inputBuffer;
             pressedRight = false;
         }
-
+        if (state == State.WaveDahsing && rb.velocity.magnitude > 10f) return;
         if (punchedLeft) return;
         if (returnHammer) return;
         if (returningRight) return;
@@ -206,7 +210,7 @@ public class HammerPlayer : PlayerController
             punchedLeftTimer = inputBuffer;
             pressedLeft = false;
         }
-
+        if (state == State.WaveDahsing && rb.velocity.magnitude > 10f) return;
         if (returningLeft) return;
         if (shielding) return;
         if (state == State.Knockback) return;

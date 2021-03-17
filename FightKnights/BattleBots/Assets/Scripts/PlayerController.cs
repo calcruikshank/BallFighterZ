@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour
     protected float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed, dashBuffer, canAirDodgeTimer, airShieldTimer, waveDashTimer;
     protected float inputBuffer = .15f;
     [SerializeField] protected Transform leftHandTransform, rightHandTransform, GrabPosition, grabbedPositionTransform;
-    [SerializeField] GameObject splatterPrefab, fistIndicator;
+    [SerializeField] GameObject splatterPrefab, fistIndicator, parryIndicator;
     protected float punchRange = 3f;
     protected float punchRangeRight = 4f;
     [SerializeField]protected float punchSpeed = 40f;
@@ -287,8 +287,6 @@ public class PlayerController : MonoBehaviour
             {
                 animatorUpdated.SetBool("Rolling", true);
             }
-            EndPunchLeft();
-            EndPunchRight();
             waveDashBool = false;
             
         }
@@ -296,6 +294,8 @@ public class PlayerController : MonoBehaviour
 
     public virtual void Knockback(float damage, Vector3 direction, PlayerController playerSent)
     {
+        EndPunchRight();
+        EndPunchLeft();
         //if (state == State.WaveDahsing && rb.velocity.magnitude > 20f) return;
         if (animatorUpdated != null)
         {
@@ -325,8 +325,7 @@ public class PlayerController : MonoBehaviour
     }
     void HandleKnockback()
     {
-        EndPunchRight();
-        EndPunchLeft();
+        
         if (rb.velocity.magnitude < 30f && !hasChangedFromKnockbackToFallingAnimation)
         {
             if (animatorUpdated != null)
@@ -395,6 +394,7 @@ public class PlayerController : MonoBehaviour
     }
     public void Parry()
     {
+        GameObject parryParticle = Instantiate(parryIndicator, transform.position, Quaternion.identity);
         if (state == State.ParryState) return;
         rb.velocity = Vector3.zero;
         isParryingTimer = 0;
@@ -801,6 +801,10 @@ public class PlayerController : MonoBehaviour
     protected virtual void Look()
     {
         transform.right = Vector3.MoveTowards(transform.right, lastLookedPosition, 50 * Time.deltaTime);
+        if (state == State.ParryState)
+        {
+            transform.right = lastLookedPosition;
+        }
     }
 
     void CheckForInputs()

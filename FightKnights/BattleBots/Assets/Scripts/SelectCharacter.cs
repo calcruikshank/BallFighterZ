@@ -7,6 +7,11 @@ public class SelectCharacter : PlayerController
 {
     [SerializeField] GameObject PrefabToSpawn;
     [SerializeField] PlayerInputManager playerInputManager;
+
+    public void Start()
+    {
+        playerInputManager = FindObjectOfType<PlayerInputManager>();
+    }
     public override void Knockback(float damage, Vector3 direction, PlayerController playerSent)
     {
         playerInputManager.joinBehavior = PlayerJoinBehavior.JoinPlayersManually;

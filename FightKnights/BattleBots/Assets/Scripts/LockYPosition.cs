@@ -13,6 +13,6 @@ public class LockYPosition : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        this.transform.position = new Vector3(transform.position.x, .01f, transform.position.z);
+        this.transform.position = new Vector3(transform.position.x, .25f, transform.position.z);
     }
 }
