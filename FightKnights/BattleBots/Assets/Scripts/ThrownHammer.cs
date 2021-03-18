@@ -48,6 +48,15 @@ public class ThrownHammer : MonoBehaviour
                 player.ParryStun();
                 player.EndPunchRight();
                 Physics.IgnoreCollision(this.transform.GetComponent<Collider>(), other);
+                Collider[] colliders = opponent.transform.GetComponentsInChildren<Collider>();
+                Collider[] collidersInColliderParents = this.transform.GetComponentsInChildren<Collider>();
+                foreach (Collider collider in colliders)
+                {
+                    foreach (Collider collidersInParent in collidersInColliderParents)
+                    {
+                        Physics.IgnoreCollision(collider, collidersInParent);
+                    }
+                }
                 return;
             }
             if (opponent.shielding)

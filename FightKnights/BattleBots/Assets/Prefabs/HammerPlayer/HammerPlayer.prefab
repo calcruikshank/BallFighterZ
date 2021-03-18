@@ -298,6 +298,8 @@ MonoBehaviour:
   grabbedPositionTransform: {fileID: 0}
   splatterPrefab: {fileID: 0}
   fistIndicator: {fileID: 0}
+  parryIndicator: {fileID: 4813566379121663498, guid: 1ab4d7f44ea85ba43842a96bd395010f, type: 3}
+  knockbackSmoke: {fileID: 0}
   punchSpeed: 40
   layerMask:
     serializedVersion: 2

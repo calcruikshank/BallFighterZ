@@ -36,4 +36,9 @@ public class SelectCharacter : PlayerController
         Destroy(playerSent.gameObject);
         playerInputManager.joinBehavior = PlayerJoinBehavior.JoinPlayersWhenButtonIsPressed;
     }
+
+    protected override void Look()
+    {
+
+    }
 }

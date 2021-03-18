@@ -52,8 +52,8 @@ public class PlayerController : MonoBehaviour
         AirDodging
     }
 
-
-    protected virtual void Awake()
+    
+    public virtual void Awake()
     {
         rb = GetComponent<Rigidbody>();
         state = State.Normal;
@@ -64,7 +64,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-      
+        
     }
 
     protected virtual void Update()
