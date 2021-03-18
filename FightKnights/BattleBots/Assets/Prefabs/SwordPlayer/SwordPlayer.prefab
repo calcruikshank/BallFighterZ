@@ -255,7 +255,7 @@ MonoBehaviour:
   punchSpeed: 40
   layerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   animatorUpdated: {fileID: 8712082166020212086}
   shield: {fileID: 193448067949134718}
   arrow: {fileID: 468113760389139597}
@@ -852,7 +852,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8575063657551388576, guid: 71528fb4ac98ada4d8f444d52809e318, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 71528fb4ac98ada4d8f444d52809e318, type: 3}

@@ -714,8 +714,10 @@ public class PlayerController : MonoBehaviour
     void OnMove(InputValue value)
     {
         inputMovement = value.Get<Vector2>();
-        
-        lookDirection = value.Get<Vector2>();
+        if (this.gameObject.GetComponent<PlayerInput>().currentControlScheme == "Gamepad")
+        {
+            lookDirection = value.Get<Vector2>();
+        }
     }
 
     private void OnButtonSouth()
@@ -782,7 +784,7 @@ public class PlayerController : MonoBehaviour
         mousePosition = value.Get<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 1000))
+        if (Physics.Raycast(ray, out hit, 1000, layerMask)&& this.gameObject.GetComponent<PlayerInput>().currentControlScheme == "Keyboard and Mouse")
         {
             lookDirection = new Vector2(hit.point.x - transform.position.x, hit.point.z - transform.position.z);
         }
@@ -806,6 +808,7 @@ public class PlayerController : MonoBehaviour
 
     protected virtual void Look()
     {
+        if (state == State.Knockback) return;
         if (this.gameObject.GetComponent<PlayerInput>().currentControlScheme == "Gamepad")
         {
             transform.right = Vector3.MoveTowards(transform.right, lastLookedPosition, 50 * Time.deltaTime);
@@ -816,8 +819,11 @@ public class PlayerController : MonoBehaviour
         }
         if (this.gameObject.GetComponent<PlayerInput>().currentControlScheme == "Keyboard and Mouse")
         {
-            Debug.Log(movement);
             transform.right = movement;
+        }
+        if (state == State.ParryState && this.gameObject.GetComponent<PlayerInput>().currentControlScheme == "Keyboard and Mouse")
+        {
+            transform.right = new Vector3(inputMovement.x, 0, inputMovement.y);
         }
     }
 
