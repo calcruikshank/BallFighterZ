@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   destroyTimer: 0
-  destroyTarget: 0.4
+  destroyTarget: 0.2
 --- !u!1 &1641057607329024811
 GameObject:
   m_ObjectHideFlags: 0
@@ -72,8 +72,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitID: 0
-  damage: 12
-  colliderThreshold: 10
+  damage: 10
+  colliderThreshold: 0.2
 --- !u!1 &1825774827005667349
 GameObject:
   m_ObjectHideFlags: 0
@@ -133,8 +133,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitID: 1
-  damage: 8
-  colliderThreshold: 10
+  damage: 6
+  colliderThreshold: 0.2
 --- !u!1 &6728138453745806927
 GameObject:
   m_ObjectHideFlags: 0
@@ -255,8 +255,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hitID: 1
-  damage: 8
-  colliderThreshold: 10
+  damage: 6
+  colliderThreshold: 0.2
 --- !u!1001 &1887223177963758463
 PrefabInstance:
   m_ObjectHideFlags: 0

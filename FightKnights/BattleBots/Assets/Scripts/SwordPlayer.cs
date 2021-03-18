@@ -99,12 +99,12 @@ public class SwordPlayer : PlayerController
             }
         }
 
-        if (punchedLeft || punchedRight || returningLeft || returningRight)
+        if (punchedLeft || punchedRight)
         {
             moveSpeed = moveSpeedSetter - 8f;
         }
         
-        if (!punchedLeft && !punchedRight && !returningLeft && !returningRight)
+        if (!punchedLeft && !punchedRight)
         {
             moveSpeed = moveSpeedSetter;
         }
