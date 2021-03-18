@@ -9,12 +9,13 @@ public class PlayerController : MonoBehaviour
     protected Vector3 inputMovement, movement, lastMoveDir, lastLookedPosition, lookDirection, oppositeForce, powerDashTowards;
     protected bool pressedRight, pressedLeft, pressedShield, releasedShield, pressedDash, releasedDash, airDodged, releasedAirDodged, pressedWaveDash, releasedWaveDash, waveDashBool = false;
     public bool punchedRight, punchedLeft, shielding, isParrying, returningLeft, returningRight, releasedLeft, releasedRight, isDashing, hasChangedFromKnockbackToFallingAnimation = false;
-    float parryTimerThreshold = .15f;
+    float parryTimerThreshold = .25f;
     [SerializeField] protected float moveSpeed, moveSpeedSetter = 18f;
     protected float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed, dashBuffer, canAirDodgeTimer, airShieldTimer, waveDashTimer;
     protected float inputBuffer = .15f;
     [SerializeField] protected Transform leftHandTransform, rightHandTransform, GrabPosition, grabbedPositionTransform;
     [SerializeField] GameObject splatterPrefab, fistIndicator, parryIndicator;
+    [SerializeField] ParticleSystem knockbackSmoke;
     protected float punchRange = 3f;
     protected float punchRangeRight = 4f;
     [SerializeField]protected float punchSpeed = 40f;
@@ -325,7 +326,11 @@ public class PlayerController : MonoBehaviour
     }
     void HandleKnockback()
     {
-        
+        if (knockbackSmoke != null)
+        {
+            knockbackSmoke.gameObject.SetActive(true);
+            
+        }
         if (rb.velocity.magnitude < 30f && !hasChangedFromKnockbackToFallingAnimation)
         {
             if (animatorUpdated != null)
@@ -338,6 +343,7 @@ public class PlayerController : MonoBehaviour
         shielding = false;
         if (Mathf.Abs(rb.velocity.x) <= 8 && Mathf.Abs(rb.velocity.z) <= 8)
         {
+            if (knockbackSmoke != null) knockbackSmoke.Stop();
             if (animatorUpdated != null)
             {
                 animatorUpdated.SetBool("Knockback", false);
@@ -794,16 +800,24 @@ public class PlayerController : MonoBehaviour
         {
             lastLookedPosition = lookTowards;
         }
-
+        
         Look();
     }
 
     protected virtual void Look()
     {
-        transform.right = Vector3.MoveTowards(transform.right, lastLookedPosition, 50 * Time.deltaTime);
-        if (state == State.ParryState)
+        if (this.gameObject.GetComponent<PlayerInput>().currentControlScheme == "Gamepad")
+        {
+            transform.right = Vector3.MoveTowards(transform.right, lastLookedPosition, 50 * Time.deltaTime);
+        }
+        if (state == State.ParryState && this.gameObject.GetComponent<PlayerInput>().currentControlScheme == "Gamepad")
         {
             transform.right = lastLookedPosition;
+        }
+        if (this.gameObject.GetComponent<PlayerInput>().currentControlScheme == "Keyboard and Mouse")
+        {
+            Debug.Log(movement);
+            transform.right = movement;
         }
     }
 
