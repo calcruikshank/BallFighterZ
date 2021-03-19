@@ -299,6 +299,9 @@ MonoBehaviour:
   splatterPrefab: {fileID: 0}
   fistIndicator: {fileID: 0}
   parryIndicator: {fileID: 4813566379121663498, guid: 1ab4d7f44ea85ba43842a96bd395010f, type: 3}
+  initialStunParticle: {fileID: 0}
+  continuedStunParticle: {fileID: 0}
+  continuedStunSpawned: {fileID: 0}
   knockbackSmoke: {fileID: 0}
   punchSpeed: 40
   layerMask:
@@ -762,7 +765,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3956550742734438381, guid: 71528fb4ac98ada4d8f444d52809e318, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 3956550742734438381, guid: 71528fb4ac98ada4d8f444d52809e318, type: 3}
       propertyPath: m_LocalPosition.z

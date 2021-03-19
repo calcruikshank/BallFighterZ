@@ -251,6 +251,8 @@ MonoBehaviour:
   splatterPrefab: {fileID: 0}
   fistIndicator: {fileID: 0}
   parryIndicator: {fileID: 4813566379121663498, guid: 1ab4d7f44ea85ba43842a96bd395010f, type: 3}
+  initialStunParticle: {fileID: 6559070406401214973, guid: 164d29503e3357842b050b20fa80bb8f, type: 3}
+  continuedStunParticle: {fileID: 4613542323225235418, guid: b2ba3d19bc0ff0642bc0d02de2ccc303, type: 3}
   knockbackSmoke: {fileID: 7364149916258220405}
   punchSpeed: 40
   layerMask:

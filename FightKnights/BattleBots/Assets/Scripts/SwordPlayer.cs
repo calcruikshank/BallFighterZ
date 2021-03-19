@@ -35,7 +35,7 @@ public class SwordPlayer : PlayerController
                 {
                     GameObject thrust = Instantiate(swordThrustParticle, thrustPosition.position, thrustPosition.rotation);
                     thrust.transform.right = new Vector3(thrustPosition.right.x, 0f, thrustPosition.right.z);
-                    HandleCollider handleCollider = thrust.GetComponent<HandleCollider>();
+                    HandleColliderShieldBreak handleCollider = thrust.GetComponent<HandleColliderShieldBreak>();
                     handleCollider.SetPlayer(this, leftHandParent);
                 }
                 returningLeft = true;
