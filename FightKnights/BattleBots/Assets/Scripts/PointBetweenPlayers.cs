@@ -20,7 +20,7 @@ public class PointBetweenPlayers : MonoBehaviour
         if (players.Length == 1)
         {
             pointToFollow = players[0].transform.position;
-            this.transform.position = Vector3.MoveTowards(this.transform.position, new Vector3(pointToFollow.x, pointToFollow.y + 35, pointToFollow.z - 25), 50 * Time.deltaTime);
+            this.transform.position = Vector3.MoveTowards(this.transform.position, new Vector3(pointToFollow.x, pointToFollow.y + 25, pointToFollow.z - 15), 50 * Time.deltaTime);
             return;
         }
         foreach (PlayerInput player in players)
@@ -30,6 +30,6 @@ public class PointBetweenPlayers : MonoBehaviour
         }
 
 
-        this.transform.position = Vector3.MoveTowards(this.transform.position, new Vector3(pointToFollow.x, pointToFollow.y + 35, pointToFollow.z - 25), 50 * Time.deltaTime); 
+        this.transform.position = Vector3.MoveTowards(this.transform.position, new Vector3(pointToFollow.x, pointToFollow.y + 25, pointToFollow.z - 15), 50 * Time.deltaTime); 
     }
 }

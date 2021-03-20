@@ -7,6 +7,110 @@ public class SwordPlayer : PlayerController
     [SerializeField] GameObject swordSlash, swordThrustParticle, swordThrustSword, swordSlashSword;
     [SerializeField] Transform swordCrit, thrustPosition;
 
+
+    protected override void Update()
+    {
+        switch (state)
+        {
+            case State.Normal:
+                HandleMovement();
+                HandleThrowingHands();
+                HandleShielding();
+                HandleAButton();
+                break;
+            case State.Knockback:
+                HandleKnockback();
+                HandleThrowingHands();
+                HandleShielding();
+                break;
+            case State.ParryState:
+                HandleParry();
+                HandleShielding();
+                break;
+            case State.PowerDashing:
+                HandlePowerDashing();
+                HandleShielding();
+                HandleThrowingHands();
+                HandleAButton();
+                break;
+            case State.WaveDahsing:
+                HandleWaveDashing();
+                HandleShielding();
+                HandleThrowingHands();
+                break;
+            case State.ParryStunned:
+                HandleShielding();
+                HandleParryStunned();
+                break;
+            case State.Dashing:
+                HandleDash();
+                HandleThrowingHands();
+                HandleMovement();
+                break;
+            case State.Grabbed:
+                HandleGrabbed();
+                HandleThrowingHands();
+                HandleShielding();
+                break;
+            case State.Grabbing:
+                HandleGrabbing();
+                break;
+            case State.AirDodging:
+                HandleAirDodge();
+                HandleKnockback();
+                break;
+            case State.Stunned:
+                HandleStunned();
+                HandleThrowingHands();
+                HandleShielding();
+                break;
+        }
+
+        CheckForInputs();
+        FaceLookDirection();
+    }
+
+    protected override void FixedUpdate()
+    {
+
+        switch (state)
+        {
+            case State.Normal:
+                FixedHandleMovement();
+                break;
+            case State.PowerDashing:
+                FixedHandlePowerDashing();
+                break;
+            case State.WaveDahsing:
+                FixedHandleWaveDashing();
+                break;
+            case State.Dashing:
+                //FixedHandleMovement();
+                break;
+        }
+    }
+
+    protected override void HandleMovement()
+    {
+        movement.x = inputMovement.x;
+        movement.z = inputMovement.y;
+        if (movement.x != 0 || movement.z != 0)
+        {
+            lastMoveDir = movement;
+        }
+        if (animatorUpdated != null)
+        {
+            if (!shielding && state == State.Normal)
+            {
+                animatorUpdated.SetFloat("MoveSpeed", (movement.magnitude));
+            }
+            else
+            {
+                animatorUpdated.SetFloat("MoveSpeed", (0));
+            }
+        }
+    }
+
     protected override void HandleThrowingHands()
     {
         if (leftHandTransform.localPosition.x <= 0f)
@@ -129,6 +233,32 @@ public class SwordPlayer : PlayerController
         }
     }
 
+    protected override void Dash(Vector3 dashDirection)
+    {
+        isDashing = true;
+        shielding = false;
+        punchedRight = true;
+        returningRight = false;
+        float dashDistance = 8f;
+        transform.position += dashDirection * dashDistance;
+        state = State.Dashing;
+
+    }
+    protected override void HandleDash()
+    {
+        rb.velocity = new Vector3(0f, rb.velocity.y, 0f);
+        if (rightHandTransform.localPosition.x <= 0 && punchedRight == false)
+        {
+            isDashing = false;
+            state = State.Normal;
+        }
+    }
+
+
+
+
+
+
     protected override void FaceLookDirection()
     {
         if (punchedLeft || punchedRight || returningLeft || rightHandTransform.localPosition.x > 2f && returningRight) if (state != State.Grabbing) return;
@@ -203,6 +333,33 @@ public class SwordPlayer : PlayerController
 
             punchedRight = true;
             punchedRightTimer = 0;
+        }
+    }
+
+    protected override void CheckForWaveDash()
+    {
+        if (releasedWaveDash)
+        {
+            waveDashTimer -= Time.deltaTime;
+        }
+        if (pressedWaveDash)
+        {
+            waveDashTimer = inputBuffer;
+            pressedWaveDash = false;
+        }
+        if (lastMoveDir.magnitude == 0f) return;
+        if (state == State.WaveDahsing) return;
+        if (state == State.Stunned) return;
+        if (state == State.Dashing) return;
+        if (waveDashTimer > 0)
+        {
+            if (lookDirection.magnitude != 0)
+            {
+                Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
+                transform.right = lookTowards;
+            }
+            waveDashBool = true;
+            waveDashTimer = 0f;
         }
     }
 

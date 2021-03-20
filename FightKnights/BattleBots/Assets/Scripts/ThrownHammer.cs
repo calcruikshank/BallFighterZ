@@ -31,10 +31,19 @@ public class ThrownHammer : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         lightningBall = other.transform.parent.GetComponent<LightningBall>();
-        if (lightningBall!= null)
+        if (lightningBall != null)
         {
+            player.HitImpact(this.transform.right);
+            Instantiate(lightning, new Vector3(lightningBall.transform.position.x, 0, lightningBall.transform.position.z), Quaternion.identity);
             lightningBall.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            lightningBall.gameObject.GetComponent<Rigidbody>().AddForce((this.transform.right) * (80f), ForceMode.Impulse);
+            if (this.transform.GetComponentInChildren<Rigidbody>().velocity.magnitude != 0f)
+            {
+                lightningBall.gameObject.GetComponent<Rigidbody>().AddForce((this.transform.right) * (80f), ForceMode.Impulse);
+            }
+            if (this.transform.GetComponentInChildren<Rigidbody>().velocity.magnitude == 0f)
+            {
+                lightningBall.gameObject.GetComponent<Rigidbody>().AddForce((-this.transform.right) * (80f), ForceMode.Impulse);
+            }
             Physics.IgnoreCollision(this.transform.GetComponent<Collider>(), other);
             player.EndPunchRight();
             return;

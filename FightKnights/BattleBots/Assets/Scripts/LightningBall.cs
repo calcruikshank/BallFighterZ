@@ -8,6 +8,10 @@ public class LightningBall : MonoBehaviour
     float speed = 20f;
     PlayerController opponent;
     PlayerController player;
+    [SerializeField] Transform arrow;
+    Transform instantiatedArrow;
+    bool connected = false;
+    float throwAfterSecs = 0f;
     private void Awake()
     {
         
@@ -23,9 +27,24 @@ public class LightningBall : MonoBehaviour
     void Update()
     {
         lifeTimer += Time.deltaTime;
-        if (lifeTimer > 2f)
+        if (lifeTimer > 1f && !connected)
         {
             Destroy(this.gameObject);
+        }
+
+        if (connected)
+        {
+            instantiatedArrow.right = player.transform.right;
+            instantiatedArrow.position = opponent.transform.position;
+            this.transform.position = opponent.transform.position;
+            throwAfterSecs += Time.deltaTime;
+            if (throwAfterSecs >= .25f && opponent != null)
+            {
+
+                opponent.Throw(player.transform.right);
+                Destroy(instantiatedArrow.gameObject);
+                Destroy(this.gameObject);
+            }
         }
     }
     public void SetPlayer(PlayerController playerSent)
@@ -39,15 +58,29 @@ public class LightningBall : MonoBehaviour
         opponent = other.transform.parent.GetComponent<PlayerController>();
         if (opponent != null && opponent != player)
         {
-            Vector3 punchTowards = new Vector3(player.transform.right.normalized.x, 0, player.transform.right.normalized.z);
-            float damage = 7;
-            if (player.isDashing)
+            if (opponent.isParrying)
             {
-                damage = 10f;
+                opponent.Parry();
+                player.ParryStun();
+                player.EndPunchRight();
+                Destroy(this.gameObject);
+                return;
             }
-            opponent.Knockback(damage, punchTowards, player);
-            Physics.IgnoreCollision(this.transform.GetComponent<Collider>(), other);
-            Destroy(this.gameObject);
+            else
+            {
+                connected = true;
+                opponent.Stunned(1f, 0f);
+                instantiatedArrow = Instantiate(arrow, new Vector3(opponent.transform.position.x, 0, opponent.transform.position.z), Quaternion.identity);
+            }
+            Vector3 punchTowards = new Vector3(player.transform.right.normalized.x, 0, player.transform.right.normalized.z);
+            Collider[] colliders = this.gameObject.GetComponentsInChildren<Collider>();
+            foreach (Collider collider in colliders)
+            {
+                collider.enabled = false;
+            }
+
+            this.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+            this.transform.position = opponent.transform.position;
         }
     }
 }
