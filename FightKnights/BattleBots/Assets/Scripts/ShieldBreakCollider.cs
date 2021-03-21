@@ -9,6 +9,7 @@ public class ShieldBreakCollider : MonoBehaviour
     [SerializeField] float damage;
     [SerializeField] float stunTime = 1f;
     [SerializeField] float colliderThreshold = .2f;
+
     float collideTimer;
 
     private void Update()

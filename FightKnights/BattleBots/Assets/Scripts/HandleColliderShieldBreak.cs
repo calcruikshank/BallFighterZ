@@ -9,6 +9,8 @@ public class HandleColliderShieldBreak : MonoBehaviour
     PlayerController opponentHit;
     float greatestDamage = 0f;
     Vector3 punchTowards;
+
+    [SerializeField] bool stunsIfOpponentIsntShielding = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -39,13 +41,20 @@ public class HandleColliderShieldBreak : MonoBehaviour
                 player.ParryStun();
                 return;
             }
-
             if (opponent.shielding)
             {
                 opponent.Stunned(stunTime, damage);
                 opponentHit = sentOpponent;
                 return;
             }
+            if (stunsIfOpponentIsntShielding)
+            {
+                opponent.Stunned(stunTime, damage);
+                opponentHit = sentOpponent;
+                return;
+            }
+            
+            
             if (punchTowards == null || punchTowards == Vector3.zero)
             {
                 punchTowards = new Vector3(player.transform.right.normalized.x, 0, player.transform.right.normalized.z);

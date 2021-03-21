@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  stunsIfOpponentIsntShielding: 0
 --- !u!1001 &8280257425354008474
 PrefabInstance:
   m_ObjectHideFlags: 0

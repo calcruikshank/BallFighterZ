@@ -44,7 +44,7 @@ public class RightHand : MonoBehaviour
                 }
                 if (playerScript.punchedLeft && playerScript.punchedRight || playerScript.returningLeft && playerScript.punchedRight && !playerScript.releasedLeft && !playerScript.releasedRight || playerScript.returningRight && playerScript.punchedLeft && !playerScript.releasedLeft && !playerScript.releasedRight || playerScript.returningLeft && playerScript.returningRight && !playerScript.releasedLeft && !playerScript.releasedRight)
                 {
-                    playerScript.Grab(opponent);
+                    playerScript.Grab(opponent, this.transform);
                     Debug.Log("Grab");
                     opponentTookDamage = true;
                     return;

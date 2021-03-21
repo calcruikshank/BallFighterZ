@@ -7,7 +7,9 @@ public class ColliderScript : MonoBehaviour
     PlayerController opponent;
     [SerializeField] int hitID;
     [SerializeField] float damage;
+    [SerializeField] float stunDamage;
     [SerializeField] float colliderThreshold = .2f;
+    [SerializeField] bool moreDamageIfStunned = false;
     float collideTimer;
 
     private void Update()
@@ -20,8 +22,14 @@ public class ColliderScript : MonoBehaviour
         opponent = other.transform.parent.GetComponent<PlayerController>();
         if (opponent != null && collideTimer <= colliderThreshold)
         {
-            
-            this.transform.parent.transform.parent.GetComponent<HandleCollider>().HandleCollision(hitID, damage, opponent);
+            if (!moreDamageIfStunned || opponent.state != PlayerController.State.Stunned)
+            {
+                this.transform.parent.transform.parent.GetComponent<HandleCollider>().HandleCollision(hitID, damage, opponent);
+            }
+            if (moreDamageIfStunned && opponent.state == PlayerController.State.Stunned)
+            {
+                this.transform.parent.transform.parent.GetComponent<HandleCollider>().HandleCollision(hitID, stunDamage, opponent);
+            }
             Collider[] colliders = opponent.transform.GetComponentsInChildren<Collider>();
             Collider[] collidersInColliderParents = this.transform.parent.GetComponentsInChildren<Collider>();
             foreach (Collider collider in colliders)

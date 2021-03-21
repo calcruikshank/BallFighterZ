@@ -369,7 +369,8 @@ MonoBehaviour:
   continuedStunParticle: {fileID: 4613542323225235418, guid: b2ba3d19bc0ff0642bc0d02de2ccc303, type: 3}
   continuedStunSpawned: {fileID: 0}
   leftJabParticle: {fileID: 3468484189079984217, guid: 69f272aadee1ff843a8b5c115379f46d, type: 3}
-  knockbackSmoke: {fileID: 0}
+  grabSwirl: {fileID: 6377382932511509219, guid: 6e5324308a591a84794d0e8c28d57b49, type: 3}
+  knockbackSmoke: {fileID: 8226645741302635480, guid: 0da2a680a6d4d034c8cf5a86da3428e5, type: 3}
   punchSpeed: 40
   layerMask:
     serializedVersion: 2
