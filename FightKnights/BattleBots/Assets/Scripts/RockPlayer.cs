@@ -116,7 +116,9 @@ public class RockPlayer : PlayerController
         }
     }
 
-
+    protected override void Dash(Vector3 dashDirection)
+    {
+    }
     protected override void FaceLookDirection()
     {
         if (punchedRight || punchedLeft || leftHandTransform.localPosition.x > 2f && returningLeft || rightHandTransform.localPosition.x > 2f && returningRight) if (state != State.Grabbing) return;

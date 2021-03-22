@@ -397,7 +397,6 @@ public class HammerPlayer : PlayerController
         if (punchedLeft) return;
         if (returnHammer) return;
         if (returningRight) return;
-        if (shielding) return;
         if (state == State.Knockback) return;
         if (state == State.Dashing) return;
         if (state == State.Grabbed) return;
@@ -409,6 +408,7 @@ public class HammerPlayer : PlayerController
                 transform.right = lookTowards;
             }
 
+            if (shielding) shielding = false;
             punchedRight = true;
             punchedRightTimer = 0;
         }
@@ -427,7 +427,6 @@ public class HammerPlayer : PlayerController
         }
         if (state == State.WaveDahsing && rb.velocity.magnitude > 10f) return;
         if (returningLeft) return;
-        if (shielding) return;
         if (state == State.Knockback) return;
         if (lightningBallInstantiated != null) return;
         if (state == State.Grabbed) return;
@@ -441,6 +440,7 @@ public class HammerPlayer : PlayerController
             }
 
 
+            if (shielding) shielding = false;
             punchedLeft = true;
             punchedLeftTimer = 0;
         }
@@ -480,6 +480,7 @@ public class HammerPlayer : PlayerController
         if (!canDash) return;
         if (ThrownHammerRB != null) return;
         if (state == State.Grabbed) return;
+        if (returningRight) return;
         //check if hasdashedtimer is good to go if not return
 
         //then if dash buffer is greater than 0 dash

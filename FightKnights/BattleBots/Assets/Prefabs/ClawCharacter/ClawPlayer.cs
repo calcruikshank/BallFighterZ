@@ -297,10 +297,11 @@ public class ClawPlayer : PlayerController
             pressedLeft = false;
         }
 
+        if (state == State.Stunned) return;
         if (returningLeft || punchedLeft) return;
         if (punchedRight) return;
         if (state == State.WaveDahsing && rb.velocity.magnitude > 10f) return;
-        if (shielding) return;
+        
         if (state == State.Knockback) return;
         if (state == State.Grabbed) return;
         if (punchedLeftTimer > 0)
@@ -311,7 +312,7 @@ public class ClawPlayer : PlayerController
                 transform.right = lookTowards;
             }
 
-
+            if (shielding) shielding = false;
             punchedLeft = true;
             punchedLeftTimer = 0;
         }
@@ -327,10 +328,12 @@ public class ClawPlayer : PlayerController
             punchedRightTimer = inputBuffer;
             pressedRight = false;
         }
+
+        if (state == State.Stunned) return;
         if (punchedLeft) return;
         if (returningRight || punchedRight) return;
         if (state == State.WaveDahsing && rb.velocity.magnitude > 10f) return;
-        if (shielding) return;
+        
         if (state == State.Knockback) return;
         if (state == State.Dashing) return;
         if (state == State.Grabbed) return;
@@ -341,37 +344,11 @@ public class ClawPlayer : PlayerController
                 Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
                 transform.right = lookTowards;
             }
-
+            if (shielding) shielding = false;
             punchedRight = true;
             punchedRightTimer = 0;
         }
     }
 
-    protected override void CheckForWaveDash()
-    {
-        if (releasedWaveDash)
-        {
-            waveDashTimer -= Time.deltaTime;
-        }
-        if (pressedWaveDash)
-        {
-            waveDashTimer = inputBuffer;
-            pressedWaveDash = false;
-        }
-        if (lastMoveDir.magnitude == 0f) return;
-        if (state == State.WaveDahsing) return;
-        if (state == State.Stunned) return;
-        if (state == State.Dashing) return;
-        if (state == State.Grabbed) return;
-        if (waveDashTimer > 0)
-        {
-            if (lookDirection.magnitude != 0)
-            {
-                Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
-                transform.right = lookTowards;
-            }
-            waveDashBool = true;
-            waveDashTimer = 0f;
-        }
-    }
+   
 }

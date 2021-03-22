@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  stunsIfOpponentIsntShielding: 1
 --- !u!1 &4569443888869284722
 GameObject:
   m_ObjectHideFlags: 0
@@ -90,7 +91,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6cd4ae4c3866691418f48f5e7d31898d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enableAfterSecs: 0.65
+  enableAfterSecs: 0.5
 --- !u!1 &7314806107604715311
 GameObject:
   m_ObjectHideFlags: 0
@@ -230,7 +231,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 198241703512339490, guid: 66bdcc8522acf034180d42fc80952ca0, type: 3}
       propertyPath: startDelay.scalar
-      value: 0.65
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 198241703512339490, guid: 66bdcc8522acf034180d42fc80952ca0, type: 3}
       propertyPath: InitialModule.startLifetime.scalar
@@ -250,7 +251,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 198284884332722628, guid: 66bdcc8522acf034180d42fc80952ca0, type: 3}
       propertyPath: startDelay.scalar
-      value: 0.65
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 198284884332722628, guid: 66bdcc8522acf034180d42fc80952ca0, type: 3}
       propertyPath: InitialModule.startLifetime.scalar
@@ -270,7 +271,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 198357026419708736, guid: 66bdcc8522acf034180d42fc80952ca0, type: 3}
       propertyPath: startDelay.scalar
-      value: 0.65
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 198357026419708736, guid: 66bdcc8522acf034180d42fc80952ca0, type: 3}
       propertyPath: InitialModule.startLifetime.scalar
@@ -290,7 +291,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 198414088259438708, guid: 66bdcc8522acf034180d42fc80952ca0, type: 3}
       propertyPath: startDelay.scalar
-      value: 0.65
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 198414088259438708, guid: 66bdcc8522acf034180d42fc80952ca0, type: 3}
       propertyPath: InitialModule.startLifetime.scalar
@@ -310,7 +311,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 198486164960150160, guid: 66bdcc8522acf034180d42fc80952ca0, type: 3}
       propertyPath: startDelay.scalar
-      value: 0.65
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 198486164960150160, guid: 66bdcc8522acf034180d42fc80952ca0, type: 3}
       propertyPath: InitialModule.startLifetime.scalar
@@ -346,7 +347,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 198626129921835898, guid: 66bdcc8522acf034180d42fc80952ca0, type: 3}
       propertyPath: startDelay.scalar
-      value: 0.65
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 198626129921835898, guid: 66bdcc8522acf034180d42fc80952ca0, type: 3}
       propertyPath: InitialModule.startLifetime.scalar
@@ -366,7 +367,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 198870548289121462, guid: 66bdcc8522acf034180d42fc80952ca0, type: 3}
       propertyPath: startDelay.scalar
-      value: 0.65
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 198870548289121462, guid: 66bdcc8522acf034180d42fc80952ca0, type: 3}
       propertyPath: InitialModule.startLifetime.scalar

@@ -11,7 +11,8 @@ public class PlayerController : MonoBehaviour
     public bool punchedRight, punchedLeft, shielding, isParrying, returningLeft, returningRight, releasedLeft, releasedRight, isDashing, hasChangedFromKnockbackToFallingAnimation = false;
     float parryTimerThreshold = .25f;
     [SerializeField] protected float moveSpeed, moveSpeedSetter = 18f;
-    protected float punchedLeftTimer, punchedRightTimer, currentPercentage, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed, dashBuffer, canAirDodgeTimer, airShieldTimer, waveDashTimer, stunTimerThreshold, stunTimer, dashTimer;
+    protected float punchedLeftTimer, punchedRightTimer, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed, dashBuffer, canAirDodgeTimer, airShieldTimer, waveDashTimer, stunTimerThreshold, stunTimer, dashTimer;
+    public float currentPercentage;
     protected float inputBuffer = .15f;
     [SerializeField] protected Transform leftHandTransform, rightHandTransform, GrabPosition, grabbedPositionTransform;
     [SerializeField] GameObject splatterPrefab, fistIndicator, parryIndicator, initialStunParticle, continuedStunParticle, continuedStunSpawned, leftJabParticle, grabSwirl, swirlInstantiated;
@@ -90,6 +91,7 @@ public class PlayerController : MonoBehaviour
             case State.ParryState:
                 HandleParry();
                 HandleShielding();
+                HandleThrowingHands();
                 break;
             case State.PowerDashing:
                 HandlePowerDashing();
@@ -207,7 +209,7 @@ public class PlayerController : MonoBehaviour
             swirlInstantiated.GetComponent<GrabSwirl>().SetPlayer(this);
             swirlInstantiated.GetComponent<Collider>().enabled = false;
         }
-
+        
         if (grabbing)
         {
             swirlInstantiated.transform.position = GrabPosition.position;
@@ -250,6 +252,7 @@ public class PlayerController : MonoBehaviour
                 if (rightHandTransform.localPosition.x <= 1f)
                 {
                     //rightHandCollider.enabled = false;
+
                 }
                 if (rightHandTransform.localPosition.x <= 0f)
                 {
@@ -289,6 +292,8 @@ public class PlayerController : MonoBehaviour
             if (leftHandTransform.localPosition.x <= 0f)
             {
                 returningLeft = false;
+
+                animatorUpdated.SetBool("Grabbing", false);
             }
         }
 
@@ -327,6 +332,8 @@ public class PlayerController : MonoBehaviour
             if (rightHandTransform.localPosition.x <= 0f)
             {
                 returningRight = false;
+
+                animatorUpdated.SetBool("Grabbing", false);
             }
         }
         if (grabbing) return;
@@ -533,6 +540,12 @@ public class PlayerController : MonoBehaviour
     }
     public void Parry()
     {
+        punchedRight = false;
+        punchedLeft = false;
+        returningRight = false;
+        returningLeft = false;
+        leftHandTransform.localPosition = Vector3.zero;
+        rightHandTransform.localPosition = Vector3.zero;
         GameObject parryParticle = Instantiate(parryIndicator, transform.position, Quaternion.identity);
         if (state == State.ParryState) return;
         rb.velocity = Vector3.zero;
@@ -569,6 +582,23 @@ public class PlayerController : MonoBehaviour
             arrow.SetActive(false);
             state = State.Normal;
         }
+        
+        if (punchedLeft || punchedRight && inputMovement.magnitude > .8f)
+        {
+            Time.timeScale = 1;
+            shielding = false;
+            arrow.SetActive(false);
+            PowerDash(inputMovement, 80f);
+            return;
+        }
+        if (punchedLeft || punchedRight)
+        {
+
+            Time.timeScale = 1;
+            arrow.SetActive(false);
+            state = State.Normal;
+            return;
+        }
         if (inputMovement.magnitude > .8f && releasedShield)
         {
 
@@ -586,14 +616,7 @@ public class PlayerController : MonoBehaviour
             state = State.Normal;
         }
 
-        if (punchedLeft || punchedRight)
-        {
-            Time.timeScale = 1;
-            shielding = false;
-            arrow.SetActive(false);
-            PowerDash(inputMovement, 80f);
-            return;
-        }
+        
     }
 
     protected void PowerDash(Vector3 powerDashDirection, float sentSpeed)
@@ -655,6 +678,7 @@ public class PlayerController : MonoBehaviour
 
     protected void WaveDash(Vector3 powerDashDirection, float sentSpeed)
     {
+        transform.right = lastMoveDir;
         shielding = false;
         canShieldAgainTimer = 0f;
         powerDashSpeed = sentSpeed;
@@ -663,6 +687,7 @@ public class PlayerController : MonoBehaviour
     }
     protected void HandleWaveDashing()
     {
+        transform.right = lastMoveDir;
         Time.timeScale = 1;
         float powerDashSpeedMulti = 4f;
         powerDashSpeed -= powerDashSpeed * powerDashSpeedMulti * Time.deltaTime;
@@ -770,8 +795,10 @@ public class PlayerController : MonoBehaviour
 
     public void Grab(PlayerController opponent, Transform grabbedTransform)
     {
+        if (state == State.Grabbed) return;
         opponent.Grabbed(this, grabbedTransform);
         this.opponent = opponent;
+        
     }
 
     protected void Grabbed(PlayerController playerGrabbing, Transform grabbedTransform)
@@ -785,9 +812,15 @@ public class PlayerController : MonoBehaviour
     }
     protected void HandleGrabbed()
     {
+        
         shielding = false;
         rb.velocity = Vector3.zero;
-        this.transform.position = grabbedPositionTransform.position;
+        if (grabbedPositionTransform != null)
+            this.transform.position = grabbedPositionTransform.position;
+        else
+        {
+            state = State.Normal;
+        }
     }
     protected void HandleGrabbing()
     {
@@ -1019,7 +1052,7 @@ public class PlayerController : MonoBehaviour
 
         if (returningLeft || punchedLeft) return;
         if (state == State.WaveDahsing && rb.velocity.magnitude > 10f) return;
-        if (shielding) return;
+        
         if (state == State.Knockback) return;
         if (state == State.Stunned) return;
         if (grabbing) return;
@@ -1032,8 +1065,8 @@ public class PlayerController : MonoBehaviour
                 Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
                 transform.right = lookTowards;
             }
-            
 
+            if (shielding) shielding = false;
             punchedLeft = true;
             punchedLeftTimer = 0;
         }
@@ -1052,7 +1085,7 @@ public class PlayerController : MonoBehaviour
 
         if (returningRight || punchedRight) return;
         if (state == State.WaveDahsing && rb.velocity.magnitude > 10f) return;
-        if (shielding) return;
+        
         if (state == State.Knockback) return;
         if (state == State.Stunned) return;
         if (grabbing) return;
@@ -1064,7 +1097,7 @@ public class PlayerController : MonoBehaviour
                 Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
                 transform.right = lookTowards;
             }
-            
+            if (shielding) shielding = false;
             punchedRight = true;
             punchedRightTimer = 0;
         }
@@ -1094,6 +1127,7 @@ public class PlayerController : MonoBehaviour
         }
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
+        if (state == State.WaveDahsing) return;
         if (grabbing) return;
         if (state == State.Grabbed) return;
         if (pressedShield)
@@ -1176,14 +1210,11 @@ public class PlayerController : MonoBehaviour
         if (state == State.Stunned) return;
         if (state == State.Dashing) return;
         if (state == State.Grabbed) return;
+        if (state == State.Knockback) return;
         if (grabbing) return;
         if (waveDashTimer > 0)
         {
-            if (lookDirection.magnitude != 0)
-            {
-                Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
-                transform.right = lookTowards;
-            }
+
             waveDashBool = true;
             waveDashTimer = 0f;
         }
