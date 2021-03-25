@@ -270,20 +270,7 @@ public class ClawPlayer : PlayerController
 
 
 
-    protected override void FaceLookDirection()
-    {
-        if (punchedLeft || punchedRight || returningLeft || rightHandTransform.localPosition.x > 2f && returningRight) if (state != State.Grabbing) return;
-        if (state == State.WaveDahsing) return;
-        if (state == State.Dashing) return;
-
-        Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
-        if (lookTowards.x != 0 || lookTowards.y != 0)
-        {
-            lastLookedPosition = lookTowards;
-        }
-
-        Look();
-    }
+    
 
     protected override void CheckForPunchLeft()
     {

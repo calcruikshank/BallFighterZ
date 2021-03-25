@@ -11,7 +11,6 @@ public class PercentTextBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        Debug.Log(textObject);
     }
 
     // Update is called once per frame

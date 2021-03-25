@@ -266,9 +266,9 @@ public class SwordPlayer : PlayerController
         if (state == State.Dashing) return;
 
         Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
-        if (lookTowards.x != 0 || lookTowards.y != 0)
+        if (movement.magnitude != 0)
         {
-            lastLookedPosition = lookTowards;
+            lastLookedPosition = movement;
         }
 
         Look();

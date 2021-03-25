@@ -7,9 +7,9 @@
             "actions": [
                 {
                     "name": "Move",
-                    "type": "Button",
+                    "type": "Value",
                     "id": "42c9f083-cb60-4f82-b927-b3c72fc404e8",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "Stick",
                     "processors": "StickDeadzone(min=0.3)",
                     "interactions": ""
                 },
@@ -100,22 +100,6 @@
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
-                },
-                {
-                    "name": "RightClickToMove",
-                    "type": "Button",
-                    "id": "3aed35ae-31c3-4393-9f83-cd4aa22ea295",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": ""
-                },
-                {
-                    "name": "ReleasedRightClickToMove",
-                    "type": "Button",
-                    "id": "a5b4c962-7ea8-4374-af35-0095a50a0c5f",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "Press(behavior=1)"
                 }
             ],
             "bindings": [
@@ -131,6 +115,61 @@
                     "isPartOfComposite": false
                 },
                 {
+                    "name": "2D Vector",
+                    "id": "f3791957-b38e-4668-90a7-ce35de31837a",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "a32b0954-60a5-4035-8bb6-ed00db91a92c",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard and Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "139f58ef-008a-412f-9a95-026c56f62fa8",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard and Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "80a0dcaa-3351-48ca-8509-dda147f846d4",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard and Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "8c4b6b1d-7b42-4b41-8a4a-26c174cdea4d",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard and Mouse",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "",
                     "id": "7f5bc6e4-f57e-4a84-9c1d-d031bb171574",
                     "path": "<Gamepad>/leftTrigger",
@@ -144,7 +183,7 @@
                 {
                     "name": "",
                     "id": "8a1dec89-a776-45ef-899c-35c91e820afb",
-                    "path": "<Keyboard>/q",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -165,8 +204,8 @@
                 },
                 {
                     "name": "",
-                    "id": "ab79cf78-5100-4ad3-947c-5d047bdb23c1",
-                    "path": "<Keyboard>/w",
+                    "id": "6e639ad2-2436-4944-9f48-b4b5f3aa5492",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -188,7 +227,7 @@
                 {
                     "name": "",
                     "id": "2053ac15-5ed4-41dc-885a-e43cc99bc7bc",
-                    "path": "<Keyboard>/w",
+                    "path": "<Mouse>/rightButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -210,7 +249,7 @@
                 {
                     "name": "",
                     "id": "5482eb10-d9a8-45e2-821c-1ac8d30ee1ee",
-                    "path": "<Keyboard>/q",
+                    "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -232,7 +271,7 @@
                 {
                     "name": "",
                     "id": "812887fa-dac2-40c4-a4b2-87564034e8f9",
-                    "path": "<Keyboard>/shift",
+                    "path": "<Keyboard>/ctrl",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -254,7 +293,7 @@
                 {
                     "name": "",
                     "id": "e9a6316c-2c5b-43a5-8f98-a8dbfa3be348",
-                    "path": "<Keyboard>/shift",
+                    "path": "<Keyboard>/ctrl",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -276,7 +315,7 @@
                 {
                     "name": "",
                     "id": "257fddfc-aa9c-4ac9-b91f-a8e877e22456",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -298,7 +337,7 @@
                 {
                     "name": "",
                     "id": "d1447dfa-1843-4f52-9110-d835d54efd90",
-                    "path": "<Keyboard>/e",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "Keyboard and Mouse",
@@ -358,28 +397,6 @@
                     "processors": "",
                     "groups": "Keyboard and Mouse",
                     "action": "MouseMove",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "6ef8727a-fa56-4b22-9615-867cdbfdec27",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "Press",
-                    "processors": "",
-                    "groups": "Keyboard and Mouse",
-                    "action": "RightClickToMove",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "de24e7ff-8399-4dc1-b494-8a459eaf4da5",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard and Mouse",
-                    "action": "ReleasedRightClickToMove",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
