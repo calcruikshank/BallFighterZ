@@ -17,7 +17,14 @@ public class PercentTextBehaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        textObject.text = player.currentPercentage.ToString() + "%";
+        if (player != null)
+        {
+            textObject.text = player.currentPercentage.ToString() + "%";
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
     }
 
     public void SetPlayer(PlayerController playerSent)

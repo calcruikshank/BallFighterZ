@@ -370,6 +370,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_FloatingIsland_01 (4)
       objectReference: {fileID: 0}
+    - target: {fileID: 1301643505922104, guid: 961be46ca9a355943ae3f65c47741bb0, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4625923886776944, guid: 961be46ca9a355943ae3f65c47741bb0, type: 3}
       propertyPath: m_RootOrder
       value: 30
@@ -592,6 +596,28 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 4353676151864232, guid: 8f6e03115ed50b943980d68d9115f1bd, type: 3}
   m_PrefabInstance: {fileID: 28551460}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &29276690 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2839605876333655865, guid: d7cb192ee68504b46842b219b8f9a52b, type: 3}
+  m_PrefabInstance: {fileID: 2839605874917975693}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &29276691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 29276690}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6eb0d188276e44f419e599671950225c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!224 &29276694 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 2839605876333655861, guid: d7cb192ee68504b46842b219b8f9a52b, type: 3}
+  m_PrefabInstance: {fileID: 2839605874917975693}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &32274186
 PrefabInstance:
@@ -1299,6 +1325,103 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 50f022ff3a300294c826b700ebb3cc14, type: 3}
+--- !u!1001 &95109013
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 29276694}
+    m_Modifications:
+    - target: {fileID: 1144232590214771546, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_Name
+      value: PercentageParent
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 2297.9526
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -554
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1144232590214771547, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1e675ecaf07c3d544bc180fdbe554ccb, type: 3}
 --- !u!1001 &95786271
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1723,6 +1846,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_FloatingIsland_01 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1301643505922104, guid: 961be46ca9a355943ae3f65c47741bb0, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4625923886776944, guid: 961be46ca9a355943ae3f65c47741bb0, type: 3}
       propertyPath: m_RootOrder
       value: 27
@@ -1784,6 +1911,10 @@ PrefabInstance:
     - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_01 (9)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4636230886128812, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_RootOrder
@@ -2035,6 +2166,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_01 (11)
       objectReference: {fileID: 0}
+    - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4636230886128812, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_RootOrder
       value: 48
@@ -2180,6 +2315,10 @@ PrefabInstance:
     - target: {fileID: 1088804710527254, guid: 514c3bd6f7b6f954d8c1f24afb12feba, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Waterfall_01 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1088804710527254, guid: 514c3bd6f7b6f954d8c1f24afb12feba, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4180921355209922, guid: 514c3bd6f7b6f954d8c1f24afb12feba, type: 3}
       propertyPath: m_RootOrder
@@ -3290,6 +3429,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_01 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4636230886128812, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_RootOrder
       value: 8
@@ -3550,6 +3693,10 @@ PrefabInstance:
     - target: {fileID: 1516201072267530, guid: 7a2f99b3629a166488103a3c0255f58f, type: 3}
       propertyPath: m_Name
       value: SM_Bld_Knights_House_03
+      objectReference: {fileID: 0}
+    - target: {fileID: 1516201072267530, guid: 7a2f99b3629a166488103a3c0255f58f, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4626781085969470, guid: 7a2f99b3629a166488103a3c0255f58f, type: 3}
       propertyPath: m_RootOrder
@@ -3879,6 +4026,10 @@ PrefabInstance:
     - target: {fileID: 1184837926097420, guid: bd7fac02ca5e2ee4bb97f5597cbe17c9, type: 3}
       propertyPath: m_Name
       value: SM_Bld_Pirate_Shack_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 1184837926097420, guid: bd7fac02ca5e2ee4bb97f5597cbe17c9, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4771111859357390, guid: bd7fac02ca5e2ee4bb97f5597cbe17c9, type: 3}
       propertyPath: m_RootOrder
@@ -4240,6 +4391,10 @@ PrefabInstance:
     - target: {fileID: 1938320070870796, guid: f1088db0495431242b86219112ff9771, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Path_11 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1938320070870796, guid: f1088db0495431242b86219112ff9771, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4275974828074252, guid: f1088db0495431242b86219112ff9771, type: 3}
       propertyPath: m_RootOrder
@@ -4845,6 +5000,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_01 (8)
       objectReference: {fileID: 0}
+    - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4636230886128812, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_RootOrder
       value: 34
@@ -4956,6 +5115,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Bld_Knights_House_01
       objectReference: {fileID: 0}
+    - target: {fileID: 1648905886851508, guid: a4a521900c27d504aa19df480329f342, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4306050776583038, guid: a4a521900c27d504aa19df480329f342, type: 3}
       propertyPath: m_RootOrder
       value: 40
@@ -5012,6 +5175,10 @@ PrefabInstance:
     - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4636230886128812, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_RootOrder
@@ -5252,6 +5419,10 @@ PrefabInstance:
     - target: {fileID: 1301643505922104, guid: 961be46ca9a355943ae3f65c47741bb0, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_FloatingIsland_01 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1301643505922104, guid: 961be46ca9a355943ae3f65c47741bb0, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4625923886776944, guid: 961be46ca9a355943ae3f65c47741bb0, type: 3}
       propertyPath: m_RootOrder
@@ -5555,6 +5726,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_Water_02 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1464038009950966, guid: 0dbd42f4d781d794a840c663af79f585, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4252068922481608, guid: 0dbd42f4d781d794a840c663af79f585, type: 3}
       propertyPath: m_RootOrder
       value: 17
@@ -5646,6 +5821,10 @@ PrefabInstance:
     - target: {fileID: 1426630170831536, guid: e081053b0dcd25c40a418acf787e702e, type: 3}
       propertyPath: m_Name
       value: SM_Bld_Pirates_Fountain_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1426630170831536, guid: e081053b0dcd25c40a418acf787e702e, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4423968912370188, guid: e081053b0dcd25c40a418acf787e702e, type: 3}
       propertyPath: m_RootOrder
@@ -6426,6 +6605,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Mountain_04
       objectReference: {fileID: 0}
+    - target: {fileID: 1985761042126440, guid: 598f4f2319fd9be4e8da6db3581fe5e1, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4572039602945986, guid: 598f4f2319fd9be4e8da6db3581fe5e1, type: 3}
       propertyPath: m_RootOrder
       value: 6
@@ -6487,6 +6670,10 @@ PrefabInstance:
     - target: {fileID: 1167479713912840, guid: 83a32d464820f564fa2a222324181d2e, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Mountain_05
+      objectReference: {fileID: 0}
+    - target: {fileID: 1167479713912840, guid: 83a32d464820f564fa2a222324181d2e, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4541368989960596, guid: 83a32d464820f564fa2a222324181d2e, type: 3}
       propertyPath: m_RootOrder
@@ -7811,6 +7998,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_FloatingIsland_01
       objectReference: {fileID: 0}
+    - target: {fileID: 1301643505922104, guid: 961be46ca9a355943ae3f65c47741bb0, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4625923886776944, guid: 961be46ca9a355943ae3f65c47741bb0, type: 3}
       propertyPath: m_RootOrder
       value: 25
@@ -7976,6 +8167,10 @@ PrefabInstance:
     - target: {fileID: 1148459574166582, guid: ad5a449b66f5e9c4d98d9af8d4924b50, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Path_12 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1148459574166582, guid: ad5a449b66f5e9c4d98d9af8d4924b50, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4804215682146534, guid: ad5a449b66f5e9c4d98d9af8d4924b50, type: 3}
       propertyPath: m_RootOrder
@@ -8174,6 +8369,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Bld_Western_Church_01
       objectReference: {fileID: 0}
+    - target: {fileID: 1278665023481602, guid: ae4a79d982f6ed7469414c0a2b0a0b90, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4875826996308452, guid: ae4a79d982f6ed7469414c0a2b0a0b90, type: 3}
       propertyPath: m_RootOrder
       value: 45
@@ -8295,6 +8494,10 @@ PrefabInstance:
     - target: {fileID: 1803341260834666, guid: 60e3f855f21e1da4b8f428299401e583, type: 3}
       propertyPath: m_Name
       value: SM_Bld_Adventure_House_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 1803341260834666, guid: 60e3f855f21e1da4b8f428299401e583, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4988163348894976, guid: 60e3f855f21e1da4b8f428299401e583, type: 3}
       propertyPath: m_RootOrder
@@ -9105,6 +9308,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_Water_02 (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1464038009950966, guid: 0dbd42f4d781d794a840c663af79f585, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4252068922481608, guid: 0dbd42f4d781d794a840c663af79f585, type: 3}
       propertyPath: m_RootOrder
       value: 18
@@ -9240,6 +9447,10 @@ PrefabInstance:
     - target: {fileID: 1404372137888710, guid: d4d5656c912748c458f84393e040e6c7, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Path_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 1404372137888710, guid: d4d5656c912748c458f84393e040e6c7, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4495758313882916, guid: d4d5656c912748c458f84393e040e6c7, type: 3}
       propertyPath: m_RootOrder
@@ -9745,6 +9956,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_01 (6)
       objectReference: {fileID: 0}
+    - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4636230886128812, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_RootOrder
       value: 22
@@ -10012,6 +10227,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_01 (7)
       objectReference: {fileID: 0}
+    - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4636230886128812, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_RootOrder
       value: 33
@@ -10139,6 +10358,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_FloatingIsland_01 (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1301643505922104, guid: 961be46ca9a355943ae3f65c47741bb0, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4625923886776944, guid: 961be46ca9a355943ae3f65c47741bb0, type: 3}
       propertyPath: m_RootOrder
       value: 28
@@ -10212,6 +10435,10 @@ PrefabInstance:
     - target: {fileID: 1687122962735436, guid: d933434f8a4097742a6b9d9534bb9ac3, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Path_07
+      objectReference: {fileID: 0}
+    - target: {fileID: 1687122962735436, guid: d933434f8a4097742a6b9d9534bb9ac3, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4183487538546140, guid: d933434f8a4097742a6b9d9534bb9ac3, type: 3}
       propertyPath: m_RootOrder
@@ -10502,6 +10729,10 @@ PrefabInstance:
     - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_01 (10)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4636230886128812, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_RootOrder
@@ -11183,6 +11414,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Path_10
       objectReference: {fileID: 0}
+    - target: {fileID: 1840805357220352, guid: 1f9f81b71e8ab214b9ab2716eb4c4405, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4364605783430938, guid: 1f9f81b71e8ab214b9ab2716eb4c4405, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -11244,6 +11479,10 @@ PrefabInstance:
     - target: {fileID: 1464038009950966, guid: 0dbd42f4d781d794a840c663af79f585, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_Water_02 (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1464038009950966, guid: 0dbd42f4d781d794a840c663af79f585, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4252068922481608, guid: 0dbd42f4d781d794a840c663af79f585, type: 3}
       propertyPath: m_RootOrder
@@ -12066,6 +12305,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Island_03
       objectReference: {fileID: 0}
+    - target: {fileID: 1028929502668492, guid: e499751c4b88a6847844b1030ad4bca2, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4866538990924238, guid: e499751c4b88a6847844b1030ad4bca2, type: 3}
       propertyPath: m_RootOrder
       value: 14
@@ -12126,7 +12369,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1000149105}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -12656,6 +12899,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Hill_06
       objectReference: {fileID: 0}
+    - target: {fileID: 1692720047246238, guid: dd5f98d633203b7498fbfe113dbc92a4, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4161453421640716, guid: dd5f98d633203b7498fbfe113dbc92a4, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -12753,6 +13000,10 @@ PrefabInstance:
     - target: {fileID: 1464038009950966, guid: 0dbd42f4d781d794a840c663af79f585, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_Water_02 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1464038009950966, guid: 0dbd42f4d781d794a840c663af79f585, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4252068922481608, guid: 0dbd42f4d781d794a840c663af79f585, type: 3}
       propertyPath: m_RootOrder
@@ -13641,6 +13892,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Path_02 (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1404372137888710, guid: d4d5656c912748c458f84393e040e6c7, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4495758313882916, guid: d4d5656c912748c458f84393e040e6c7, type: 3}
       propertyPath: m_RootOrder
       value: 46
@@ -13847,6 +14102,10 @@ PrefabInstance:
     - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_01 (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4636230886128812, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_RootOrder
@@ -14091,6 +14350,10 @@ PrefabInstance:
     - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_01 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4636230886128812, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_RootOrder
@@ -14720,6 +14983,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Hill_07
       objectReference: {fileID: 0}
+    - target: {fileID: 1230706721778328, guid: 99b88b06d385f53459792b5a9519d7c2, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4742111476988262, guid: 99b88b06d385f53459792b5a9519d7c2, type: 3}
       propertyPath: m_RootOrder
       value: 51
@@ -14908,6 +15175,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Bld_Pirate_Tower_01
       objectReference: {fileID: 0}
+    - target: {fileID: 1029274313775960, guid: 689b05ce20f254745b2a533f04dc395d, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4818055542019526, guid: 689b05ce20f254745b2a533f04dc395d, type: 3}
       propertyPath: m_RootOrder
       value: 42
@@ -15018,7 +15289,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1351439901}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -15115,6 +15386,10 @@ PrefabInstance:
     - target: {fileID: 1688477958502864, guid: 60c48c7fa7d5ca042b69471ced14c62e, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Island_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 1688477958502864, guid: 60c48c7fa7d5ca042b69471ced14c62e, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4851138950439020, guid: 60c48c7fa7d5ca042b69471ced14c62e, type: 3}
       propertyPath: m_RootOrder
@@ -15692,6 +15967,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_01 (12)
       objectReference: {fileID: 0}
+    - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4636230886128812, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_RootOrder
       value: 52
@@ -15940,6 +16219,10 @@ PrefabInstance:
     - target: {fileID: 1946602658386064, guid: 4239b1c9e0437544696842b2bd71d9fa, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Path_01 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1946602658386064, guid: 4239b1c9e0437544696842b2bd71d9fa, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4943134777007180, guid: 4239b1c9e0437544696842b2bd71d9fa, type: 3}
       propertyPath: m_RootOrder
@@ -16422,6 +16705,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_01 (5)
       objectReference: {fileID: 0}
+    - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4636230886128812, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_RootOrder
       value: 21
@@ -16893,6 +17180,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Bld_Knights_House_04
       objectReference: {fileID: 0}
+    - target: {fileID: 1138548850690264, guid: e3c4c403564da1e46953ebc26617410e, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4077543050073752, guid: e3c4c403564da1e46953ebc26617410e, type: 3}
       propertyPath: m_RootOrder
       value: 49
@@ -16949,6 +17240,10 @@ PrefabInstance:
     - target: {fileID: 1464038009950966, guid: 0dbd42f4d781d794a840c663af79f585, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_Water_02
+      objectReference: {fileID: 0}
+    - target: {fileID: 1464038009950966, guid: 0dbd42f4d781d794a840c663af79f585, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4252068922481608, guid: 0dbd42f4d781d794a840c663af79f585, type: 3}
       propertyPath: m_RootOrder
@@ -17230,6 +17525,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Path_05
       objectReference: {fileID: 0}
+    - target: {fileID: 1826067648003418, guid: 6d220353ea6c2ba4b94356af5be7ce17, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4388094218389856, guid: 6d220353ea6c2ba4b94356af5be7ce17, type: 3}
       propertyPath: m_RootOrder
       value: 37
@@ -17286,7 +17585,11 @@ PrefabInstance:
     - target: {fileID: 2181407865463043840, guid: c564f4f4fcf4724408830c5f95e858e7, type: 3}
       propertyPath: m_PlayerPrefab
       value: 
-      objectReference: {fileID: 5136723789652709543, guid: 06bb2c0cad127ca4db800367218cc27b, type: 3}
+      objectReference: {fileID: 5136723789652709543, guid: b301cbc5d2e56ec448cb8ec39feef5fb, type: 3}
+    - target: {fileID: 2181407865463043840, guid: c564f4f4fcf4724408830c5f95e858e7, type: 3}
+      propertyPath: m_NotificationBehavior
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 2181407865463043841, guid: c564f4f4fcf4724408830c5f95e858e7, type: 3}
       propertyPath: m_Name
       value: PlayerManager
@@ -17519,6 +17822,10 @@ PrefabInstance:
     - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_01 (3)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4636230886128812, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_RootOrder
@@ -17836,7 +18143,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1637996569}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -18686,7 +18993,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1700858325}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -19242,6 +19549,10 @@ PrefabInstance:
     - target: {fileID: 1148459574166582, guid: ad5a449b66f5e9c4d98d9af8d4924b50, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Path_12
+      objectReference: {fileID: 0}
+    - target: {fileID: 1148459574166582, guid: ad5a449b66f5e9c4d98d9af8d4924b50, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4804215682146534, guid: ad5a449b66f5e9c4d98d9af8d4924b50, type: 3}
       propertyPath: m_RootOrder
@@ -19809,6 +20120,10 @@ PrefabInstance:
     - target: {fileID: 1782022851221620, guid: fd93c12f2175ba8478031f3fa3ec9ba0, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Hill_08
+      objectReference: {fileID: 0}
+    - target: {fileID: 1782022851221620, guid: fd93c12f2175ba8478031f3fa3ec9ba0, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4698663667342322, guid: fd93c12f2175ba8478031f3fa3ec9ba0, type: 3}
       propertyPath: m_RootOrder
@@ -21085,6 +21400,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Path_01
       objectReference: {fileID: 0}
+    - target: {fileID: 1946602658386064, guid: 4239b1c9e0437544696842b2bd71d9fa, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4943134777007180, guid: 4239b1c9e0437544696842b2bd71d9fa, type: 3}
       propertyPath: m_RootOrder
       value: 1
@@ -21520,6 +21839,10 @@ PrefabInstance:
     - target: {fileID: 1148459574166582, guid: ad5a449b66f5e9c4d98d9af8d4924b50, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Path_12 (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1148459574166582, guid: ad5a449b66f5e9c4d98d9af8d4924b50, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4804215682146534, guid: ad5a449b66f5e9c4d98d9af8d4924b50, type: 3}
       propertyPath: m_RootOrder
@@ -22009,6 +22332,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Flat_01 (13)
       objectReference: {fileID: 0}
+    - target: {fileID: 1833719475002058, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4636230886128812, guid: f610f1f30b970024b86dcc1a05308bc8, type: 3}
       propertyPath: m_RootOrder
       value: 53
@@ -22069,6 +22396,10 @@ PrefabInstance:
     - target: {fileID: 1808251523882976, guid: 392d9c3ba9054794aa30d0d0adfd5c65, type: 3}
       propertyPath: m_Name
       value: SM_Tile_Hex_Hill_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 1808251523882976, guid: 392d9c3ba9054794aa30d0d0adfd5c65, type: 3}
+      propertyPath: m_Layer
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4856919461665804, guid: 392d9c3ba9054794aa30d0d0adfd5c65, type: 3}
       propertyPath: m_RootOrder
@@ -23086,6 +23417,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Tile_Hex_Path_11
       objectReference: {fileID: 0}
+    - target: {fileID: 1938320070870796, guid: f1088db0495431242b86219112ff9771, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4275974828074252, guid: f1088db0495431242b86219112ff9771, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -23482,6 +23817,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: SM_Bld_Viking_House_03
       objectReference: {fileID: 0}
+    - target: {fileID: 1625126325289970, guid: e2b1fc16959e3334992191c680ff42bf, type: 3}
+      propertyPath: m_Layer
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 4665312497902920, guid: e2b1fc16959e3334992191c680ff42bf, type: 3}
       propertyPath: m_RootOrder
       value: 50
@@ -23657,5 +23996,13 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 963194227}
+    - target: {fileID: 2839605876333655867, guid: d7cb192ee68504b46842b219b8f9a52b, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2839605876333655867, guid: d7cb192ee68504b46842b219b8f9a52b, type: 3}
+      propertyPath: m_ScreenMatchMode
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d7cb192ee68504b46842b219b8f9a52b, type: 3}

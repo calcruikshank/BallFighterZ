@@ -16,28 +16,15 @@ public class PercentageParent : MonoBehaviour
     void Start()
     {
         playerInputManager = FindObjectOfType<PlayerInputManager>();
-        players = FindObjectsOfType<PlayerInput>();
-        foreach (PlayerInput playerInput in players)
-        {
-            PlayerController player = playerInput.GetComponent<PlayerController>();
-            if (player != null && !playerList.Contains(player))
-            {
-                playerList.Add(player);
-                AddPercentageText(player);
-            }
-
-
-        }
+        
     }
 
     // Update is called once per frame
     void Update()
     {
         
-
-        
+        playerInputManager.onPlayerJoined += AddText;
     }
-
 
 
     void AddPercentageText(PlayerController player)
@@ -52,5 +39,16 @@ public class PercentageParent : MonoBehaviour
         Destroy(percentText);
     }
 
-    
+    void AddText(PlayerInput playerInputSent)
+    {
+        if (!playerList.Contains(playerInputSent.gameObject.GetComponent<PlayerController>()))
+        {
+            playerList.Add(playerInputSent.gameObject.GetComponent<PlayerController>());
+            percentText = Instantiate(playerPercentText);
+            percentText.transform.SetParent(this.transform);
+            percentText.GetComponent<PercentTextBehaviour>().SetPlayer(playerInputSent.gameObject.GetComponent<PlayerController>());
+        }
+        
+       
+    }
 }

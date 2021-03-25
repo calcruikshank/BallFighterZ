@@ -168,6 +168,7 @@ MonoBehaviour:
   hasChangedFromKnockbackToFallingAnimation: 0
   moveSpeed: 0
   moveSpeedSetter: 18
+  currentPercentage: 0
   leftHandTransform: {fileID: 5136723789718946910}
   rightHandTransform: {fileID: 5136723790373468479}
   GrabPosition: {fileID: 1041960695179328073}
@@ -185,7 +186,7 @@ MonoBehaviour:
   punchSpeed: 40
   layerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   animatorUpdated: {fileID: 4870502366140547507}
   shield: {fileID: 193448067949134718}
   arrow: {fileID: 468113760389139597}

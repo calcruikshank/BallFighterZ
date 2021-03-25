@@ -6,8 +6,8 @@ using UnityEngine.InputSystem;
 public class PlayerController : MonoBehaviour
 {
     protected Rigidbody rb;
-    protected Vector3 inputMovement, movement, lastMoveDir, lastLookedPosition, lookDirection, oppositeForce, powerDashTowards;
-    protected bool pressedRight, pressedLeft, pressedShield, releasedShield, pressedDash, releasedDash, airDodged, releasedAirDodged, pressedWaveDash, releasedWaveDash, waveDashBool, canDash, grabbing = false;
+    protected Vector3 inputMovement, movement, lastMoveDir, lastLookedPosition, lookDirection, oppositeForce, powerDashTowards, targetRightClickPoint;
+    protected bool pressedRight, pressedLeft, pressedShield, releasedShield, pressedDash, releasedDash, airDodged, releasedAirDodged, pressedWaveDash, releasedWaveDash, waveDashBool, canDash, grabbing, pressedRightClick, releasedRightClick = false;
     public bool punchedRight, punchedLeft, shielding, isParrying, returningLeft, returningRight, releasedLeft, releasedRight, isDashing, hasChangedFromKnockbackToFallingAnimation = false;
     float parryTimerThreshold = .25f;
     [SerializeField] protected float moveSpeed, moveSpeedSetter = 18f;
@@ -31,6 +31,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] protected Animator animatorUpdated;
     [SerializeField] Transform shield;
     [SerializeField] GameObject arrow;
+    string currentControlScheme;
+    Vector2 mousePosition;
 
     public State state;
     public enum State
@@ -70,7 +72,7 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        currentControlScheme = this.gameObject.GetComponent<PlayerInput>().currentControlScheme;
     }
 
     protected virtual void Update()
@@ -180,10 +182,21 @@ public class PlayerController : MonoBehaviour
     }
     protected virtual void FixedHandleMovement()
     {
-
-        Vector3 newVelocity = new Vector3(movement.x * moveSpeed, rb.velocity.y, movement.z * moveSpeed);
-        rb.velocity = newVelocity;
-
+        if (currentControlScheme == "Gamepad")
+        {
+            Vector3 newVelocity = new Vector3(movement.x * moveSpeed, rb.velocity.y, movement.z * moveSpeed);
+            rb.velocity = newVelocity;
+        }
+        if (currentControlScheme == "Keyboard and Mouse" && new Vector3(transform.position.x - targetRightClickPoint.x, 0f, transform.position.z - targetRightClickPoint.z).magnitude > 1f)
+        {
+            Vector3 newVelocity = new Vector3(movement.x * moveSpeed, rb.velocity.y, movement.z * moveSpeed);
+            rb.velocity = newVelocity;
+        }
+        if (currentControlScheme == "Keyboard and Mouse" && new Vector3(transform.position.x - targetRightClickPoint.x, 0f, transform.position.z - targetRightClickPoint.z).magnitude <= .3f)
+        {
+            rb.velocity = Vector3.zero;
+            inputMovement = Vector3.zero;
+        }
     }
 
     protected virtual void HandleThrowingHands()
@@ -913,13 +926,25 @@ public class PlayerController : MonoBehaviour
     #region inputRegion
     void OnMove(InputValue value)
     {
-        inputMovement = value.Get<Vector2>();
-        if (this.gameObject.GetComponent<PlayerInput>().currentControlScheme == "Gamepad")
+        if (currentControlScheme == "Gamepad")
         {
+            inputMovement = value.Get<Vector2>();
             lookDirection = value.Get<Vector2>();
         }
     }
 
+    void OnRightClickToMove()
+    {
+        pressedRightClick = true;
+        releasedRightClick = false;
+        
+    }
+
+    void OnReleasedRightClickToMove()
+    {
+        pressedRightClick = false;
+        releasedRightClick = true;
+    }
     private void OnButtonSouth()
     {
     }
@@ -980,11 +1005,11 @@ public class PlayerController : MonoBehaviour
     }
     void OnMouseMove(InputValue value)
     {
-        Vector2 mousePosition;
+        
         mousePosition = value.Get<Vector2>();
         Ray ray = Camera.main.ScreenPointToRay(mousePosition);
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, 1000, layerMask)&& this.gameObject.GetComponent<PlayerInput>().currentControlScheme == "Keyboard and Mouse")
+        if (Physics.Raycast(ray, out hit, 1000, layerMask)&& currentControlScheme == "Keyboard and Mouse")
         {
             lookDirection = new Vector2(hit.point.x - transform.position.x, hit.point.z - transform.position.z);
         }
@@ -1009,19 +1034,19 @@ public class PlayerController : MonoBehaviour
     protected virtual void Look()
     {
         if (state == State.Knockback) return;
-        if (this.gameObject.GetComponent<PlayerInput>().currentControlScheme == "Gamepad")
+        if (currentControlScheme == "Gamepad")
         {
             transform.right = Vector3.MoveTowards(transform.right, lastLookedPosition, 50 * Time.deltaTime);
         }
-        if (state == State.ParryState && this.gameObject.GetComponent<PlayerInput>().currentControlScheme == "Gamepad")
+        if (state == State.ParryState && currentControlScheme == "Gamepad")
         {
             transform.right = lastLookedPosition;
         }
-        if (this.gameObject.GetComponent<PlayerInput>().currentControlScheme == "Keyboard and Mouse")
+        if (currentControlScheme == "Keyboard and Mouse")
         {
-            transform.right = movement;
+            transform.right = Vector3.MoveTowards(transform.right, movement, 50 * Time.deltaTime);
         }
-        if (state == State.ParryState && this.gameObject.GetComponent<PlayerInput>().currentControlScheme == "Keyboard and Mouse")
+        if (state == State.ParryState && currentControlScheme == "Keyboard and Mouse")
         {
             transform.right = new Vector3(inputMovement.x, 0, inputMovement.y);
         }
@@ -1035,7 +1060,10 @@ public class PlayerController : MonoBehaviour
         CheckForDash();
         CheckForAirDodge();
         CheckForWaveDash();
-
+        if (currentControlScheme == "Keyboard and Mouse")
+        {
+            CheckForRightClick();
+        }
     }
 
     protected virtual void CheckForPunchLeft()
@@ -1218,6 +1246,21 @@ public class PlayerController : MonoBehaviour
             waveDashBool = true;
             waveDashTimer = 0f;
         }
+    }
+
+    void CheckForRightClick()
+    {
+        if (pressedRightClick)
+        {
+            inputMovement = lookDirection.normalized;
+            Ray ray = Camera.main.ScreenPointToRay(mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 1000, layerMask) && currentControlScheme == "Keyboard and Mouse")
+            {
+                targetRightClickPoint = hit.point;
+            }
+        }
+        
     }
     #endregion
 }

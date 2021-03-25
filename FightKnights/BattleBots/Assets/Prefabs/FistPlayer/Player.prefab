@@ -358,6 +358,7 @@ MonoBehaviour:
   hasChangedFromKnockbackToFallingAnimation: 0
   moveSpeed: 0
   moveSpeedSetter: 22
+  currentPercentage: 0
   leftHandTransform: {fileID: 5136723789718946910}
   rightHandTransform: {fileID: 5136723790373468479}
   GrabPosition: {fileID: 1041960695179328073}
@@ -370,11 +371,12 @@ MonoBehaviour:
   continuedStunSpawned: {fileID: 0}
   leftJabParticle: {fileID: 3468484189079984217, guid: 69f272aadee1ff843a8b5c115379f46d, type: 3}
   grabSwirl: {fileID: 6377382932511509219, guid: 6e5324308a591a84794d0e8c28d57b49, type: 3}
+  swirlInstantiated: {fileID: 0}
   knockbackSmoke: {fileID: 8226645741302635480, guid: 0da2a680a6d4d034c8cf5a86da3428e5, type: 3}
   punchSpeed: 40
   layerMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   animatorUpdated: {fileID: 2224573763367507885}
   shield: {fileID: 193448067949134718}
   arrow: {fileID: 4312838961592934262}
