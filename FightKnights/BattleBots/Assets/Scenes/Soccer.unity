@@ -1956,7 +1956,7 @@ GameObject:
   - component: {fileID: 287203111}
   - component: {fileID: 287203112}
   m_Layer: 0
-  m_Name: RedGoal
+  m_Name: RedDefendGoal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2002,6 +2002,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  soccerBall: {fileID: 0}
   goalColor: 0
 --- !u!1 &307378411
 GameObject:
@@ -2032,6 +2033,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c28383c183abee4d9a8da53b5c9796b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  soccerCanvas: {fileID: 6159001292605132529, guid: f03765841a31b9a4fb1e293c44a76c08, type: 3}
+  redScore: 0
+  blueScore: 0
 --- !u!4 &307378413
 Transform:
   m_ObjectHideFlags: 0
@@ -2093,6 +2097,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  soccerBall: {fileID: 0}
   goalColor: 0
 --- !u!65 &316418676
 BoxCollider:
@@ -3495,7 +3500,7 @@ GameObject:
   m_Component:
   - component: {fileID: 589007492}
   m_Layer: 0
-  m_Name: RedGoalParent
+  m_Name: RedDefendGoalParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4448,6 +4453,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
+  soccerBall: {fileID: 0}
   goalColor: 0
 --- !u!65 &760999341
 BoxCollider:
@@ -8272,7 +8278,7 @@ GameObject:
   - component: {fileID: 1378054163}
   - component: {fileID: 1378054162}
   m_Layer: 0
-  m_Name: BlueGoal
+  m_Name: BlueDefendGoal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8305,7 +8311,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 0}
-  goalColor: 0
+  soccerBall: {fileID: 0}
+  goalColor: 1
 --- !u!65 &1378054163
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -9456,7 +9463,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1625191711}
   m_Layer: 0
-  m_Name: BlueGoalParent
+  m_Name: BlueDefendGoalParent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
