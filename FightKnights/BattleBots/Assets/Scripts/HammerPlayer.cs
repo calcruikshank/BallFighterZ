@@ -52,7 +52,6 @@ public class HammerPlayer : PlayerController
                 break;
             case State.Dashing:
                 HandleDash();
-                HandleMovement();
                 break;
             case State.Grabbed:
                 HandleGrabbed();

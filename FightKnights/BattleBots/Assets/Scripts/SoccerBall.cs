@@ -35,7 +35,7 @@ public class SoccerBall : PlayerController
         // Debug.Log(damage + " damage");
         //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
         //direction = direction.normalized;
-        float knockbackValue = (20 * ((60 + damage) * (damage / 2)) / 150) + 14; //knockback that scales
+        float knockbackValue = (20 * ((50 + damage) * (damage / 2)) / 150) + 14; //knockback that scales
         rb.velocity = new Vector3(direction.x * knockbackValue, 10f, direction.z * knockbackValue);
 
         HitImpact(direction);

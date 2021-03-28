@@ -100,6 +100,38 @@
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "AltPunchLeft",
+                    "type": "Button",
+                    "id": "7c0e0bf7-b3c7-47fb-9635-f734eff44d27",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "AltPunchRight",
+                    "type": "Button",
+                    "id": "26cad951-f5dc-4f46-b378-02ab6f8a8d42",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
+                },
+                {
+                    "name": "AltReleaseRight",
+                    "type": "Button",
+                    "id": "0a5339cc-2ca1-42d9-a2f3-408393bbfe4c",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
+                },
+                {
+                    "name": "AltReleaseLeft",
+                    "type": "Button",
+                    "id": "0a1b27c0-ef90-4e13-8917-c87bbd2d2328",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press(behavior=1)"
                 }
             ],
             "bindings": [
@@ -397,6 +429,50 @@
                     "processors": "",
                     "groups": "Keyboard and Mouse",
                     "action": "MouseMove",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "084532a9-b4c4-4e1c-8a14-31aae2641d8e",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "AltPunchLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "23265ac5-e013-4ed5-98dc-7b807029932a",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "AltPunchRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "396e7724-5673-4231-8057-c2512d6d6a03",
+                    "path": "<Gamepad>/buttonEast",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "AltReleaseRight",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "023b1def-59da-4ff6-a824-ed6a4c73ef3b",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "AltReleaseLeft",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

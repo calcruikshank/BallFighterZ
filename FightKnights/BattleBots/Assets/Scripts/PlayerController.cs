@@ -958,6 +958,26 @@ public class PlayerController : MonoBehaviour
         pressedLeft = false;
         releasedLeft = true;
     }
+    void OnAltPunchRight()
+    {
+        pressedRight = true;
+        releasedRight = false;
+    }
+    void OnAltPunchLeft()
+    {
+        pressedLeft = true;
+        releasedLeft = false;
+    }
+    void OnAltReleaseRight()
+    {
+        pressedRight = false;
+        releasedRight = true;
+    }
+    void OnAltReleaseLeft()
+    {
+        pressedLeft = false;
+        releasedLeft = true;
+    }
     void OnShield()
     {
         pressedShield = true;
@@ -1026,7 +1046,7 @@ public class PlayerController : MonoBehaviour
         if (state == State.Knockback) return;
         if (currentControlScheme == "Gamepad")
         {
-            transform.right = Vector3.MoveTowards(transform.right, lastLookedPosition, 50 * Time.deltaTime);
+            transform.right = lastLookedPosition;
         }
         if (state == State.ParryState && currentControlScheme == "Gamepad")
         {
