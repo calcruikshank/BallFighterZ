@@ -18,13 +18,13 @@ public class Goal : MonoBehaviour
         soccerBall = other.transform.parent.GetComponent<SoccerBall>();
         if (soccerBall != null)
         {
-            if (goalColor == 0 && soccerGameManager != null)
+            if (goalColor == 0 && soccerGameManager != null && soccerBall.canBeScored)
             {
                 soccerGameManager.AddScoreToBlue();
 
                
             }
-            if (goalColor == 1 && soccerGameManager != null)
+            if (goalColor == 1 && soccerGameManager != null && soccerBall.canBeScored)
             {
                 soccerGameManager.AddScoreToRed();
 

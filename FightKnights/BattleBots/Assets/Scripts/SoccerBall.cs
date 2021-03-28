@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class SoccerBall : PlayerController
 {
+    public bool canBeScored = true;
     // Start is called before the first frame update
     void Start()
     {
-        
+        canBeScored = true;
     }
     protected override void Update()
     {
@@ -35,7 +36,7 @@ public class SoccerBall : PlayerController
         //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
         //direction = direction.normalized;
         float knockbackValue = (20 * ((60 + damage) * (damage / 2)) / 150) + 14; //knockback that scales
-        rb.velocity = new Vector3(direction.x * knockbackValue, 0f, direction.z * knockbackValue);
+        rb.velocity = new Vector3(direction.x * knockbackValue, 10f, direction.z * knockbackValue);
 
         HitImpact(direction);
         state = State.Knockback;
@@ -47,8 +48,17 @@ public class SoccerBall : PlayerController
 
     protected override void Respawn()
     {
+        canBeScored = false;
+        StartCoroutine(RespawnWait(1f));
+        
+    }
+    private IEnumerator RespawnWait(float waitTime)
+    {
+        yield return new WaitForSecondsRealtime(waitTime);
+        rb.velocity = Vector3.zero;
         state = State.Normal;
         transform.position = Vector3.zero;
         currentPercentage = 0f;
+        canBeScored = true;
     }
 }
