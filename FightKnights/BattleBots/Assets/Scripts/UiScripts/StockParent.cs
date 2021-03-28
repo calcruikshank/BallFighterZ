@@ -2,10 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using TMPro;
-using UnityEngine.UI;
 
-public class PercentageParent : MonoBehaviour
+public class StockParent : MonoBehaviour
 {
     PlayerInputManager playerInputManager;
     public PlayerInput[] players;
@@ -16,13 +14,13 @@ public class PercentageParent : MonoBehaviour
     void Start()
     {
         playerInputManager = FindObjectOfType<PlayerInputManager>();
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
         //playerInputManager.onPlayerJoined += AddText;
     }
 
@@ -31,25 +29,7 @@ public class PercentageParent : MonoBehaviour
     {
         percentText = Instantiate(playerPercentText);
         percentText.transform.parent = this.transform;
-        percentText.GetComponent<PercentTextBehaviour>().SetPlayer(player);
-        
-    }
+        percentText.GetComponent<StockTextBehaviour>().SetPlayer(player);
 
-    public void RemovePercentageText()
-    {
-        Destroy(percentText);
-    }
-
-    void AddText(PlayerInput playerInputSent)
-    {
-        if (!playerList.Contains(playerInputSent.gameObject.GetComponent<PlayerController>()))
-        {
-            playerList.Add(playerInputSent.gameObject.GetComponent<PlayerController>());
-            percentText = Instantiate(playerPercentText);
-            percentText.transform.SetParent(this.transform);
-            percentText.GetComponent<PercentTextBehaviour>().SetPlayer(playerInputSent.gameObject.GetComponent<PlayerController>());
-        }
-        
-       
     }
 }

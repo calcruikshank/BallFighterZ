@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 857565073450485513}
-  - component: {fileID: 1544784022107478602}
+  - component: {fileID: 8886563423090587941}
   m_Layer: 5
-  m_Name: TextParent
+  m_Name: StockText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37,7 +37,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 206.1678, y: 96.6657}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1544784022107478602
+--- !u!114 &8886563423090587941
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -46,10 +46,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 857565073450485512}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 308e510fce5fd2b45994f10de09d0781, type: 3}
+  m_Script: {fileID: 11500000, guid: 29b66e90ecf1b6c44a85ed7618913f7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   textObject: {fileID: 857565075179900969}
+  textObjectPrefab: {fileID: 857565073450485512}
+  colors: []
 --- !u!1 &857565075179900971
 GameObject:
   m_ObjectHideFlags: 0
@@ -115,7 +117,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 100%
+  m_text: 4
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 95f19b3252989d34681e1a8088c91a03, type: 2}
   m_sharedMaterial: {fileID: 9115549661287724642, guid: 95f19b3252989d34681e1a8088c91a03, type: 2}

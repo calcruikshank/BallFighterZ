@@ -23,7 +23,7 @@ public class PlayerController : MonoBehaviour
     protected float returnSpeed = 15f;
 
     [SerializeField] private LayerMask layerMask;
-    int stocks = 4;
+    public int stocks = 4;
     protected PlayerController opponent;
 
     protected CameraShake cameraShake;
@@ -67,6 +67,10 @@ public class PlayerController : MonoBehaviour
         grabbing = false;
         releasedLeft = true;
         releasedRight = true;
+        if (animatorUpdated != null)
+        {
+            SetAnimatorToIdle();
+        }
     }
     // Start is called before the first frame update
     void Start()
@@ -475,7 +479,7 @@ public class PlayerController : MonoBehaviour
         if (rb.velocity.magnitude > 0)
         {
             oppositeForce = -rb.velocity;
-            brakeSpeed = brakeSpeed + (125f * Time.deltaTime);
+            brakeSpeed = brakeSpeed + (100f * Time.deltaTime);
             rb.AddForce(oppositeForce * Time.deltaTime * brakeSpeed);
             rb.AddForce(movement * .05f); //DI
         }
@@ -652,6 +656,7 @@ public class PlayerController : MonoBehaviour
 
     public void Stunned(float stunTime, float damage)
     {
+        
         stunTimerThreshold = stunTime;
         stunTimer = 0f;
         Debug.Log("Stunned");
@@ -672,6 +677,10 @@ public class PlayerController : MonoBehaviour
         stunTimer += Time.deltaTime;
         if (stunTimer >= stunTimerThreshold)
         {
+            if (animatorUpdated != null)
+            {
+                SetAnimatorToIdle();
+            }
             state = State.Normal;
             if (continuedStunSpawned != null) Destroy(continuedStunSpawned);
         }
@@ -860,6 +869,10 @@ public class PlayerController : MonoBehaviour
     }
     public void Throw(Vector3 direction)
     {
+        if (animatorUpdated != null)
+        {
+            SetAnimatorToKnockback();
+        }
         brakeSpeed = 20f;
         // Debug.Log(damage + " damage");
         //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
@@ -909,6 +922,7 @@ public class PlayerController : MonoBehaviour
         animatorUpdated.SetBool("Knockback", false);
         animatorUpdated.SetBool("Landing", false);
         hasChangedFromKnockbackToFallingAnimation = false;
+        if (knockbackSmoke != null) knockbackSmoke.Stop();
     }
 
     #region inputRegion

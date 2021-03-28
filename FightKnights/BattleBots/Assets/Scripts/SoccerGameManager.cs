@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class SoccerGameManager : MonoBehaviour
 {
@@ -11,15 +12,20 @@ public class SoccerGameManager : MonoBehaviour
 
     public int redScore, blueScore = 0;
     // Start is called before the first frame update
+    PercentageParent percentageParent;
+
+    // Start is called before the first frame update
 
     private void Awake()
     {
+        percentageParent = FindObjectOfType<PercentageParent>();
     }
     void Start()
     {
         canvas = FindObjectOfType<Canvas>();
         playerTeams = FindObjectOfType<PlayerTeams>();
-        
+
+        AddText();
 
         if (!playerTeams.teamsIsOn)
         {
@@ -51,5 +57,17 @@ public class SoccerGameManager : MonoBehaviour
         Debug.Log("AddToBlue");
         blueScore++;
         soccerCanvasBehavior.UpdateText(redScore, blueScore);
+    }
+
+    public void AddText()
+    {
+        PlayerInput[] players = FindObjectsOfType<PlayerInput>();
+        foreach (PlayerInput player in players)
+        {
+            if (player.gameObject.GetComponent<TeamID>() != null)
+            {
+                percentageParent.AddPercentageText(player.gameObject.GetComponent<PlayerController>());
+            }
+        }
     }
 }

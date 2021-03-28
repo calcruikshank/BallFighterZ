@@ -4,11 +4,11 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 
-public class PercentTextBehaviour : MonoBehaviour
+public class StockTextBehaviour : MonoBehaviour
 {
     PlayerController player;
-    [SerializeField]TextMeshProUGUI textObject;
-    [SerializeField]GameObject textObjectPrefab;
+    [SerializeField] TextMeshProUGUI textObject;
+    [SerializeField] GameObject textObjectPrefab;
     [SerializeField] List<Color> colors = new List<Color>();
 
     PlayerTeams playerTeams;
@@ -16,7 +16,7 @@ public class PercentTextBehaviour : MonoBehaviour
     void Awake()
     {
         playerTeams = FindObjectOfType<PlayerTeams>();
-        
+
     }
 
     private void Start()
@@ -29,7 +29,7 @@ public class PercentTextBehaviour : MonoBehaviour
     {
         if (player != null)
         {
-            textObject.text = player.currentPercentage.ToString() + "%";
+            textObject.text = player.stocks.ToString();
         }
         else
         {
