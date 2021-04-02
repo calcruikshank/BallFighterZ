@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -463,7 +464,6 @@ public class PlayerController : MonoBehaviour
         }
        
 
-        shielding = false;
         if (Mathf.Abs(rb.velocity.x) <= 8 && Mathf.Abs(rb.velocity.z) <= 8)
         {
             if (knockbackSmoke != null) knockbackSmoke.Stop();
@@ -893,7 +893,6 @@ public class PlayerController : MonoBehaviour
     }
     protected void HandleAirDodge()
     {
-
         parryTimer += Time.deltaTime;
         if (parryTimer > parryTimerThreshold)
         {
@@ -1026,6 +1025,17 @@ public class PlayerController : MonoBehaviour
 
     }
 
+    void OnReset()
+    {
+        DontDestroyOnLoad[] ddols = FindObjectsOfType<DontDestroyOnLoad>();
+        foreach (DontDestroyOnLoad ddol in ddols)
+        {
+            Destroy(ddol.gameObject);
+        }
+
+        SceneManager.LoadScene(0);
+    }
+
     protected virtual void FaceLookDirection()
     {
         if (punchedLeft || punchedRight || leftHandTransform.localPosition.x > 1f && returningLeft || rightHandTransform.localPosition.x > 1f && returningRight) if (state != State.Grabbing) return;
@@ -1033,9 +1043,9 @@ public class PlayerController : MonoBehaviour
         if (grabbing) return;
         
         Vector3 lookTowards = new Vector3(lookDirection.x, 0, lookDirection.y);
-        if (movement.magnitude != 0f)
+        if (lookTowards.magnitude != 0f)
         {
-            lastLookedPosition = movement;
+            lastLookedPosition = lookTowards;
         }
         
         Look();
@@ -1044,22 +1054,8 @@ public class PlayerController : MonoBehaviour
     protected virtual void Look()
     {
         if (state == State.Knockback) return;
-        if (currentControlScheme == "Gamepad")
-        {
-            transform.right = lastLookedPosition;
-        }
-        if (state == State.ParryState && currentControlScheme == "Gamepad")
-        {
-            transform.right = lastLookedPosition;
-        }
-        if (currentControlScheme == "Keyboard and Mouse")
-        {
-            transform.right = lastLookedPosition;
-        }
-        if (state == State.ParryState && currentControlScheme == "Keyboard and Mouse")
-        {
-            transform.right = new Vector3(inputMovement.x, 0, inputMovement.y);
-        }
+
+        transform.right = lastLookedPosition;
     }
 
     protected void CheckForInputs()
@@ -1165,6 +1161,7 @@ public class PlayerController : MonoBehaviour
         if (state == State.WaveDahsing) return;
         if (grabbing) return;
         if (state == State.Grabbed) return;
+        if (state == State.Knockback) return;
         if (pressedShield)
         {
             if (canShieldAgainTimer > 0f) return;

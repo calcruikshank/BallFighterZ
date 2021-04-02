@@ -9,10 +9,11 @@ public class HandleCollider : MonoBehaviour
     PlayerController opponentHit;
     float greatestDamage = 0f;
     Vector3 punchTowards;
+    bool setDirection = false;
     // Start is called before the first frame update
     void Start()
     {
-
+        setDirection = false;
     }
 
     
@@ -44,15 +45,16 @@ public class HandleCollider : MonoBehaviour
             {
                 return;
             }
-            if (punchTowards == null || punchTowards == Vector3.zero)
+            if (setDirection == false)
             {
-                punchTowards = new Vector3(player.transform.right.normalized.x, 0, player.transform.right.normalized.z);
+                punchTowards = new Vector3(this.transform.right.normalized.x, 0, this.transform.right.normalized.z);
             }
 
             if (player.isDashing)
             {
                 damage = 20f;
             }
+
             opponent.Knockback(greatestDamage, punchTowards, player);
             opponentHit = sentOpponent;
         }
@@ -64,6 +66,7 @@ public class HandleCollider : MonoBehaviour
         
         
         punchTowards = direction;
-        
+        setDirection = true;
+
     }
 }

@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ShieldBreakCollider : MonoBehaviour
+public class ExplosionCollider : MonoBehaviour
 {
     PlayerController opponent;
     [SerializeField] int hitID;
     [SerializeField] float damage;
-    [SerializeField] float stunTime = 1f;
+    [SerializeField] float stunDamage;
     [SerializeField] float colliderThreshold = .2f;
-
+    [SerializeField] bool moreDamageIfStunned = false;
     float collideTimer;
 
     private void Update()
@@ -18,11 +18,20 @@ public class ShieldBreakCollider : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+
         opponent = other.transform.parent.GetComponent<PlayerController>();
         if (opponent != null && collideTimer <= colliderThreshold)
         {
+            if (!moreDamageIfStunned || opponent.state != PlayerController.State.Stunned)
+            {
 
-            this.transform.parent.transform.parent.GetComponent<HandleColliderShieldBreak>().HandleCollision(hitID, damage, opponent, stunTime);
+                this.transform.parent.transform.parent.GetComponent<HandleCollider>().SetKnockbackDirection(new Vector3(opponent.transform.position.x - this.transform.parent.transform.parent.position.x, 0, opponent.transform.position.z - this.transform.parent.transform.parent.position.z).normalized);
+                this.transform.parent.transform.parent.GetComponent<HandleCollider>().HandleCollision(hitID, damage, opponent);
+            }
+            if (moreDamageIfStunned && opponent.state == PlayerController.State.Stunned)
+            {
+                this.transform.parent.transform.parent.GetComponent<HandleCollider>().HandleCollision(hitID, stunDamage, opponent);
+            }
             Collider[] colliders = opponent.transform.GetComponentsInChildren<Collider>();
             Collider[] collidersInColliderParents = this.transform.parent.GetComponentsInChildren<Collider>();
             foreach (Collider collider in colliders)

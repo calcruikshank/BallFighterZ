@@ -228,6 +228,10 @@ public class HammerPlayer : PlayerController
 
 
 
+        if (punchedLeft || punchedRight || returningLeft || returningRight)
+        {
+            moveSpeed = moveSpeedSetter;
+        }
         if (!punchedLeft && !punchedRight && !returningLeft && !returningRight)
         {
             moveSpeed = moveSpeedSetter;

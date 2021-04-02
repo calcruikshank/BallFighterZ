@@ -9,6 +9,8 @@ public class HandleColliderShieldBreak : MonoBehaviour
     PlayerController opponentHit;
     float greatestDamage = 0f;
     Vector3 punchTowards;
+    [SerializeField] bool explodeAfterColliding = false;
+    [SerializeField] GameObject explosionPrefab;
 
     [SerializeField] bool stunsIfOpponentIsntShielding = true;
     // Start is called before the first frame update
@@ -28,13 +30,19 @@ public class HandleColliderShieldBreak : MonoBehaviour
 
     public void HandleCollision(float hitId, float damage, PlayerController sentOpponent, float stunTime)
     {
+
         if (greatestDamage < damage)
         {
             greatestDamage = damage;
         }
         opponent = sentOpponent;
+
         if (sentOpponent != player && opponent != opponentHit)
         {
+            if (explodeAfterColliding)
+            {
+                Explode();
+            }
             if (opponent.isParrying)
             {
                 opponent.Parry();
@@ -57,6 +65,7 @@ public class HandleColliderShieldBreak : MonoBehaviour
             
             if (punchTowards == null || punchTowards == Vector3.zero)
             {
+
                 punchTowards = new Vector3(player.transform.right.normalized.x, 0, player.transform.right.normalized.z);
             }
 
@@ -64,10 +73,13 @@ public class HandleColliderShieldBreak : MonoBehaviour
             {
                 damage = 20f;
             }
+
+            Debug.Log(punchTowards);
             opponent.Knockback(greatestDamage, punchTowards, player);
             opponentHit = sentOpponent;
         }
         greatestDamage = 0f;
+        
     }
 
     public void SetKnockbackDirection(Vector3 direction)
@@ -76,5 +88,19 @@ public class HandleColliderShieldBreak : MonoBehaviour
 
         punchTowards = direction;
 
+    }
+
+    void Explode()
+    {
+        ParticleSystem[] particles = this.gameObject.GetComponentsInChildren<ParticleSystem>();
+        foreach (ParticleSystem particle in particles)
+        {
+            particle.Stop();
+        }
+        this.gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        if (explosionPrefab != null)
+        {
+            Instantiate(explosionPrefab, this.transform.position, Quaternion.identity);
+        }
     }
 }

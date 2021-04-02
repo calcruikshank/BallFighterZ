@@ -62,7 +62,6 @@ public class PlayerTeams : MonoBehaviour
 
     public void SetTeam(int teamToAssign, PlayerController player)
     {
-        Debug.Log(teamToAssign);
         teamID = player.gameObject.GetComponent<TeamID>();
         teamID.SetColor(mats[teamToAssign]);
     }

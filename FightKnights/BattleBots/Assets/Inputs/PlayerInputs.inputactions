@@ -132,6 +132,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press(behavior=1)"
+                },
+                {
+                    "name": "Reset",
+                    "type": "Button",
+                    "id": "d171b0db-265b-477a-bef8-aa2a837c37ab",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -473,6 +481,17 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "AltReleaseLeft",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7e88c98a-e5bb-4ca5-bf4c-3441323e04e4",
+                    "path": "<Gamepad>/select",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Reset",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
