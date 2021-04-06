@@ -18737,6 +18737,14 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 198003865990872292, guid: 4b21d5ab091be5a46ad6e87699fab62c, type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198003865990872292, guid: 4b21d5ab091be5a46ad6e87699fab62c, type: 3}
+      propertyPath: useRigidbodyForVelocity
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198003865990872292, guid: 4b21d5ab091be5a46ad6e87699fab62c, type: 3}
       propertyPath: EmissionModule.m_BurstCount
       value: 3
       objectReference: {fileID: 0}

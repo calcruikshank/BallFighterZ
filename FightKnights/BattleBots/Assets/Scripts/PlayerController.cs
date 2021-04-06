@@ -909,6 +909,8 @@ public class PlayerController : MonoBehaviour
         animatorUpdated.SetFloat("MoveSpeed", 0f);
         animatorUpdated.SetBool("Landing", false);
         animatorUpdated.SetBool("Knockback", true);
+
+        animatorUpdated.SetBool("Dashing", false);
         hasChangedFromKnockbackToFallingAnimation = false;
         if (continuedStunSpawned != null) Destroy(continuedStunSpawned);
     }
@@ -920,6 +922,8 @@ public class PlayerController : MonoBehaviour
         animatorUpdated.SetFloat("MoveSpeed", 0f);
         animatorUpdated.SetBool("Knockback", false);
         animatorUpdated.SetBool("Landing", false);
+
+        animatorUpdated.SetBool("Dashing", false);
         hasChangedFromKnockbackToFallingAnimation = false;
         if (knockbackSmoke != null) knockbackSmoke.Stop();
     }

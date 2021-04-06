@@ -49,11 +49,14 @@ public class HandleCollider : MonoBehaviour
             {
                 punchTowards = new Vector3(this.transform.right.normalized.x, 0, this.transform.right.normalized.z);
             }
-
-            if (player.isDashing)
+            if (player != null)
             {
-                damage = 20f;
+                if (player.isDashing)
+                {
+                    damage = 20f;
+                }
             }
+            
 
             opponent.Knockback(greatestDamage, punchTowards, player);
             opponentHit = sentOpponent;
