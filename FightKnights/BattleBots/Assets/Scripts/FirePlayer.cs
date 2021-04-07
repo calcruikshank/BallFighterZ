@@ -433,7 +433,7 @@ public class FirePlayer : PlayerController
         canAirDodgeTimer = 0f;
 
         currentPercentage += damage;
-        brakeSpeed = 30f;
+        brakeSpeed = 0f;
         // Debug.Log(damage + " damage");
         //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
         //direction = direction.normalized;

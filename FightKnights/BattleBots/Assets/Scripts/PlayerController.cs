@@ -438,7 +438,7 @@ public class PlayerController : MonoBehaviour
         canAirDodgeTimer = 0f;
 
         currentPercentage += damage;
-        brakeSpeed = 30f;
+        brakeSpeed = 0f;
         // Debug.Log(damage + " damage");
         //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
         //direction = direction.normalized;
@@ -455,7 +455,7 @@ public class PlayerController : MonoBehaviour
             knockbackSmoke.gameObject.SetActive(true);
             
         }
-        if (rb.velocity.magnitude < 30f && !hasChangedFromKnockbackToFallingAnimation)
+        if (rb.velocity.magnitude < 20f && !hasChangedFromKnockbackToFallingAnimation)
         {
             if (animatorUpdated != null)
             {
@@ -464,28 +464,32 @@ public class PlayerController : MonoBehaviour
         }
        
 
-        if (Mathf.Abs(rb.velocity.x) <= 8 && Mathf.Abs(rb.velocity.z) <= 8)
+        if (Mathf.Abs(rb.velocity.x) <= 12 && Mathf.Abs(rb.velocity.z) <= 8)
         {
             if (knockbackSmoke != null) knockbackSmoke.Stop();
             if (animatorUpdated != null)
             {
+                SetAnimatorToKnockback();
+                SetAnimatorToIdle();
                 animatorUpdated.SetBool("Knockback", false);
                 animatorUpdated.SetBool("Landing", false);
             }
             rb.velocity = new Vector2(0, 0);
+            rb.drag = 0;
             state = State.Normal;
         }
 
         if (rb.velocity.magnitude > 0)
         {
             oppositeForce = -rb.velocity;
-            brakeSpeed = brakeSpeed + (100f * Time.deltaTime);
-            rb.AddForce(oppositeForce * Time.deltaTime * brakeSpeed);
-            rb.AddForce(movement * .05f); //DI
+            //brakeSpeed = brakeSpeed + (100f * Time.deltaTime);
+            //rb.AddForce(oppositeForce * Time.deltaTime * brakeSpeed);
+            //rb.AddForce(movement * .05f); //DI*/
+            rb.drag = 1.3f;
         }
 
-        Vector3 lookTowards = new Vector3(oppositeForce.x, 0, oppositeForce.z);
-        transform.right = lookTowards;
+        Vector3 knockbackLook = new Vector3(oppositeForce.x, 0, oppositeForce.z);
+        transform.right = knockbackLook;
     }
 
     public void EndGrab()
@@ -545,6 +549,7 @@ public class PlayerController : MonoBehaviour
     }
     public void Parry()
     {
+        rb.drag = 0f;
         punchedRight = false;
         punchedLeft = false;
         returningRight = false;
@@ -759,6 +764,7 @@ public class PlayerController : MonoBehaviour
     }
     protected virtual void Respawn()
     {
+        SetAnimatorToKnockback();
         SetAnimatorToIdle();
         state = State.Normal;
         transform.position = Vector3.zero;
