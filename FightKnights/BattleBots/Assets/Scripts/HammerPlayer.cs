@@ -269,6 +269,7 @@ public class HammerPlayer : PlayerController
             //animatorUpdated.SetBool("punchingLeft", (punchedLeft));
 
         }
+        hasLanded = false;
         //this if is for if the opponent is grabbed
 
         canAirDodgeTimer = 0f;

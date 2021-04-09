@@ -475,9 +475,8 @@ public class PlayerController : MonoBehaviour
             {
                 hasLanded = true;
             }
-            Debug.Log(landingTime);
         }
-        if (Mathf.Abs(rb.velocity.x) <= 10 && Mathf.Abs(rb.velocity.z) <= 8 && rb.velocity.x != 0f || hasLanded)
+        if (hasLanded)
         {
             if (knockbackSmoke != null) knockbackSmoke.Stop();
             if (animatorUpdated != null)
@@ -893,6 +892,8 @@ public class PlayerController : MonoBehaviour
         {
             SetAnimatorToKnockback();
         }
+        
+        hasLanded = false;
         brakeSpeed = 20f;
         // Debug.Log(damage + " damage");
         //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)

@@ -415,6 +415,7 @@ public class FirePlayer : PlayerController
         {
             EndGrab();
         }
+        hasLanded = false;
         EndPunchRight();
         //if (state == State.WaveDahsing && rb.velocity.magnitude > 20f) return;
         if (animatorUpdated != null)

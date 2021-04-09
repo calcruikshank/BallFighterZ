@@ -6,7 +6,7 @@ public class BowPlayer : PlayerController
 {
     float heldArrowTime;
     bool canShoot;
-    [SerializeField] GameObject arrowPrefab;
+    [SerializeField] GameObject arrowPrefab, forcePushPrefab;
     GameObject arrowInstantiated;
     float arrowSpeed = 80f;
     protected override void HandleThrowingHands()
@@ -58,17 +58,23 @@ public class BowPlayer : PlayerController
                 arrowInstantiated.GetComponent<HandleCollider>().SetPlayer(this, rightHandTransform);
                 canShoot = false;
             }
-            returningLeft = true;
 
+            
             animatorUpdated.SetBool("Rolling", false);
             punchedRightTimer = 0;
             //rightHandCollider.enabled = true;
             rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRange, -.4f, .4f), punchSpeed * 2 * Time.deltaTime);
             if (rightHandTransform.localPosition.x >= punchRange)
             {
-
+                if (!punchedLeft && !returningLeft && !punchedLeft)
+                {
+                    GameObject forcePushInst = Instantiate(forcePushPrefab, GrabPosition.position, transform.rotation);
+                    forcePushInst.GetComponent<HandleCollider>().SetPlayer(this, rightHandTransform);
+                }
                 returningRight = true;
             }
+
+            returningLeft = true;
         }
         if (returningRight)
         {

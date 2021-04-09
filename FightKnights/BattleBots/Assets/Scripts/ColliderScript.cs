@@ -10,11 +10,18 @@ public class ColliderScript : MonoBehaviour
     [SerializeField] float stunDamage;
     [SerializeField] float colliderThreshold = .2f;
     [SerializeField] bool moreDamageIfStunned = false;
+    [SerializeField] float activateAfterSeconds = 0f;
+    bool hasSetActive = false;
     float collideTimer;
 
     private void Update()
     {
         collideTimer += Time.deltaTime;
+        if (collideTimer > activateAfterSeconds && !hasSetActive)
+        {
+            this.GetComponent<Collider>().enabled = true;
+            hasSetActive = true;
+        }
     }
     private void OnTriggerEnter(Collider other)
     {

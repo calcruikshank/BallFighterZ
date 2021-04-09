@@ -38,11 +38,49 @@ public class HandleCollider : MonoBehaviour
             {
                 opponent.Parry();
                 player.ParryStun();
+                if (destroyedOnImpact)
+                {
+                    this.gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
+                    Collider[] colliders = this.gameObject.GetComponentsInChildren<Collider>();
+                    foreach (Collider collider in colliders)
+                    {
+                        collider.enabled = false;
+                    }
+                    this.gameObject.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
+
+                    ParticleSystem[] particles = this.gameObject.GetComponentsInChildren<ParticleSystem>();
+                    foreach (ParticleSystem particle in particles)
+                    {
+                        if (particle != null)
+                        {
+                            particle.Stop();
+                        }
+                    }
+                }
                 return;
             }
             
             if (opponent.shielding)
             {
+                if (destroyedOnImpact)
+                {
+                    this.gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
+                    Collider[] colliders = this.gameObject.GetComponentsInChildren<Collider>();
+                    foreach (Collider collider in colliders)
+                    {
+                        collider.enabled = false;
+                    }
+                    this.gameObject.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
+
+                    ParticleSystem[] particles = this.gameObject.GetComponentsInChildren<ParticleSystem>();
+                    foreach (ParticleSystem particle in particles)
+                    {
+                        if (particle != null)
+                        {
+                            particle.Stop();
+                        }
+                    }
+                }
                 return;
             }
             if (setDirection == false)
@@ -63,7 +101,12 @@ public class HandleCollider : MonoBehaviour
             if (destroyedOnImpact)
             {
                 this.gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
-                this.gameObject.GetComponentInChildren<Collider>().enabled = false;
+                Collider[] colliders = this.gameObject.GetComponentsInChildren<Collider>();
+                foreach (Collider collider in colliders)
+                {
+                    collider.enabled = false;
+                }
+                this.gameObject.GetComponentInChildren<Rigidbody>().velocity = Vector3.zero;
                 
                 ParticleSystem[] particles = this.gameObject.GetComponentsInChildren<ParticleSystem>();
                 foreach (ParticleSystem particle in particles)
