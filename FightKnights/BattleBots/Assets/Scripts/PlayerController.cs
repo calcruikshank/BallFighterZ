@@ -8,11 +8,11 @@ public class PlayerController : MonoBehaviour
 {
     protected Rigidbody rb;
     protected Vector3 inputMovement, movement, lastMoveDir, lastLookedPosition, lookDirection, oppositeForce, powerDashTowards;
-    protected bool pressedRight, pressedLeft, pressedShield, releasedShield, pressedDash, releasedDash, airDodged, releasedAirDodged, pressedWaveDash, releasedWaveDash, waveDashBool, canDash, grabbing = false;
+    protected bool pressedRight, pressedLeft, pressedShield, releasedShield, pressedDash, releasedDash, airDodged, releasedAirDodged, pressedWaveDash, releasedWaveDash, waveDashBool, canDash, grabbing, hasLanded = false;
     public bool punchedRight, punchedLeft, shielding, isParrying, returningLeft, returningRight, releasedLeft, releasedRight, isDashing, hasChangedFromKnockbackToFallingAnimation = false;
     float parryTimerThreshold = .25f;
     [SerializeField] protected float moveSpeed, moveSpeedSetter = 18f;
-    protected float punchedLeftTimer, punchedRightTimer, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed, dashBuffer, canAirDodgeTimer, airShieldTimer, waveDashTimer, stunTimerThreshold, stunTimer, dashTimer;
+    protected float punchedLeftTimer, punchedRightTimer, brakeSpeed, canShieldAgainTimer, parryTimer, parryStunnedTimer, isParryingTimer, powerDashSpeed, dashBuffer, canAirDodgeTimer, airShieldTimer, waveDashTimer, stunTimerThreshold, stunTimer, dashTimer, landingTime;
     public float currentPercentage;
     protected float inputBuffer = .15f;
     [SerializeField] protected Transform leftHandTransform, rightHandTransform, GrabPosition, grabbedPositionTransform;
@@ -426,6 +426,7 @@ public class PlayerController : MonoBehaviour
         {
             SetAnimatorToKnockback();
         }
+        hasLanded = false;
 
         //this if is for if the opponent is grabbed
         if (opponent != null)
@@ -460,11 +461,23 @@ public class PlayerController : MonoBehaviour
             if (animatorUpdated != null)
             {
                 animatorUpdated.SetBool("Landing", true);
-            }
-        }
-       
 
-        if (Mathf.Abs(rb.velocity.x) <= 12 && Mathf.Abs(rb.velocity.z) <= 8)
+                hasChangedFromKnockbackToFallingAnimation = true;
+            }
+            landingTime = 0f;
+            hasLanded = false;
+        }
+
+        if (rb.velocity.magnitude < 20f)
+        {
+            landingTime += Time.deltaTime;
+            if (landingTime > .4f)
+            {
+                hasLanded = true;
+            }
+            Debug.Log(landingTime);
+        }
+        if (Mathf.Abs(rb.velocity.x) <= 10 && Mathf.Abs(rb.velocity.z) <= 8 && rb.velocity.x != 0f || hasLanded)
         {
             if (knockbackSmoke != null) knockbackSmoke.Stop();
             if (animatorUpdated != null)
@@ -491,6 +504,7 @@ public class PlayerController : MonoBehaviour
         Vector3 knockbackLook = new Vector3(oppositeForce.x, 0, oppositeForce.z);
         transform.right = knockbackLook;
     }
+    
 
     public void EndGrab()
     {

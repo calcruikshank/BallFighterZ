@@ -10,15 +10,15 @@ public class HandleCollider : MonoBehaviour
     float greatestDamage = 0f;
     Vector3 punchTowards;
     bool setDirection = false;
+    [SerializeField] bool destroyedOnImpact = false;
     // Start is called before the first frame update
     void Start()
     {
         setDirection = false;
     }
 
-    
 
-    
+
     public void SetPlayer(PlayerController player, Transform handSent)
     {
         
@@ -56,10 +56,24 @@ public class HandleCollider : MonoBehaviour
                     damage = 20f;
                 }
             }
-            
 
+            Debug.Log("Knockback");
             opponent.Knockback(greatestDamage, punchTowards, player);
             opponentHit = sentOpponent;
+            if (destroyedOnImpact)
+            {
+                this.gameObject.GetComponentInChildren<MeshRenderer>().enabled = false;
+                this.gameObject.GetComponentInChildren<Collider>().enabled = false;
+                
+                ParticleSystem[] particles = this.gameObject.GetComponentsInChildren<ParticleSystem>();
+                foreach (ParticleSystem particle in particles)
+                {
+                    if (particle != null)
+                    {
+                        particle.Stop();
+                    }
+                }
+            }
         }
         greatestDamage = 0f;
     }

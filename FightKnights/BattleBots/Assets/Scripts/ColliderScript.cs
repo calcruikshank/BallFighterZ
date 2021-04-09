@@ -39,7 +39,8 @@ public class ColliderScript : MonoBehaviour
                     Physics.IgnoreCollision(collider, collidersInParent);
                 }
             }
-           
+            
         }
+        
     }
 }
