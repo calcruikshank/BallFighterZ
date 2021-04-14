@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using TMPro;
 
 public class CursorBehaviour : MonoBehaviour
 {
@@ -10,18 +11,30 @@ public class CursorBehaviour : MonoBehaviour
     Vector3 movement, lastMoveDir;
     float moveSpeed = .5f;
     Button button;
-    [SerializeField] GameObject multiEventSystem;
+    [SerializeField] GameObject multiEventSystem, playerInfo;
     GameObject myEventSystem;
     bool isReadied = false;
-    GameObject currentSelectedPrefab;
+    GameObject currentSelectedPrefab, playerInfoInstantiated;
 
+    Transform playerInfoParent;
+    [SerializeField] public Color[] colors = new Color[6];
     private int PlayerIndex;
-    
+    string thisControlScheme;
     // Start is called before the first frame update
     void Start()
     {
         myEventSystem = Instantiate(multiEventSystem);
         PlayerIndex = this.gameObject.GetComponent<PlayerInput>().playerIndex;
+        SetColor(colors[PlayerIndex]);
+        SetTeam(PlayerIndex);
+        playerInfoParent = FindObjectOfType<PlayerInfoParent>().transform;
+        playerInfoInstantiated = Instantiate(playerInfo, Vector3.zero, Quaternion.identity);
+        
+        playerInfoInstantiated.transform.parent = playerInfoParent;
+        playerInfo.transform.localScale = new Vector3(.8f, .8f, .8f);
+        playerInfo.transform.localPosition = Vector3.zero;
+        thisControlScheme = this.gameObject.GetComponent<PlayerInput>().currentControlScheme;
+        SetControlScheme(thisControlScheme);
     }
 
     // Update is called once per frame
@@ -32,6 +45,7 @@ public class CursorBehaviour : MonoBehaviour
         if (movement.x != 0 || movement.z != 0)
         {
             lastMoveDir = movement;
+            this.GetComponent<Rigidbody>().velocity = Vector3.zero;
         }
         this.transform.position = new Vector3(this.transform.position.x, this.transform.position.y, -10f);
     }
@@ -44,6 +58,25 @@ public class CursorBehaviour : MonoBehaviour
         }
     }
     
+
+    void SetControlScheme(string controlScheme)
+    {
+        PlayerConfigurationManager.Instance.SetControlScheme(PlayerIndex, controlScheme);
+        if (controlScheme == "Gamepad")
+        {
+            Debug.Log("gamepad ");
+            SetDevice(Gamepad.current);
+        }
+        else
+        {
+            Debug.Log("keyboard ");
+            SetDevice(Keyboard.current);
+        }
+    }
+    void SetDevice(InputDevice currentDevice)
+    {
+        PlayerConfigurationManager.Instance.SetDevice(PlayerIndex, currentDevice);
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -63,13 +96,54 @@ public class CursorBehaviour : MonoBehaviour
         PlayerIndex = pi;
     }
 
+    public void SetTeam(int teamID)
+    {
+        PlayerConfigurationManager.Instance.SetPlayerTeam(PlayerIndex, teamID);
+        playerInfo.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Player " + (PlayerIndex + 1);
+        if (teamID == 0)
+        {
+            playerInfo.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Blue Team";
+        }
+        if (teamID == 1)
+        {
+            playerInfo.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Red Team";
+        }
+        if (teamID == 2)
+        {
+            playerInfo.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Yellow Team";
+        }
+        if (teamID == 3)
+        {
+            playerInfo.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Green Team";
+        }
+        if (teamID == 4)
+        {
+            playerInfo.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "White Team";
+        }
+        if (teamID == 5)
+        {
+            playerInfo.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Black Team";
+        }
+
+    }
     public void SetCharacterChoice(GameObject character)
     {
         PlayerConfigurationManager.Instance.SetPlayerPrefab(PlayerIndex, character);
     }
-    public void SetColor(Material color)
+    public void SetColor(Color charColor)
     {
+
+        this.gameObject.GetComponentInChildren<Image>().color = charColor;
+        PlayerConfigurationManager.Instance.SetPlayerColor(PlayerIndex, charColor);
+        TextMeshProUGUI[] texts = playerInfo.GetComponentsInChildren<TextMeshProUGUI>();
+
+        foreach (TextMeshProUGUI tex in texts)
+        {
+            tex.color = charColor;
+        }
     }
+
+    
 
     public void ReadyPlayer()
     {

@@ -33,7 +33,16 @@ public class PlayerConfigurationManager : MonoBehaviour
         Debug.Log(characterChoice);
         playerConfigs[index].PlayerPrefab = characterChoice;
     }
-
+    public void SetPlayerColor(int index, Color charColor)
+    {
+        Debug.Log(charColor);
+        playerConfigs[index].PlayerColor = charColor;
+    }
+    public void SetPlayerTeam(int index, int playerTeam)
+    {
+        Debug.Log(playerTeam);
+        playerConfigs[index].PlayerTeam = playerTeam;
+    }
 
     public void ReadyPlayer(int index)
     {
@@ -43,10 +52,19 @@ public class PlayerConfigurationManager : MonoBehaviour
         {
             pim.joinBehavior = PlayerJoinBehavior.JoinPlayersManually;
             Debug.Log("Ready" + playerConfigs.Count);
-            SceneManager.LoadScene(1);
+            SceneManager.LoadScene(2);
         }
     }
 
+    public void SetControlScheme(int index, string thisControlScheme)
+    {
+        playerConfigs[index].ControlScheme = thisControlScheme;
+    }
+    public void SetDevice(int index, InputDevice current)
+    {
+
+        playerConfigs[index].CurrentDevice = current;
+    }
 
     public void UnReadyPlayer(int index)
     {
@@ -65,6 +83,12 @@ public class PlayerConfigurationManager : MonoBehaviour
             playerConfigs.Add(new PlayerConfiguration(pi));
         }
     }
+
+
+    public List<PlayerConfiguration> GetPlayerConfigs()
+    {
+        return playerConfigs;
+    }
 }
 
 
@@ -82,5 +106,9 @@ public class PlayerConfiguration
     
     public GameObject PlayerPrefab { get; set; }
 
-    public Material PlayerMaterial { get; set; }
+    public Color PlayerColor { get; set; }
+    public int PlayerTeam { get; set; }
+
+    public string ControlScheme { get; set; }
+    public InputDevice CurrentDevice { get; set; }
 }

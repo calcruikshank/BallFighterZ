@@ -83,6 +83,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   multiEventSystem: {fileID: 7635087793248191703, guid: 329b3d9bcf0b4084881bbee64eafd342, type: 3}
+  playerInfo: {fileID: 260740166658309920, guid: adf1dd29724c0b34e97f604fb769da9f, type: 3}
+  colors:
+  - {r: 0.18431373, g: 0.52156866, b: 0.9843137, a: 1}
+  - {r: 0.89411765, g: 0.21568628, b: 0.23921569, a: 1}
+  - {r: 0.9529412, g: 0.7019608, b: 0.14901961, a: 1}
+  - {r: 0.2, g: 0.54901963, b: 0.27450982, a: 1}
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0, g: 0, b: 0, a: 1}
 --- !u!135 &6942750497531254880
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -110,7 +118,7 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!1 &8448370759443293297
 GameObject:

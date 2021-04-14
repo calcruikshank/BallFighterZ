@@ -8,6 +8,23 @@ public class SelectCharacter : PlayerController
     [SerializeField] GameObject PrefabToSpawn;
     [SerializeField] PlayerInputManager playerInputManager;
 
+    public override void Awake()
+    {
+        Application.targetFrameRate = 165;
+        rb = GetComponent<Rigidbody>();
+        state = State.Normal;
+        cameraShake = FindObjectOfType<CameraShake>();
+        leftHandParent = leftHandTransform.parent.transform;
+        rightHandParent = rightHandTransform.parent.transform;
+        canDash = true;
+        grabbing = false;
+        releasedLeft = true;
+        releasedRight = true;
+        if (animatorUpdated != null)
+        {
+            SetAnimatorToIdle();
+        }
+    }
     public void Start()
     {
         playerInputManager = FindObjectOfType<PlayerInputManager>();

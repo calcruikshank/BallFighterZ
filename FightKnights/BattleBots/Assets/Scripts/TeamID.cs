@@ -23,4 +23,13 @@ public class TeamID : MonoBehaviour
     {
         playerRing.GetComponent<MeshRenderer>().material = color;
     }
+    public void SetColorOnMat(Color color)
+    {
+        playerRing.GetComponent<MeshRenderer>().material.color = color;
+    }
+
+    public void SetTeamID(int sentTeam)
+    {
+        team = sentTeam;
+    }
 }
