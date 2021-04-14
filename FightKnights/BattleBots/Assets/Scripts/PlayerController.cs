@@ -507,11 +507,15 @@ public class PlayerController : MonoBehaviour
 
     public void EndGrab()
     {
-        if (opponent.state == State.Grabbed)
+        if (opponent != null)
         {
-            Debug.Log("normal state");
-            opponent.state = State.Normal;
+            if (opponent.state == State.Grabbed)
+            {
+                Debug.Log("normal state");
+                opponent.state = State.Normal;
+            }
         }
+        
         
         grabbing = false;
         returningLeft = true;
@@ -779,6 +783,10 @@ public class PlayerController : MonoBehaviour
     {
         SetAnimatorToKnockback();
         SetAnimatorToIdle();
+        if (animatorUpdated != null)
+        {
+            animatorUpdated.Play("Idle");
+        }
         state = State.Normal;
         transform.position = Vector3.zero;
         currentPercentage = 0f;

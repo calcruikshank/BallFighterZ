@@ -401,7 +401,7 @@ public class FirePlayer : PlayerController
     }
     public override void Knockback(float damage, Vector3 direction, PlayerController playerSent)
     {
-        if (state == State.Dashing && bigFireball != null)
+        if (bigInstantiated != null)
         {
             bigInstantiated.GetComponentInChildren<Collider>().enabled = false;
             ParticleSystem[] particles = bigInstantiated.GetComponentsInChildren<ParticleSystem>();
@@ -409,7 +409,7 @@ public class FirePlayer : PlayerController
             {
                 particle.Stop();
             }
-            Destroy(bigFireball);
+            Destroy(bigInstantiated);
         }
         if (grabbing)
         {

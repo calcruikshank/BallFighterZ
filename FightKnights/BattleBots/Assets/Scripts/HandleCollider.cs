@@ -7,7 +7,7 @@ public class HandleCollider : MonoBehaviour
     public PlayerController player;
     PlayerController opponent;
     PlayerController opponentHit;
-    float greatestDamage = 0f;
+    public float greatestDamage = 0f;
     Vector3 punchTowards;
     bool setDirection = false;
     [SerializeField] bool destroyedOnImpact = false;
@@ -29,6 +29,7 @@ public class HandleCollider : MonoBehaviour
     {
         if (greatestDamage < damage)
         {
+            //Debug.Log(greatestDamage + " greatest before changing");
             greatestDamage = damage;
         }
         opponent = sentOpponent;
@@ -95,7 +96,7 @@ public class HandleCollider : MonoBehaviour
                 }
             }
 
-            Debug.Log("Knockback");
+            //Debug.Log("Knockback" + greatestDamage);
             opponent.Knockback(greatestDamage, punchTowards, player);
             opponentHit = sentOpponent;
             if (destroyedOnImpact)
@@ -118,7 +119,6 @@ public class HandleCollider : MonoBehaviour
                 }
             }
         }
-        greatestDamage = 0f;
     }
 
     public void SetKnockbackDirection(Vector3 direction)

@@ -6,11 +6,26 @@ public class BowPlayer : PlayerController
 {
     float heldArrowTime;
     bool canShoot;
-    [SerializeField] GameObject arrowPrefab, forcePushPrefab;
-    GameObject arrowInstantiated;
+    [SerializeField] GameObject arrowPrefab, forcePushPrefab, arrowIndicator;
+    GameObject arrowInstantiated, directionArrow;
     float arrowSpeed = 80f;
+  
     protected override void HandleThrowingHands()
     {
+        if (directionArrow != null && !punchedLeft)
+        {
+            Destroy(directionArrow);
+        }
+        if (directionArrow != null && punchedLeft)
+        {
+            directionArrow.transform.position = this.transform.position;
+            directionArrow.transform.rotation = this.transform.rotation;
+            if (heldArrowTime < 1.25f)
+            {
+                heldArrowTime += Time.deltaTime;
+            }
+
+        }
         if (animatorUpdated != null)
         {
             animatorUpdated.SetBool("punchingRight", (punchedRight));
@@ -20,6 +35,10 @@ public class BowPlayer : PlayerController
         }
         if (punchedLeft && returningLeft == false)
         {
+            if (directionArrow == null)
+            {
+                directionArrow = Instantiate(arrowIndicator, transform.position, transform.rotation);
+            }
             animatorUpdated.SetBool("Rolling", false);
             punchedLeftTimer = 0;
             //leftHandCollider.enabled = true;
@@ -53,9 +72,14 @@ public class BowPlayer : PlayerController
 
             if (canShoot)
             {
+                
                 arrowInstantiated = Instantiate(arrowPrefab, GrabPosition.position, transform.rotation);
-                arrowInstantiated.GetComponent<Rigidbody>().AddForce((transform.right) * (arrowSpeed), ForceMode.Impulse);
+                arrowInstantiated.GetComponent<Rigidbody>().AddForce((transform.right) * (arrowSpeed * (heldArrowTime + .8f)), ForceMode.Impulse);
                 arrowInstantiated.GetComponent<HandleCollider>().SetPlayer(this, rightHandTransform);
+                
+                arrowInstantiated.GetComponent<HandleCollider>().greatestDamage = (int)((heldArrowTime + 1f) * 6f);
+                //Debug.Log((arrowInstantiated.GetComponent<HandleCollider>().greatestDamage));
+                heldArrowTime = 0f;
                 canShoot = false;
             }
 
