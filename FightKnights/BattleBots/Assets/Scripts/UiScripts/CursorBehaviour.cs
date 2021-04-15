@@ -15,7 +15,7 @@ public class CursorBehaviour : MonoBehaviour
     GameObject myEventSystem;
     bool isReadied = false;
     GameObject currentSelectedPrefab, playerInfoInstantiated;
-
+    int currentColor;
     Transform playerInfoParent;
     [SerializeField] public Color[] colors = new Color[6];
     private int PlayerIndex;
@@ -23,16 +23,19 @@ public class CursorBehaviour : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
+        playerInfoInstantiated = Instantiate(playerInfo, Vector3.zero, Quaternion.identity);
+        this.transform.parent = FindObjectOfType<Canvas>().transform;
+        this.transform.localScale = Vector3.one;
         myEventSystem = Instantiate(multiEventSystem);
         PlayerIndex = this.gameObject.GetComponent<PlayerInput>().playerIndex;
-        SetColor(colors[PlayerIndex]);
+        currentColor = PlayerIndex;
+        SetColor(colors[currentColor]);
         SetTeam(PlayerIndex);
         playerInfoParent = FindObjectOfType<PlayerInfoParent>().transform;
-        playerInfoInstantiated = Instantiate(playerInfo, Vector3.zero, Quaternion.identity);
         
         playerInfoInstantiated.transform.parent = playerInfoParent;
-        playerInfo.transform.localScale = new Vector3(.8f, .8f, .8f);
-        playerInfo.transform.localPosition = Vector3.zero;
+        playerInfoInstantiated.transform.localPosition = Vector3.zero;
         thisControlScheme = this.gameObject.GetComponent<PlayerInput>().currentControlScheme;
         SetControlScheme(thisControlScheme);
     }
@@ -65,6 +68,7 @@ public class CursorBehaviour : MonoBehaviour
         if (controlScheme == "Gamepad")
         {
             Debug.Log("gamepad ");
+            
             SetDevice(Gamepad.current);
         }
         else
@@ -75,13 +79,17 @@ public class CursorBehaviour : MonoBehaviour
     }
     void SetDevice(InputDevice currentDevice)
     {
-        PlayerConfigurationManager.Instance.SetDevice(PlayerIndex, currentDevice);
-    }
 
-    private void OnTriggerEnter(Collider other)
+        PlayerConfigurationManager.Instance.SetDevice(PlayerIndex, currentDevice);
+        
+        
+    }
+    
+    private void OnTriggerStay(Collider other)
     {
         button = other.gameObject.GetComponent<Button>();
         currentSelectedPrefab = other.gameObject.GetComponent<CharChoiceButton>().prefabToSpawn;
+        playerInfoInstantiated.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = other.gameObject.GetComponent<CharChoiceButton>().charName;
         myEventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(button.gameObject);
     }
     private void OnTriggerExit(Collider other)
@@ -89,6 +97,7 @@ public class CursorBehaviour : MonoBehaviour
         currentSelectedPrefab = null;
         button = other.gameObject.GetComponent<Button>();
         myEventSystem.GetComponent<UnityEngine.EventSystems.EventSystem>().SetSelectedGameObject(null);
+        playerInfoInstantiated.transform.GetChild(3).GetComponent<TextMeshProUGUI>().text = " ";
     }
 
     public void SetPlayerIndex(int pi)
@@ -99,30 +108,30 @@ public class CursorBehaviour : MonoBehaviour
     public void SetTeam(int teamID)
     {
         PlayerConfigurationManager.Instance.SetPlayerTeam(PlayerIndex, teamID);
-        playerInfo.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Player " + (PlayerIndex + 1);
+        playerInfoInstantiated.transform.GetChild(1).GetComponent<TextMeshProUGUI>().text = "Player " + (PlayerIndex + 1);
         if (teamID == 0)
         {
-            playerInfo.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Blue Team";
+            playerInfoInstantiated.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Blue Team";
         }
         if (teamID == 1)
         {
-            playerInfo.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Red Team";
+            playerInfoInstantiated.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Red Team";
         }
         if (teamID == 2)
         {
-            playerInfo.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Yellow Team";
+            playerInfoInstantiated.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Yellow Team";
         }
         if (teamID == 3)
         {
-            playerInfo.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Green Team";
+            playerInfoInstantiated.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Green Team";
         }
         if (teamID == 4)
         {
-            playerInfo.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "White Team";
+            playerInfoInstantiated.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "White Team";
         }
         if (teamID == 5)
         {
-            playerInfo.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Black Team";
+            playerInfoInstantiated.transform.GetChild(2).GetComponent<TextMeshProUGUI>().text = "Black Team";
         }
 
     }
@@ -135,12 +144,9 @@ public class CursorBehaviour : MonoBehaviour
 
         this.gameObject.GetComponentInChildren<Image>().color = charColor;
         PlayerConfigurationManager.Instance.SetPlayerColor(PlayerIndex, charColor);
-        TextMeshProUGUI[] texts = playerInfo.GetComponentsInChildren<TextMeshProUGUI>();
-
-        foreach (TextMeshProUGUI tex in texts)
-        {
-            tex.color = charColor;
-        }
+        playerInfoInstantiated.transform.GetChild(2).GetComponent<TextMeshProUGUI>().color = charColor;
+        playerInfoInstantiated.transform.GetChild(1).GetComponent<TextMeshProUGUI>().color = charColor;
+        
     }
 
     
@@ -178,5 +184,27 @@ public class CursorBehaviour : MonoBehaviour
     {
         UnReadyPlayer();
     }
+    
+    void OnShield()
+    {
+        
+        currentColor++;
+        if (currentColor > 5)
+        {
+            currentColor = 0;
+        }
+        SetColor(colors[currentColor]);
+        SetTeam(currentColor);
+    }
+    void OnLeftBumper()
+    {
 
+        currentColor--;
+        if (currentColor < 0)
+        {
+            currentColor = 5;
+        }
+        SetColor(colors[currentColor]);
+        SetTeam(currentColor);
+    }
 }

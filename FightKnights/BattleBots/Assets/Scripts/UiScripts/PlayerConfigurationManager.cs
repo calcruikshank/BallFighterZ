@@ -30,17 +30,14 @@ public class PlayerConfigurationManager : MonoBehaviour
 
     public void SetPlayerPrefab(int index, GameObject characterChoice)
     {
-        Debug.Log(characterChoice);
         playerConfigs[index].PlayerPrefab = characterChoice;
     }
     public void SetPlayerColor(int index, Color charColor)
     {
-        Debug.Log(charColor);
         playerConfigs[index].PlayerColor = charColor;
     }
     public void SetPlayerTeam(int index, int playerTeam)
     {
-        Debug.Log(playerTeam);
         playerConfigs[index].PlayerTeam = playerTeam;
     }
 
@@ -51,7 +48,6 @@ public class PlayerConfigurationManager : MonoBehaviour
         if (playerConfigs.Count >= 2 && playerConfigs.All(p => p.IsReady == true))
         {
             pim.joinBehavior = PlayerJoinBehavior.JoinPlayersManually;
-            Debug.Log("Ready" + playerConfigs.Count);
             SceneManager.LoadScene(2);
         }
     }
@@ -74,11 +70,10 @@ public class PlayerConfigurationManager : MonoBehaviour
 
     public void HandlePlayerJoin(PlayerInput pi)
     {
-        Debug.Log("Player joined " + pi.playerIndex);
 
         if (!playerConfigs.Any(p => p.PlayerIndex == pi.playerIndex))
         {
-            pi.transform.SetParent(canvasInScene);
+            pi.transform.parent = (canvasInScene);
             pi.transform.localScale = Vector3.one;
             playerConfigs.Add(new PlayerConfiguration(pi));
         }

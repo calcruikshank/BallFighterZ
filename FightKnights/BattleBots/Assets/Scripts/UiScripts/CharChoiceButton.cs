@@ -5,5 +5,5 @@ using UnityEngine;
 public class CharChoiceButton : MonoBehaviour
 {
     public GameObject prefabToSpawn;
-
+    public string charName;
 }

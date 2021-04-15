@@ -6,6 +6,7 @@ public class TeamID : MonoBehaviour
 {
     public int team;
     GameObject playerRing;
+    public Color teamColor;
     // Start is called before the first frame update
     void Awake()
     {
@@ -25,6 +26,7 @@ public class TeamID : MonoBehaviour
     }
     public void SetColorOnMat(Color color)
     {
+        teamColor = color;
         playerRing.GetComponent<MeshRenderer>().material.color = color;
     }
 

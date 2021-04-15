@@ -4,7 +4,7 @@ MonoImporter:
   externalObjects: {}
   serializedVersion: 2
   defaultReferences:
-  - playerRing: {fileID: 186423954040879495, guid: 32d77a641951220439769ced334d90db, type: 3}
+  - percentTextPrefab: {fileID: 857565073450485512, guid: caee1fc37968cc84298b7e29278340c7, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

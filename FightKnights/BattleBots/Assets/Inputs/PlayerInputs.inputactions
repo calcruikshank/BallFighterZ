@@ -140,6 +140,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "Press"
+                },
+                {
+                    "name": "LeftBumper",
+                    "type": "Button",
+                    "id": "74d5486b-268c-42e5-a8d4-5214c64bef77",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "Press"
                 }
             ],
             "bindings": [
@@ -492,6 +500,17 @@
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Reset",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "92b2dce9-7d03-4cad-afb4-7d3eef98501b",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "LeftBumper",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

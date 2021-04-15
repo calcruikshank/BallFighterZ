@@ -72,7 +72,8 @@ public class PlayerController : MonoBehaviour
         {
             SetAnimatorToIdle();
         }
-        this.gameObject.AddComponent<TeamID>();
+        this.gameObject.AddComponent<TeamID>().enabled = true;
+
     }
     // Start is called before the first frame update
     void Start()
@@ -1061,12 +1062,12 @@ public class PlayerController : MonoBehaviour
 
     void OnReset()
     {
-        /*DontDestroyOnLoad[] ddols = FindObjectsOfType<DontDestroyOnLoad>();
+        DontDestroyOnLoad[] ddols = FindObjectsOfType<DontDestroyOnLoad>();
         foreach (DontDestroyOnLoad ddol in ddols)
         {
             Destroy(ddol.gameObject);
-        }*/
-
+        }
+        FindObjectOfType<PlayerInputManager>().joinBehavior = PlayerJoinBehavior.JoinPlayersWhenJoinActionIsTriggered;
         SceneManager.LoadScene(0);
     }
 

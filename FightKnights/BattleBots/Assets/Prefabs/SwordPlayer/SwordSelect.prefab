@@ -213,6 +213,7 @@ MonoBehaviour:
   hasChangedFromKnockbackToFallingAnimation: 0
   moveSpeed: 0
   moveSpeedSetter: 18
+  currentPercentage: 0
   leftHandTransform: {fileID: 5136723789718946910}
   rightHandTransform: {fileID: 5136723790373468479}
   GrabPosition: {fileID: 1041960695179328073}
@@ -223,11 +224,15 @@ MonoBehaviour:
   initialStunParticle: {fileID: 0}
   continuedStunParticle: {fileID: 0}
   continuedStunSpawned: {fileID: 0}
+  leftJabParticle: {fileID: 0}
+  grabSwirl: {fileID: 0}
+  swirlInstantiated: {fileID: 0}
   knockbackSmoke: {fileID: 0}
   punchSpeed: 40
   layerMask:
     serializedVersion: 2
     m_Bits: 0
+  stocks: 4
   animatorUpdated: {fileID: 8712082166020212086}
   shield: {fileID: 193448067949134718}
   arrow: {fileID: 0}
@@ -829,6 +834,10 @@ PrefabInstance:
     - target: {fileID: 8027101334681024562, guid: 332108fdee5e66f4693f314299618e5f, type: 3}
       propertyPath: m_Name
       value: PlayerRing
+      objectReference: {fileID: 0}
+    - target: {fileID: 8027101334681024562, guid: 332108fdee5e66f4693f314299618e5f, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8027101334681024566, guid: 332108fdee5e66f4693f314299618e5f, type: 3}
       propertyPath: m_RootOrder

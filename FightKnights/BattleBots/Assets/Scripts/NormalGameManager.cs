@@ -7,6 +7,9 @@ public class NormalGameManager : MonoBehaviour
 {
     PercentageParent percentageParent;
     StockParent stockParent;
+    [SerializeField] GameObject percentTextPrefab;
+    GameObject percentText;
+    
 
     // Start is called before the first frame update
 
@@ -32,8 +35,8 @@ public class NormalGameManager : MonoBehaviour
         PlayerInput[] players = FindObjectsOfType<PlayerInput>();
         foreach (PlayerInput player in players)
         {
-            percentageParent.AddPercentageText(player.gameObject.GetComponent<PlayerController>());
-            stockParent.AddPercentageText(player.gameObject.GetComponent<PlayerController>());
+
+            
         }
     }
 }

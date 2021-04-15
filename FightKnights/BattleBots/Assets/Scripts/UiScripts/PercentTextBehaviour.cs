@@ -21,7 +21,7 @@ public class PercentTextBehaviour : MonoBehaviour
 
     private void Start()
     {
-        this.textObject.color = playerTeams.mats[player.gameObject.GetComponent<TeamID>().team].color;
+        this.textObject.color = player.gameObject.GetComponent<TeamID>().teamColor;
     }
 
     // Update is called once per frame
@@ -31,10 +31,7 @@ public class PercentTextBehaviour : MonoBehaviour
         {
             textObject.text = player.currentPercentage.ToString() + "%";
         }
-        else
-        {
-            Destroy(this.gameObject);
-        }
+        
     }
 
     public void SetPlayer(PlayerController playerSent)
