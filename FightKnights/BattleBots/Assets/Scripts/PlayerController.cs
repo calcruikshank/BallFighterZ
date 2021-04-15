@@ -1062,6 +1062,11 @@ public class PlayerController : MonoBehaviour
 
     void OnReset()
     {
+        var playerConfigs = PlayerConfigurationManager.Instance.GetPlayerConfigs().ToArray();
+        for(int i = 0; i < playerConfigs.Length; i++)
+        {
+            playerConfigs[i].IsReady = false;
+        }
         DontDestroyOnLoad[] ddols = FindObjectsOfType<DontDestroyOnLoad>();
         foreach (DontDestroyOnLoad ddol in ddols)
         {
