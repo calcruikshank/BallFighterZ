@@ -58,7 +58,7 @@ public class PlayerController : MonoBehaviour
     
     public virtual void Awake()
     {
-        Application.targetFrameRate = 165;
+        Application.targetFrameRate = 600;
         rb = GetComponent<Rigidbody>();
         state = State.Normal;
         cameraShake = FindObjectOfType<CameraShake>();
@@ -72,7 +72,6 @@ public class PlayerController : MonoBehaviour
         {
             SetAnimatorToIdle();
         }
-        this.gameObject.AddComponent<TeamID>().enabled = true;
 
     }
     // Start is called before the first frame update
@@ -447,7 +446,10 @@ public class PlayerController : MonoBehaviour
         //direction = direction.normalized;
         float knockbackValue = (20 * ((currentPercentage + damage) * (damage / 2)) / 150) + 14; //knockback that scales
         rb.velocity = new Vector3(direction.x * knockbackValue, 0, direction.z * knockbackValue);
-
+        if (GameConfigurationManager.Instance != null)
+        {
+            GameConfigurationManager.Instance.DisplayDamageText((int)damage, this.transform, playerSent);
+        }
         HitImpact(direction);
         state = State.Knockback;
     }
@@ -778,7 +780,15 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            //FinishGame(this); //pass it player controller to see who lost
+            if (GameConfigurationManager.Instance != null)
+            {
+                if (GameConfigurationManager.Instance.gameMode == 0)
+                {
+                    GameConfigurationManager.Instance.RemovePlayerFromTeamArray(this.GetComponent<TeamID>().team);
+                    GameConfigurationManager.Instance.CheckIfWon();
+                    Destroy(this.gameObject);
+                }
+            }
         }
     }
     protected virtual void Respawn()
@@ -1072,8 +1082,14 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(ddol.gameObject);
         }
-        FindObjectOfType<PlayerInputManager>().joinBehavior = PlayerJoinBehavior.JoinPlayersWhenJoinActionIsTriggered;
+        FindObjectOfType<PlayerInputManager>().joinBehavior = PlayerJoinBehavior.JoinPlayersWhenButtonIsPressed;
+        Destroy(GameConfigurationManager.Instance.gameObject); 
+        Destroy(PlayerConfigurationManager.Instance.gameObject); 
+            
+            
         SceneManager.LoadScene(0);
+        
+            
     }
 
     protected virtual void FaceLookDirection()

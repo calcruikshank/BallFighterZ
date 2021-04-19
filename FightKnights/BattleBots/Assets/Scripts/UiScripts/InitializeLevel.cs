@@ -8,7 +8,12 @@ public class InitializeLevel : MonoBehaviour
     // Start is called before the first frame update
     [SerializeField] Transform[] playerSpawns;
     GameObject percentText;
+    GameObject stockText;
     [SerializeField] GameObject percentTextPrefab;
+    [SerializeField] GameObject stockTextPrefab;
+    [SerializeField] GameObject soccerScorePrefab;
+    [SerializeField] GameObject canvasMain;
+    GameObject soccerScore;
     public int gameMode = 0;
     void Start()
     {
@@ -16,12 +21,17 @@ public class InitializeLevel : MonoBehaviour
         for (int i = 0; i < playerConfigs.Length; i++)
         {
             var player = PlayerInput.Instantiate(playerConfigs[i].PlayerPrefab, playerConfigs[i].PlayerIndex, playerConfigs[i].ControlScheme);
+
+            player.gameObject.AddComponent<TeamID>().enabled = true;
             player.GetComponent<TeamID>().SetColorOnMat(playerConfigs[i].PlayerColor);
             player.GetComponent<TeamID>().SetTeamID(playerConfigs[i].PlayerTeam);
-
-            if (gameMode == 0) LoadClassic(player);
+            GameConfigurationManager.Instance.AddPlayerToTeamArray(playerConfigs[i].PlayerTeam);
+            if (GameConfigurationManager.Instance.gameMode == 0) LoadClassicPlayer(player);
+            if (GameConfigurationManager.Instance.gameMode == 1) LoadSoccerPlayer(player);
             
         }
+        if (GameConfigurationManager.Instance.gameMode == 0) LoadClassic();
+        if (GameConfigurationManager.Instance.gameMode == 1) LoadSoccer();
     }
 
     // Update is called once per frame
@@ -30,10 +40,35 @@ public class InitializeLevel : MonoBehaviour
         
     }
 
-    void LoadClassic(PlayerInput player)
+    void LoadClassicPlayer(PlayerInput player)
     {
         percentText = Instantiate(percentTextPrefab);
         percentText.gameObject.GetComponent<PercentTextBehaviour>().SetPlayer(player.gameObject.GetComponent<PlayerController>());
         percentText.transform.parent = FindObjectOfType<PercentageParent>().transform;
+        player.gameObject.GetComponent<PlayerController>().stocks = GameConfigurationManager.Instance.numOfStocks;
+        stockText = Instantiate(stockTextPrefab);
+        stockText.gameObject.GetComponent<StockTextBehaviour>().SetPlayer(player.gameObject.GetComponent<PlayerController>());
+        stockText.transform.parent = percentText.transform;
+        stockText.transform.localPosition = new Vector3(0f, 100f, 0f);
+    }
+    void LoadSoccerPlayer(PlayerInput player)
+    {
+        percentText = Instantiate(percentTextPrefab);
+        percentText.gameObject.GetComponent<PercentTextBehaviour>().SetPlayer(player.gameObject.GetComponent<PlayerController>());
+        percentText.transform.parent = FindObjectOfType<PercentageParent>().transform;
+    }
+    void LoadClassic()
+    {
+
+        Debug.Log("Loading Classic");
+    }
+
+    void LoadSoccer()
+    {
+        soccerScore =  Instantiate(soccerScorePrefab);
+        soccerScore.transform.parent = canvasMain.transform;
+        soccerScore.transform.localPosition = new Vector3(0, 426, 0);
+
+        Debug.Log("Loading soccer");
     }
 }

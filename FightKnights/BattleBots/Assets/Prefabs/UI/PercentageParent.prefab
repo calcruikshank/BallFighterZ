@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1144232590214771547}
   - component: {fileID: 1144232590214771544}
-  - component: {fileID: 8061021471589828232}
+  - component: {fileID: 7436639812311968333}
   m_Layer: 5
   m_Name: PercentageParent
   m_TagString: Untagged
@@ -63,7 +63,7 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
---- !u!114 &8061021471589828232
+--- !u!114 &7436639812311968333
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -72,9 +72,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1144232590214771546}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 308e510fce5fd2b45994f10de09d0781, type: 3}
+  m_Script: {fileID: 11500000, guid: 6402f91e783761a4c8f4f9a016b348ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textObject: {fileID: 0}
-  textObjectPrefab: {fileID: 857565073450485512, guid: caee1fc37968cc84298b7e29278340c7, type: 3}
-  colors: []
+  players: []
+  playerList: []
+  playerPercentText: {fileID: 0}
+  percentText: {fileID: 0}

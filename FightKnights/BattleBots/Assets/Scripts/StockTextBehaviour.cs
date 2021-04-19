@@ -21,7 +21,7 @@ public class StockTextBehaviour : MonoBehaviour
 
     private void Start()
     {
-        this.textObject.color = playerTeams.mats[player.gameObject.GetComponent<TeamID>().team].color;
+        this.textObject.color = player.gameObject.GetComponent<TeamID>().teamColor;
     }
 
     // Update is called once per frame

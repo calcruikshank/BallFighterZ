@@ -31,7 +31,11 @@ public class PercentTextBehaviour : MonoBehaviour
         {
             textObject.text = player.currentPercentage.ToString() + "%";
         }
-        
+        else
+        {
+            Destroy(this.gameObject);
+        }
+
     }
 
     public void SetPlayer(PlayerController playerSent)

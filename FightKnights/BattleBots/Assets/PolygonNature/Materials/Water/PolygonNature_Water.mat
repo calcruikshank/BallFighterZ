@@ -86,19 +86,19 @@ Material:
     - _SpecularHighlights: 0
     - _SrcBlend: 1
     - _UVSec: 0
-    - _WaterDepth: 0.09
-    - _WaterFalloff: 2
+    - _WaterDepth: 1
+    - _WaterFalloff: 0
     - _WaterOpacity: 0.8
-    - _WaterReflection: 1
-    - _WaterScale: 0.175
+    - _WaterReflection: 0
+    - _WaterScale: 0.097
     - _WaterSmoothness: 2
     - _WaterSpecular: 0
-    - _WaterSpeed: 0.042
+    - _WaterSpeed: 0
     - _ZWrite: 1
     - __dirty: 1
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _WaterDeepColor: {r: 0.2943396, g: 0.67531943, b: 0.735849, a: 1}
+    - _WaterDeepColor: {r: 0.30210927, g: 0.6437839, b: 0.8773585, a: 1}
     - _WaterShallowColor: {r: 0, g: 0.454902, b: 0.46274513, a: 0}
   m_BuildTextureStacks: []

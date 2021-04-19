@@ -23,20 +23,10 @@ public class SoccerGameManager : MonoBehaviour
     void Start()
     {
         canvas = FindObjectOfType<Canvas>();
-        playerTeams = FindObjectOfType<PlayerTeams>();
+        
 
-        AddText();
+        GameObject soccerCanvasSpawned = FindObjectOfType<SoccerCanvasBehaviour>().gameObject;
 
-        if (!playerTeams.teamsIsOn)
-        {
-            playerTeams.ToggleTeamsOn();
-        }
-
-        GameObject soccerCanvasSpawned = Instantiate(soccerCanvas, Vector3.zero, Quaternion.identity);
-
-        soccerCanvasSpawned.transform.position = Vector3.zero;
-        soccerCanvasSpawned.transform.parent = canvas.transform;
-        soccerCanvasSpawned.transform.localPosition = Vector3.zero;
         soccerCanvasBehavior = soccerCanvasSpawned.GetComponent<SoccerCanvasBehaviour>();
     }
 

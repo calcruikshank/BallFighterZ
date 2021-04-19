@@ -10,7 +10,6 @@ public class SelectCharacter : PlayerController
 
     public override void Awake()
     {
-        Application.targetFrameRate = 165;
         rb = GetComponent<Rigidbody>();
         state = State.Normal;
         cameraShake = FindObjectOfType<CameraShake>();

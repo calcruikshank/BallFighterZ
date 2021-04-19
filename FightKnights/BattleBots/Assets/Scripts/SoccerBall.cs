@@ -4,6 +4,22 @@ using UnityEngine;
 
 public class SoccerBall : PlayerController
 {
+    public override void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        state = State.Normal;
+        cameraShake = FindObjectOfType<CameraShake>();
+        leftHandParent = leftHandTransform.parent.transform;
+        rightHandParent = rightHandTransform.parent.transform;
+        canDash = true;
+        grabbing = false;
+        releasedLeft = true;
+        releasedRight = true;
+        if (animatorUpdated != null)
+        {
+            SetAnimatorToIdle();
+        }
+    }
     public bool canBeScored = true;
     // Start is called before the first frame update
     void Start()

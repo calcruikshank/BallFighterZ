@@ -7,28 +7,23 @@ public class Goal : MonoBehaviour
     public PlayerController player;
     public SoccerBall soccerBall;
     [SerializeField] int goalColor = -1; //if goal color is -1 its a neutral goal
-    SoccerGameManager soccerGameManager;
 
-    private void Start()
-    {
-        soccerGameManager = FindObjectOfType<SoccerGameManager>();
-    }
+    
     void OnTriggerEnter(Collider other)
     {
         soccerBall = other.transform.parent.GetComponent<SoccerBall>();
-        if (soccerBall != null)
+        if (GameConfigurationManager.Instance.gameMode == 1 && soccerBall != null)
         {
-            if (goalColor == 0 && soccerGameManager != null && soccerBall.canBeScored)
+            if (goalColor == 0  && soccerBall.canBeScored)
             {
-                soccerGameManager.AddScoreToBlue();
-
+                SoccerScore.Instance.AddToBlue();
                
             }
-            if (goalColor == 1 && soccerGameManager != null && soccerBall.canBeScored)
+            if (goalColor == 1  && soccerBall.canBeScored)
             {
-                soccerGameManager.AddScoreToRed();
 
 
+                SoccerScore.Instance.AddToRed();
             }
             soccerBall.LoseStock();
             return;

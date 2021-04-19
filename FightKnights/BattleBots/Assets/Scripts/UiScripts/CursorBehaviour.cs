@@ -189,10 +189,21 @@ public class CursorBehaviour : MonoBehaviour
     {
         
         currentColor++;
-        if (currentColor > 5)
+        if (GameConfigurationManager.Instance.gameMode == 0)
         {
-            currentColor = 0;
+            if (currentColor > 5)
+            {
+                currentColor = 0;
+            }
         }
+        if (GameConfigurationManager.Instance.gameMode == 1)
+        {
+            if (currentColor > 1)
+            {
+                currentColor = 0;
+            }
+        }
+
         SetColor(colors[currentColor]);
         SetTeam(currentColor);
     }
@@ -200,9 +211,19 @@ public class CursorBehaviour : MonoBehaviour
     {
 
         currentColor--;
-        if (currentColor < 0)
+        if (GameConfigurationManager.Instance.gameMode == 0)
         {
-            currentColor = 5;
+            if (currentColor < 0)
+            {
+                currentColor = 5;
+            }
+        }
+        if (GameConfigurationManager.Instance.gameMode == 1)
+        {
+            if (currentColor < 0)
+            {
+                currentColor = 1;
+            }
         }
         SetColor(colors[currentColor]);
         SetTeam(currentColor);

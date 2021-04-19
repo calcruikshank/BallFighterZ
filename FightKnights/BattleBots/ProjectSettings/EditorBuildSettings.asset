@@ -6,6 +6,9 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/GameSetup 1.unity
+    guid: f00f938a0659cb84a86ab2fb1470a869
+  - enabled: 1
     path: Assets/Scenes/CharacterSelect.unity
     guid: 98f9f63bf8c33454394c89c41b2e05de
   - enabled: 1
@@ -20,5 +23,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Soccer.unity
     guid: 14dc3171a71d4b5488593d5d37238529
+  - enabled: 1
+    path: Assets/Scenes/Victory Screen.unity
+    guid: 0d2c261b71795984fbace201856a2589
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: 9c2a8c2b6b349364195836b28584099a, type: 2}

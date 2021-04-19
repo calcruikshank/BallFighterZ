@@ -86,7 +86,9 @@ MonoBehaviour:
   - {fileID: 2850467392884952472}
   - {fileID: 2850467392260522520}
   - {fileID: 2850467393697285437}
-  percentTextPrefab: {fileID: 0}
+  percentTextPrefab: {fileID: 857565073450485512, guid: caee1fc37968cc84298b7e29278340c7, type: 3}
+  stockTextPrefab: {fileID: 857565073450485512, guid: 2f8d36625d202734b93ee0d0a70e36dc, type: 3}
+  soccerScorePrefab: {fileID: 8184509665319404537, guid: 0f1188d8889bc4240a04c27310a89d00, type: 3}
   gameMode: 0
 --- !u!1 &2850467392260522521
 GameObject:

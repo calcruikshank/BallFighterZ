@@ -12,7 +12,7 @@ public class PlayerConfigurationManager : MonoBehaviour
     [SerializeField] Transform canvasInScene;
     public static PlayerConfigurationManager Instance { get; private set; }
     public PlayerInputManager pim;
-
+    int stage, gameMode = 0;
     private void Awake()
     {
         if (Instance != null)
@@ -48,10 +48,19 @@ public class PlayerConfigurationManager : MonoBehaviour
         if (playerConfigs.Count >= 2 && playerConfigs.All(p => p.IsReady == true))
         {
             pim.joinBehavior = PlayerJoinBehavior.JoinPlayersManually;
-            SceneManager.LoadScene(2);
+            SceneManager.LoadScene(GameConfigurationManager.Instance.stage);
         }
     }
 
+    public void SetStage(int sentStage)
+    {
+        Debug.Log(sentStage);
+        stage = sentStage;
+    }
+    public void SetGameMode(int sentGameMode)
+    {
+        gameMode = sentGameMode;
+    }
     public void SetControlScheme(int index, string thisControlScheme)
     {
         playerConfigs[index].ControlScheme = thisControlScheme;
