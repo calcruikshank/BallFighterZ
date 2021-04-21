@@ -1081,22 +1081,10 @@ public class PlayerController : MonoBehaviour
 
     void OnReset()
     {
-        var playerConfigs = PlayerConfigurationManager.Instance.GetPlayerConfigs().ToArray();
-        for(int i = 0; i < playerConfigs.Length; i++)
+        if (GameConfigurationManager.Instance != null)
         {
-            playerConfigs[i].IsReady = false;
+            GameConfigurationManager.Instance.ResetToGameModeSelect();
         }
-        DontDestroyOnLoad[] ddols = FindObjectsOfType<DontDestroyOnLoad>();
-        foreach (DontDestroyOnLoad ddol in ddols)
-        {
-            Destroy(ddol.gameObject);
-        }
-        FindObjectOfType<PlayerInputManager>().joinBehavior = PlayerJoinBehavior.JoinPlayersWhenButtonIsPressed;
-        Destroy(GameConfigurationManager.Instance.gameObject); 
-        Destroy(PlayerConfigurationManager.Instance.gameObject); 
-            
-            
-        SceneManager.LoadScene(0);
         
             
     }

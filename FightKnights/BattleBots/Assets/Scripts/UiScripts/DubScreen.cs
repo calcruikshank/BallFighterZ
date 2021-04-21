@@ -24,7 +24,10 @@ public class DubScreen : MonoBehaviour
         reloadSceneTimer += Time.deltaTime;
         if (reloadSceneTimer > 3f)
         {
-            SceneManager.LoadScene(GameConfigurationManager.Instance.stage);
+            if (GameConfigurationManager.Instance != null)
+            {
+                GameConfigurationManager.Instance.ResetToGameModeSelect();
+            }
         }
     }
 

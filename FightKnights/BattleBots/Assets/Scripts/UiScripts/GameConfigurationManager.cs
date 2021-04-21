@@ -101,6 +101,7 @@ public class GameConfigurationManager : MonoBehaviour
     {
         yield return new WaitForSecondsRealtime(freezeTime);
         SceneManager.LoadScene("Victory Screen");
+        
     }
     public void AddPlayerToTeamArray(int index)
     {
@@ -138,5 +139,25 @@ public class GameConfigurationManager : MonoBehaviour
             txt.GetComponent<TextMeshProUGUI>().color = playerTakingDamage.gameObject.GetComponent<TeamID>().teamColor;
         }
         
+    }
+
+    public void ResetToGameModeSelect()
+    {
+        var playerConfigs = PlayerConfigurationManager.Instance.GetPlayerConfigs().ToArray();
+        for (int i = 0; i < playerConfigs.Length; i++)
+        {
+            playerConfigs[i].IsReady = false;
+        }
+        DontDestroyOnLoad[] ddols = FindObjectsOfType<DontDestroyOnLoad>();
+        foreach (DontDestroyOnLoad ddol in ddols)
+        {
+            Destroy(ddol.gameObject);
+        }
+        FindObjectOfType<PlayerInputManager>().joinBehavior = PlayerJoinBehavior.JoinPlayersWhenButtonIsPressed;
+        Destroy(GameConfigurationManager.Instance.gameObject);
+        Destroy(PlayerConfigurationManager.Instance.gameObject);
+
+
+        SceneManager.LoadScene(0);
     }
 }

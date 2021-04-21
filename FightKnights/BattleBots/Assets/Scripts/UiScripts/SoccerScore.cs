@@ -11,6 +11,7 @@ public class SoccerScore : MonoBehaviour
     int greaterScore;
     int teamThatWon;
     [SerializeField] GameObject RedScorePrefab, BlueScorePrefab, TimePrefab;
+    bool finishedGame = false;
     private void Awake()
     {
         if (Instance != null)
@@ -21,6 +22,7 @@ public class SoccerScore : MonoBehaviour
         {
             Instance = this;
         }
+        finishedGame = false;
     }
     // Start is called before the first frame update
     void Start()
@@ -28,7 +30,7 @@ public class SoccerScore : MonoBehaviour
         redScore = 0;
         blueScore = 0;
         RedScorePrefab.GetComponent<TextMeshProUGUI>().text = redScore.ToString();
-        SetTime(GameConfigurationManager.Instance.timeForGame * 60);
+        SetTime(GameConfigurationManager.Instance.timeForGame);
     }
 
     // Update is called once per frame
@@ -37,8 +39,9 @@ public class SoccerScore : MonoBehaviour
         time -= Time.deltaTime;
         
         TimePrefab.GetComponent<TextMeshProUGUI>().text = time.ToString("F0");
-        if (time <= 0)
+        if (time <= 0 && finishedGame == false)
         {
+            finishedGame = true;
             GameConfigurationManager.Instance.LoadVictoryScene(GetWinningTeam());
         }
     }
@@ -49,7 +52,7 @@ public class SoccerScore : MonoBehaviour
     }
     public void SetTime(float sentTime)
     {
-        time = sentTime;
+        time = sentTime * 60;
     }
 
     public void AddToBlue()
