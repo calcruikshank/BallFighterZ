@@ -78,7 +78,7 @@ public class CursorGameSetup : MonoBehaviour
     void SetDevice(InputDevice currentDevice)
     {
 
-        PlayerConfigurationManager.Instance.SetDevice(PlayerIndex, currentDevice);
+        //PlayerConfigurationManager.Instance.SetDevice(PlayerIndex, currentDevice);
 
 
     }

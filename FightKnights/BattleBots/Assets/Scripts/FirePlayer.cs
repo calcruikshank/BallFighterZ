@@ -440,7 +440,10 @@ public class FirePlayer : PlayerController
         //direction = direction.normalized;
         float knockbackValue = (20 * ((currentPercentage + damage) * (damage / 2)) / 150) + 14; //knockback that scales
         rb.velocity = new Vector3(direction.x * knockbackValue, 0, direction.z * knockbackValue);
-
+        if (GameConfigurationManager.Instance != null)
+        {
+            GameConfigurationManager.Instance.DisplayDamageText((int)damage, this.transform, playerSent);
+        }
         HitImpact(direction);
         state = State.Knockback;
     }

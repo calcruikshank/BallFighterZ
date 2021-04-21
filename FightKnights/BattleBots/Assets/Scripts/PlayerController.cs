@@ -540,7 +540,7 @@ public class PlayerController : MonoBehaviour
         returningRight = true;
         rightHandTransform.gameObject.GetComponent<Collider>().enabled = false;
     }
-    void EndPunchLeft()
+    protected virtual void EndPunchLeft()
     {
         punchedLeft = false;
         returningLeft = true;
@@ -581,7 +581,12 @@ public class PlayerController : MonoBehaviour
         if (state == State.ParryState) return;
         rb.velocity = Vector3.zero;
         isParryingTimer = 0;
+        if (animatorUpdated != null)
+        {
+            SetAnimatorToIdle();
+        }
         state = State.ParryState;
+        
     }
     protected void HandleParry()
     {
@@ -714,6 +719,9 @@ public class PlayerController : MonoBehaviour
 
     protected void WaveDash(Vector3 powerDashDirection, float sentSpeed)
     {
+        EndPunchLeft();
+        EndPunchRight();
+        shielding = false;
         transform.right = lastMoveDir;
         shielding = false;
         canShieldAgainTimer = 0f;
@@ -935,10 +943,11 @@ public class PlayerController : MonoBehaviour
     protected void HandleAirDodge()
     {
         parryTimer += Time.deltaTime;
-        if (parryTimer > parryTimerThreshold)
+        if (parryTimer > parryTimerThreshold && isParrying == true)
         {
             isParrying = false;
             shield.gameObject.SetActive(false);
+            shielding = false;
         }
     }
 
@@ -1276,6 +1285,7 @@ public class PlayerController : MonoBehaviour
             if (canAirDodgeTimer < .25f) return; //if the player has only been in knockback for x seconds return
             if (airDodged)
             {
+                
                 airDodged = false;
                 AirDodge();
             }

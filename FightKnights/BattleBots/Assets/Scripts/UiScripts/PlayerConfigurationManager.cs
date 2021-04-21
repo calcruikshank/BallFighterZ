@@ -15,6 +15,7 @@ public class PlayerConfigurationManager : MonoBehaviour
     int stage, gameMode = 0;
     private void Awake()
     {
+        
         if (Instance != null)
         {
             Debug.Log("Singleton - Trying to create another instance of a singleton");
@@ -27,6 +28,7 @@ public class PlayerConfigurationManager : MonoBehaviour
             pim = this.gameObject.GetComponent<PlayerInputManager>();
         }
     }
+    
 
     public void SetPlayerPrefab(int index, GameObject characterChoice)
     {
@@ -67,8 +69,9 @@ public class PlayerConfigurationManager : MonoBehaviour
     }
     public void SetDevice(int index, InputDevice current)
     {
-
+        
         playerConfigs[index].CurrentDevice = current;
+        Debug.Log("setting currrent device " + current);
     }
 
     public void UnReadyPlayer(int index)
@@ -77,6 +80,7 @@ public class PlayerConfigurationManager : MonoBehaviour
         playerConfigs[index].PlayerPrefab = null;
     }
 
+    
     public void HandlePlayerJoin(PlayerInput pi)
     {
 

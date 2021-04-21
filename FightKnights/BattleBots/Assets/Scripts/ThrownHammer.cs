@@ -83,7 +83,7 @@ public class ThrownHammer : MonoBehaviour
             float damage = 9;
             if (player.isDashing)
             {
-                damage = 15f;
+                damage = 10f;
             }
             opponent.Knockback(damage, punchTowards, player);
             Physics.IgnoreCollision(this.transform.GetComponent<Collider>(), other);

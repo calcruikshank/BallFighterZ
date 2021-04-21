@@ -87,7 +87,7 @@ public class BowPlayer : PlayerController
             animatorUpdated.SetBool("Rolling", false);
             punchedRightTimer = 0;
             //rightHandCollider.enabled = true;
-            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRange, -.4f, .4f), punchSpeed * 2 * Time.deltaTime);
+            rightHandTransform.localPosition = Vector3.MoveTowards(rightHandTransform.localPosition, new Vector3(punchRange, -.4f, .4f), punchSpeed * 1.5f * Time.deltaTime);
             if (rightHandTransform.localPosition.x >= punchRange)
             {
                 if (!punchedLeft && !returningLeft && !punchedLeft)
@@ -145,6 +145,22 @@ public class BowPlayer : PlayerController
             returnSpeed = 12f;
         }
 
+    }
+    public override void EndPunchRight()
+    {
+
+        punchedRight = false;
+        returningRight = true;
+        rightHandTransform.gameObject.GetComponent<Collider>().enabled = false;
+    }
+    protected override void EndPunchLeft()
+    {
+        //Debug.Log((arrowInstantiated.GetComponent<HandleCollider>().greatestDamage));
+        heldArrowTime = 0f;
+        canShoot = false;
+        punchedLeft = false;
+        returningLeft = true;
+        leftHandTransform.gameObject.GetComponent<Collider>().enabled = false;
     }
     protected override void CheckForPunchLeft()
     {

@@ -67,13 +67,11 @@ public class CursorBehaviour : MonoBehaviour
         PlayerConfigurationManager.Instance.SetControlScheme(PlayerIndex, controlScheme);
         if (controlScheme == "Gamepad")
         {
-            Debug.Log("gamepad ");
+            SetDevice(this.gameObject.GetComponent<PlayerInput>().devices[0]);
             
-            SetDevice(Gamepad.current);
         }
         else
         {
-            Debug.Log("keyboard ");
             SetDevice(Keyboard.current);
         }
     }

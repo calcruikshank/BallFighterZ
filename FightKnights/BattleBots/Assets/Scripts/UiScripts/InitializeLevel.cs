@@ -20,7 +20,7 @@ public class InitializeLevel : MonoBehaviour
         var playerConfigs = PlayerConfigurationManager.Instance.GetPlayerConfigs().ToArray();
         for (int i = 0; i < playerConfigs.Length; i++)
         {
-            var player = PlayerInput.Instantiate(playerConfigs[i].PlayerPrefab, playerConfigs[i].PlayerIndex, playerConfigs[i].ControlScheme);
+            var player = PlayerInput.Instantiate(playerConfigs[i].PlayerPrefab, playerConfigs[i].PlayerIndex, playerConfigs[i].ControlScheme, -1, playerConfigs[i].CurrentDevice);
 
             player.gameObject.AddComponent<TeamID>().enabled = true;
             player.GetComponent<TeamID>().SetColorOnMat(playerConfigs[i].PlayerColor);
@@ -28,7 +28,11 @@ public class InitializeLevel : MonoBehaviour
             GameConfigurationManager.Instance.AddPlayerToTeamArray(playerConfigs[i].PlayerTeam);
             if (GameConfigurationManager.Instance.gameMode == 0) LoadClassicPlayer(player);
             if (GameConfigurationManager.Instance.gameMode == 1) LoadSoccerPlayer(player);
-            
+            if (playerSpawns[i] != null)
+            {
+                player.transform.position = playerSpawns[i].position;
+                player.transform.rotation = playerSpawns[i].rotation;
+            }
         }
         if (GameConfigurationManager.Instance.gameMode == 0) LoadClassic();
         if (GameConfigurationManager.Instance.gameMode == 1) LoadSoccer();
@@ -37,11 +41,12 @@ public class InitializeLevel : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     void LoadClassicPlayer(PlayerInput player)
     {
+
         percentText = Instantiate(percentTextPrefab);
         percentText.gameObject.GetComponent<PercentTextBehaviour>().SetPlayer(player.gameObject.GetComponent<PlayerController>());
         percentText.transform.parent = FindObjectOfType<PercentageParent>().transform;
@@ -65,7 +70,7 @@ public class InitializeLevel : MonoBehaviour
 
     void LoadSoccer()
     {
-        soccerScore =  Instantiate(soccerScorePrefab);
+        soccerScore = Instantiate(soccerScorePrefab);
         soccerScore.transform.parent = canvasMain.transform;
         soccerScore.transform.localPosition = new Vector3(0, 426, 0);
 
