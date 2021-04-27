@@ -258,8 +258,12 @@ MonoBehaviour:
   swordThrustParticle: {fileID: 8280257425495866515, guid: d02fbcdfad79fd341becf07f8ca138d0, type: 3}
   swordThrustSword: {fileID: 7367475023908253010}
   swordSlashSword: {fileID: 5929546965402383908}
+  smokeTeleportPrefab: {fileID: 1399713867124324232, guid: b82c3c657c03f45419236f19f732a874, type: 3}
   swordCrit: {fileID: 611518961388906504}
   thrustPosition: {fileID: 213032644305527934}
+  wallForDash:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!1 &5136723789718946911
 GameObject:
   m_ObjectHideFlags: 0

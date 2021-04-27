@@ -4,10 +4,10 @@ using UnityEngine;
 
 public class SwordPlayer : PlayerController
 {
-    [SerializeField] GameObject swordSlash, swordThrustParticle, swordThrustSword, swordSlashSword;
+    [SerializeField] GameObject swordSlash, swordThrustParticle, swordThrustSword, swordSlashSword, smokeTeleportPrefab;
     [SerializeField] Transform swordCrit, thrustPosition;
-
-
+    float dashDistance;
+    [SerializeField] LayerMask wallForDash;
     protected override void Update()
     {
         switch (state)
@@ -235,13 +235,22 @@ public class SwordPlayer : PlayerController
 
     protected override void Dash(Vector3 dashDirection)
     {
-        isDashing = true;
-        shielding = false;
-        punchedRight = true;
-        returningRight = false;
-        float dashDistance = 8f;
-        transform.position += dashDirection * dashDistance;
-        state = State.Dashing;
+
+        dashDistance = 8f;
+        if (!CanMove(dashDirection, dashDistance))
+        {
+            Instantiate(smokeTeleportPrefab, this.transform.position, Quaternion.identity);
+            isDashing = true;
+            shielding = false;
+            punchedRight = true;
+            returningRight = false;
+            transform.position += dashDirection * dashDistance;
+            state = State.Dashing;
+        }
+           
+       
+        
+       
 
     }
     protected override void HandleDash()
@@ -254,7 +263,10 @@ public class SwordPlayer : PlayerController
         }
     }
 
-
+    private bool CanMove(Vector3 dir, float distance)
+    {
+        return Physics.Raycast(transform.position, dir, distance, wallForDash);
+    }
 
 
 
@@ -364,6 +376,7 @@ public class SwordPlayer : PlayerController
         if (state == State.Stunned) return;
         if (grabbing) return;
         if (state == State.Grabbed) return;
+        
         //check if hasdashedtimer is good to go if not return
 
         //then if dash buffer is greater than 0 dash
