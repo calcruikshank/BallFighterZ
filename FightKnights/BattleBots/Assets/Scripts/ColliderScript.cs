@@ -25,7 +25,6 @@ public class ColliderScript : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-
         opponent = other.transform.parent.GetComponent<PlayerController>();
         if (opponent != null && collideTimer <= colliderThreshold)
         {

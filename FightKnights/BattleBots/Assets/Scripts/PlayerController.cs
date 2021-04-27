@@ -932,7 +932,23 @@ public class PlayerController : MonoBehaviour
         HitImpact(direction);
         state = State.Knockback;
     }
+    public void Bounce(Vector3 direction)
+    {
+        if (animatorUpdated != null)
+        {
+            SetAnimatorToKnockback();
+        }
 
+        hasLanded = false;
+        brakeSpeed = 20f;
+        // Debug.Log(damage + " damage");
+        //Vector2 direction = new Vector2(rb.position.x - handLocation.x, rb.position.y - handLocation.y); //distance between explosion position and rigidbody(bluePlayer)
+        //direction = direction.normalized;
+        float throwValue = (14 * ((120) * (3 / 2)) / 100) + 50;
+        currentPercentage += 0f;
+        rb.velocity = (direction * throwValue);
+        state = State.Knockback;
+    }
     protected void AirDodge()
     {
         isParrying = true;

@@ -12,22 +12,26 @@ public class Goal : MonoBehaviour
     void OnTriggerEnter(Collider other)
     {
         soccerBall = other.transform.parent.GetComponent<SoccerBall>();
-        if (GameConfigurationManager.Instance.gameMode == 1 && soccerBall != null)
+        if (GameConfigurationManager.Instance != null)
         {
-            if (goalColor == 0  && soccerBall.canBeScored)
+            if (GameConfigurationManager.Instance.gameMode == 1 && soccerBall != null)
             {
-                SoccerScore.Instance.AddToBlue();
-               
-            }
-            if (goalColor == 1  && soccerBall.canBeScored)
-            {
+                if (goalColor == 0 && soccerBall.canBeScored)
+                {
+                    SoccerScore.Instance.AddToBlue();
+
+                }
+                if (goalColor == 1 && soccerBall.canBeScored)
+                {
 
 
-                SoccerScore.Instance.AddToRed();
+                    SoccerScore.Instance.AddToRed();
+                }
+                soccerBall.LoseStock();
+                return;
             }
-            soccerBall.LoseStock();
-            return;
         }
+        
 
         player = other.transform.parent.GetComponent<PlayerController>();
         if (player != null)
